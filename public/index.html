@@ -10,45 +10,7 @@
 
 <body>
   <div id="app"></div>
-
   <script type="text/javascript" src="dist/bundle.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-  <script type="text/javascript">
-    var TWO_MINUTES = (1000 * 60 * 2);
-    var url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_success_rate/_search";
-    var data = {
-      sort: [ {'_timestamp': 'desc'} ],
-      query: {
-        filtered: {
-          filter: {
-            and: [{
-              term: {
-                captureRangeInMinutes: 1440
-              }
-            }]
-          }
-        }
-      }
-    };
-
-    var updatePercentage = function(){
-      $.ajax({
-        type: "POST",
-        url: url,
-        data: JSON.stringify(data),
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function(data){
-          var hit = data.hits.hits[0];
-          console.log(JSON.stringify(data, null, 2));
-          var successPercentage = hit._source.successPercentage;
-          $('#successPercentage').text(successPercentage + "%");
-        }
-      });
-    }
-
-    // setInterval(updatePercentage, 1000 * 60);
-    // updatePercentage();
-  </script>
 </body>
 </html>
