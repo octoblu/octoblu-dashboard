@@ -3,7 +3,7 @@
       "filter_by_timestamp": {
          "filter": {
             "range": {
-               "_timestamp": {
+               "beginTime": {
                   "gte": 0
                }
             }
