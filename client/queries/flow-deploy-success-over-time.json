@@ -1,6 +1,6 @@
 {
    "aggs": {
-      "hourly": {
+      "group_by_date": {
          "date_range": {
             "field": "beginTime",
             "format": "HH:mm:ss",

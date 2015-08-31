@@ -1,6 +1,7 @@
 React  = require 'react'
 moment = require 'moment'
 {Line} = require 'react-chartjs'
+FlowDeployOverTime = require '../../models/flow-deploy-over-time'
 
 FlowOverTime = React.createClass
   displayName: 'FlowOverTime'
@@ -16,8 +17,24 @@ FlowOverTime = React.createClass
         ]
     }
 
-  componentDidMount: ->
+  componentWillMount: ->
+    @flowDeployOverTime = new FlowDeployOverTime
+    @flowDeployOverTime.on 'change', =>
+      @setState @formatResult @flowDeployOverTime.toJSON()
 
+  componentDidMount: ->
+    setInterval @flowDeployOverTime.fetch, 60 * 1000
+    @flowDeployOverTime.fetch()
+
+  formatResult: (results) =>
+    chartData = {}
+    chartData.labels = _.pluck results, 'key'
+    points = []
+    _.each results, (result) =>
+      points.push result.successPercentage
+    chartData.datasets = [data: points]
+    console.log chartData
+    return chartData: chartData
 
   render: ->
     <div className= "flow-status__gauge">
