@@ -5,9 +5,6 @@ moment = require 'moment'
 OverTimeGauge = React.createClass
   displayName: 'OverTimeGauge'
 
-  formatUnixTime: (unix_time) =>
-    moment(unix_time).format 'HH:mm:ss ZZ (MM/DD)'
-
   render: ->
     <div className= "gauge">
       <h1>{@props.title}</h1>
@@ -16,7 +13,7 @@ OverTimeGauge = React.createClass
             data={@props.elapsedTimeChartData ? {datasets: []}}
             options={scaleFontSize: 40, scaleLabel: "<%=value%>#{@props.suffix}", scaleBeginAtZero: true}
             redraw />
-      <h3>{@formatUnixTime @props.timestamp}</h3>
+      <h5>Last 24 Hours</h5>
     </div>
 
 module.exports = OverTimeGauge

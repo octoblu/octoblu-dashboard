@@ -2,16 +2,11 @@
   "aggs": {
     "finished": {
       "filter": {
-        "and": [
-          {
-            "range": {
-              "beginTime": {
-                "gte": 0
-              }
-            }
-          },
-          { "exists": { "field": "elapsedTime"} }
-        ]
+        "range": {
+          "beginTime": {
+            "gte": 0
+          }
+        }
       },
       "aggs": {
         "avgElapsedTime": {

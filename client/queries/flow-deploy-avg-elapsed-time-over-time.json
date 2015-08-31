@@ -1,37 +1,28 @@
 {
-   "aggs": {
-      "finished": {
-         "filter": {
-            "and": [
-               {
-                  "range": {
-                     "beginTime": {
-                        "gte": 0
-                     }
-                  }
-               },
-               {
-                  "exists": {
-                     "field": "elapsedTime"
-                  }
-               }
-            ]
-         },
-         "aggs": {
-            "startTime_over_time": {
-               "date_histogram": {
-                  "field": "beginTime",
-                  "interval": "hour"
-               },
-               "aggs": {
-                  "avgElapsedTime": {
-                     "avg": {
-                        "field": "elapsedTime"
-                     }
-                  }
-               }
+  "aggs": {
+    "finished": {
+      "filter": {
+        "range": {
+          "beginTime": {
+            "gte": 0
+          }
+        }
+      },
+      "aggs": {
+        "startTime_over_time": {
+          "date_histogram": {
+            "field": "beginTime",
+            "interval": "hour"
+          },
+          "aggs": {
+            "avgElapsedTime": {
+              "avg": {
+                "field": "elapsedTime"
+              }
             }
-         }
+          }
+        }
       }
-   }
+    }
+  }
 }
