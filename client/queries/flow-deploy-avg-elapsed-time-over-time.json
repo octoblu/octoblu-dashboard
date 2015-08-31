@@ -5,7 +5,7 @@
             "and": [
                {
                   "range": {
-                     "_timestamp": {
+                     "beginTime": {
                         "gte": 0
                      }
                   }
