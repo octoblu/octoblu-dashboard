@@ -1,0 +1,37 @@
+{
+   "aggs": {
+      "finished": {
+         "filter": {
+            "and": [
+               {
+                  "range": {
+                     "_timestamp": {
+                        "gte": 0
+                     }
+                  }
+               },
+               {
+                  "exists": {
+                     "field": "elapsedTime"
+                  }
+               }
+            ]
+         },
+         "aggs": {
+            "startTime_over_time": {
+               "date_histogram": {
+                  "field": "beginTime",
+                  "interval": "hour"
+               },
+               "aggs": {
+                  "avgElapsedTime": {
+                     "avg": {
+                        "field": "elapsedTime"
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}
