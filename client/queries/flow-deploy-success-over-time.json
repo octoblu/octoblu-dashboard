@@ -1,0 +1,31 @@
+{
+   "aggs": {
+      "hourly": {
+         "date_range": {
+            "field": "beginTime",
+            "format": "HH:mm:ss",
+            "ranges": [
+               {
+                  "to": "now",
+                  "from": "now-1h/h"
+               },
+               {
+                  "to": "now-1h/h",
+                  "from": "now-2h/h"
+               },
+               {
+                  "to": "now-2h/h",
+                  "from": "now-3h/h"
+               }
+            ]
+         },
+         "aggs": {
+            "group_by_success": {
+               "terms": {
+                  "field": "success"
+               }
+            }
+         }
+      }
+   }
+}
