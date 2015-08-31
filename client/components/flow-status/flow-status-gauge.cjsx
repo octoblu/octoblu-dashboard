@@ -9,7 +9,7 @@ FlowStatusGauge = React.createClass
     "#{percentage.toFixed 3}%"
 
   render: ->
-    <div className="flow-status-gauge">
+    <div className="gauge">
       <h1>Flow Deploy Success Rate</h1>
       <h2>{@formatPercentage @props.successPercentage}</h2>
       <div className="raw-metrics">
