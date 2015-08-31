@@ -5,8 +5,6 @@ Router = require 'react-router'
 App = require './app'
 DashboardController = require './components/dashboard.controller'
 
-console.log 'hello'
-
 routes =
   <Route handler={App} path="/">
     <DefaultRoute handler={DashboardController} />

@@ -14,6 +14,7 @@ DashboardController = React.createClass
       @setState @flowDeployStatus.toJSON()
 
   componentDidMount: ->
+    setInterval @flowDeployStatus.fetch, 60 * 1000
     @flowDeployStatus.fetch()
 
   render: ->
