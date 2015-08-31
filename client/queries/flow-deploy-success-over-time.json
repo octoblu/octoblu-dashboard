@@ -13,7 +13,7 @@
           "date_histogram": {
             "field": "beginTime",
             "interval": "hour",
-            "format": "MM/dd HH:00"
+            "format": "h aa"
           },
           "aggs": {
             "group_by_success": {
