@@ -7,12 +7,20 @@ class FlowDeployAvgElapsedTimeOverTime extends Backbone.Model
   url: "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/_search"
 
   parse: (response) =>
-    console.log response.aggregations
     buckets = _.map response.aggregations.finished.startTime_over_time.buckets, (bucket) =>
       elapsedTime: bucket.avgElapsedTime.value
       key: bucket.key
 
-    elapsedTimeByKey: buckets
+    labels = _.map buckets, (bucket) => moment(bucket.key).format('MM:DD HH:00')
+    data = _.map buckets, (bucket) => Math.round(bucket.elapsedTime / 1000)
+
+    elapsedTimeChartData:
+      labels: labels
+      datasets: [
+        {
+          data: data
+        }
+      ]
 
   fetch: (options={}) =>
     super _.defaults({}, options,

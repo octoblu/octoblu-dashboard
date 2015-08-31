@@ -2,7 +2,7 @@ React = require 'react'
 moment = require 'moment'
 
 FlowAvgElapsedTimeGauge = React.createClass
-  displayName: 'FlowStatusGauge'
+  displayName: 'FlowAvgElapsedTimeGauge'
 
   formatUnixTime: (unix_time) =>
     moment(unix_time).format 'HH:mm:ss ZZ (MM/DD)'
