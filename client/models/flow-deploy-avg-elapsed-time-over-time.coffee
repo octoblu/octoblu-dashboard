@@ -9,9 +9,9 @@ class FlowDeployAvgElapsedTimeOverTime extends Backbone.Model
   parse: (response) =>
     buckets = _.map response.aggregations.finished.startTime_over_time.buckets, (bucket) =>
       elapsedTime: bucket.avgElapsedTime.value
-      key: bucket.key
+      key: bucket.key_as_string
 
-    labels = _.map buckets, (bucket) => moment(bucket.key).format('MM/DD HH:00')
+    labels = _.pluck buckets, 'key'
     data = _.map buckets, (bucket) => Math.round(bucket.elapsedTime / 1000)
 
     elapsedTimeChartData:

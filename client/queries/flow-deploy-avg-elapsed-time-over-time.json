@@ -12,7 +12,8 @@
         "startTime_over_time": {
           "date_histogram": {
             "field": "beginTime",
-            "interval": "hour"
+            "interval": "hour",
+            "format": "MM/dd HH:00"
           },
           "aggs": {
             "avgElapsedTime": {
