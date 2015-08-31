@@ -22,7 +22,6 @@ DashboardController = React.createClass
       failures={@state.failures}
       successes={@state.successes}
       successPercentage={@state.successPercentage}
-      total={@state.total}
-      timestamp={@state._timestamp} />
+      total={@state.total} />
 
 module.exports = DashboardController

@@ -29,7 +29,6 @@ class FlowDeployStatus extends Backbone.Model
       failureRate: failureRate
       failurePercentage: 100 * failureRate
       total: total
-      _timestamp: moment().valueOf()
     }
 
   fetch: (options={}) =>
