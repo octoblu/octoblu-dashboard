@@ -40,8 +40,10 @@ class FlowDeployStatus extends Backbone.Model
 
   query: =>
     yesterday = moment().subtract(1, 'day')
+    five_minutes_ago = moment().subtract(5, 'minutes')
     query = _.cloneDeep FLOW_DEPLOY_STATUS_QUERY
     query.aggs.filter_by_timestamp.filter.range.beginTime.gte = yesterday.valueOf()
+    query.aggs.filter_by_timestamp.filter.range.beginTime.lte = five_minutes_ago.valueOf()
     query
 
 module.exports = FlowDeployStatus
