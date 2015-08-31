@@ -1,0 +1,23 @@
+{
+  "aggs": {
+    "finished": {
+      "filter": {
+        "and": [
+          {
+            "range": {
+              "_timestamp": {
+                "gte": 0
+              }
+            }
+          },
+          { "exists": { "field": "elapsedTime"} }
+        ]
+      },
+      "aggs": {
+        "avgElapsedTime": {
+          "avg": {"field": "elapsedTime"}
+        }
+      }
+    }
+  }
+}
