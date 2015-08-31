@@ -34,20 +34,20 @@ DashboardController = React.createClass
     @flowDeployAvgElapsedTimeOverTime.fetch()
 
   render: ->
-    <div>
-    <FlowStatusGauge
-      failures={@state.failures}
-      successes={@state.successes}
-      successPercentage={@state.successPercentage}
-      total={@state.total} />
+    <div className="dashboard">
+      <FlowStatusGauge
+        failures={@state.failures}
+        successes={@state.successes}
+        successPercentage={@state.successPercentage}
+        total={@state.total} />
 
-    <FlowAvgElapsedTimeGauge
-      avgElapsedTime={@state.avgElapsedTime}
-      timestamp={@state._timestamp} />
+      <FlowAvgElapsedTimeGauge
+        avgElapsedTime={@state.avgElapsedTime}
+        timestamp={@state._timestamp} />
 
-    <FlowAvgElapsedOverTimeGauge
-      elapsedTimeChartData={@state.elapsedTimeChartData}
-      timestamp={@state._timestamp} />
+      <FlowAvgElapsedOverTimeGauge
+        elapsedTimeChartData={@state.elapsedTimeChartData}
+        timestamp={@state._timestamp} />
     </div>
 
 module.exports = DashboardController
