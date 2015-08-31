@@ -5,6 +5,7 @@
   "main": "gulpfile.js",
   "dependencies": {
     "backbone": "^1.2.2",
+    "chart.js": "^1.0.2",
     "cjsx-loader": "^2.0.1",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.3",
@@ -19,6 +20,7 @@
     "moment": "^2.10.6",
     "path": "^0.11.14",
     "react": "^0.13.3",
+    "react-chartjs": "^0.6.0",
     "react-router": "^0.13.3",
     "webpack": "^1.12.0"
   },

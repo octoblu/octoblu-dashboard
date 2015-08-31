@@ -4,13 +4,13 @@ Router = require 'react-router'
 
 App = require './app'
 DashboardController = require './components/dashboard.controller'
-
-console.log 'hello'
+FlowOverTime = require './components/flow-over-time/flow-over-time'
 
 routes =
   <Route handler={App} path="/">
     <DefaultRoute handler={DashboardController} />
-    <NotFoundRoute handler={DashboardController}/>
+    <Route name="cheese" handler={FlowOverTime} />
+    <NotFoundRoute handler={DashboardController} />
   </Route>
 
 Router.run routes, (Handler) ->
