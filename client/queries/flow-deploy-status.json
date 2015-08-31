@@ -1,0 +1,27 @@
+{
+   "aggs": {
+      "filter_by_timestamp": {
+         "filter": {
+            "range": {
+               "_timestamp": {
+                  "gte": 0
+               }
+            }
+         },
+         "aggs": {
+            "group_by_workflow": {
+               "terms": {
+                  "field": "workflow.raw"
+               },
+               "aggs": {
+                  "group_by_success": {
+                     "terms": {
+                        "field": "success"
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}
