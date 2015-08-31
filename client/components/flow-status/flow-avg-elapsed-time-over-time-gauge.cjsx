@@ -5,9 +5,6 @@ moment = require 'moment'
 FlowAvgElapsedOverTimeGauge = React.createClass
   displayName: 'FlowAvgElapsedOverTimeGauge'
 
-  formatUnixTime: (unix_time) =>
-    moment(unix_time).format 'HH:mm:ss ZZ (MM/DD)'
-
   render: ->
     <div className= "gauge">
       <h1>Flow Deploy Average Over Time</h1>
@@ -16,7 +13,7 @@ FlowAvgElapsedOverTimeGauge = React.createClass
             data={@props.elapsedTimeChartData ? {datasets: []}}
             options={scaleFontSize: 40, scaleLabel: "<%=value%>s", scaleBeginAtZero: true}
             redraw />
-      <h3>{@formatUnixTime @props.timestamp}</h3>
+      <h5>Last 24 Hours</h5>
     </div>
 
 module.exports = FlowAvgElapsedOverTimeGauge
