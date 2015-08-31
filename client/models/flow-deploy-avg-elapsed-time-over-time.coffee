@@ -32,7 +32,7 @@ class FlowDeployAvgElapsedTimeOverTime extends Backbone.Model
   query: =>
     yesterday = moment().subtract(1, 'day')
     query = _.cloneDeep FLOW_DEPLOY_AVG_ELAPSED_TIME_OVER_TIME_QUERY
-    query.aggs.finished.filter.and[0].range.beginTime.gte = yesterday.valueOf()
+    query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf()
     query
 
 module.exports = FlowDeployAvgElapsedTimeOverTime
