@@ -2,8 +2,9 @@ React  = require 'react'
 moment = require 'moment'
 {Line} = require 'react-chartjs'
 FlowDeployOverTime = require '../../models/flow-deploy-over-time'
-class FlowOverTime extends React.Component
-  displayName: 'FlowOverTime'
+
+class FlowDeployOverTime extends React.Component  
+  displayName: 'FlowDeployOverTime'
 
   constructor: ->
     @state =
@@ -36,4 +37,4 @@ class FlowOverTime extends React.Component
       <Line data={@state.chartData} redraw width="1000" height="1000"/>
     </div>
 
-module.exports = FlowOverTime
+module.exports = FlowDeployOverTime

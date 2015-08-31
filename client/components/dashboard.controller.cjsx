@@ -2,9 +2,11 @@ React = require('react')
 FlowDeployStatus = require '../models/flow-deploy-status'
 FlowDeployAvgElapsedTime = require '../models/flow-deploy-avg-elapsed-time'
 FlowDeployAvgElapsedTimeOverTime = require '../models/flow-deploy-avg-elapsed-time-over-time'
+FlowDeployOverTime = require '../models/flow-deploy-over-time'
+
 FlowStatusGauge = require './flow-status/flow-status-gauge'
 FlowAvgElapsedTimeGauge = require './flow-status/flow-avg-elapsed-time-gauge'
-FlowAvgElapsedOverTimeGauge = require './flow-status/flow-avg-elapsed-time-over-time-gauge'
+OverTimeGauge = require './over-time-gauge'
 
 DashboardController = React.createClass
   displayName: 'DashboardController'
@@ -25,6 +27,10 @@ DashboardController = React.createClass
     @flowDeployAvgElapsedTimeOverTime.on 'change', =>
       @setState @flowDeployAvgElapsedTimeOverTime.toJSON()
 
+    @flowDeployOverTime = new FlowDeployOverTime
+    @flowDeployOverTime.on 'change', =>
+      @setState flowDeployOverTime: @flowDeployOverTime.toJSON()
+
   componentDidMount: ->
     setInterval @flowDeployStatus.fetch, 60 * 1000
     @flowDeployStatus.fetch()
@@ -32,6 +38,8 @@ DashboardController = React.createClass
     @flowDeployAvgElapsedTime.fetch()
     setInterval @flowDeployAvgElapsedTimeOverTime.fetch, 60 * 1000
     @flowDeployAvgElapsedTimeOverTime.fetch()
+    setInterval @flowDeployOverTime.fetch, 60 * 1000
+    @flowDeployOverTime.fetch()
 
   render: ->
     <div className="dashboard">
@@ -41,13 +49,23 @@ DashboardController = React.createClass
         successPercentage={@state.successPercentage}
         total={@state.total} />
 
+
       <FlowAvgElapsedTimeGauge
         avgElapsedTime={@state.avgElapsedTime}
         timestamp={@state._timestamp} />
 
-      <FlowAvgElapsedOverTimeGauge
+      <OverTimeGauge
+        title="Flow Deploy Average Over Time"
+        suffix="s"
         elapsedTimeChartData={@state.elapsedTimeChartData}
         timestamp={@state._timestamp} />
+
+      <OverTimeGauge
+        title="Flow Deploy Success Over Time"
+        suffix="%"
+        elapsedTimeChartData={@state.flowDeployOverTime}
+        timestamp={@state._timestamp} />
+
     </div>
 
 module.exports = DashboardController

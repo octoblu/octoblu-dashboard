@@ -7,10 +7,9 @@ class FlowDeployOverTime extends Backbone.Model
   url: "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/_search?search_type=count"
 
   parse: (response) =>
-    console.log response
     buckets = response.aggregations.group_by_date.beginTime_over_time.buckets
     result = _.map buckets, @parseBucket
-    return result
+    return @formatResults result
 
   parseBucket: (bucket) =>
     successBuckets = _.filter bucket.group_by_success.buckets, key: 'T'
@@ -24,6 +23,15 @@ class FlowDeployOverTime extends Backbone.Model
       successPercentage: (successCount / (successCount + failureCount)) * 100
       failureCount: _.findWhere bucket.group_by_success.buckets, key: 'F'
     return data
+
+  formatResults: (results=[]) =>
+    chartData = {}
+    chartData.labels = _.pluck results, 'key'
+    points = []
+    _.each results, (result) =>
+      points.push result.successPercentage
+    chartData.datasets = [data: points]
+    return chartData
 
   fetch: (options={}) =>
     defaults =
