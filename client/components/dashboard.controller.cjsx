@@ -19,12 +19,10 @@ DashboardController = React.createClass
 
     @flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime
     @flowDeployAvgElapsedTime.on 'change', =>
-      console.log 'change', @flowDeployAvgElapsedTime.toJSON()
       @setState @flowDeployAvgElapsedTime.toJSON()
 
     @flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime
     @flowDeployAvgElapsedTimeOverTime.on 'change', =>
-      console.log 'change', @flowDeployAvgElapsedTimeOverTime.toJSON()
       @setState @flowDeployAvgElapsedTimeOverTime.toJSON()
 
   componentDidMount: ->
