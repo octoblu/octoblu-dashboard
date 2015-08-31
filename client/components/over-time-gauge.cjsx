@@ -13,7 +13,6 @@ OverTimeGauge = React.createClass
             data={@props.elapsedTimeChartData ? {datasets: []}}
             options={scaleFontSize: 30, scaleLabel: "<%=value%>#{@props.suffix}", scaleBeginAtZero: true, responsive: true}
             redraw />
-      <h5>Last 24 Hours</h5>
     </div>
 
 module.exports = OverTimeGauge

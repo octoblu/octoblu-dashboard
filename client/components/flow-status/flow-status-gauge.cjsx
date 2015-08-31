@@ -23,7 +23,6 @@ FlowStatusGauge = React.createClass
           {@props.total} <br /> total
         </p>
       </div>
-      <h5>Last 24 Hours</h5>
     </div>
 
 module.exports = FlowStatusGauge
