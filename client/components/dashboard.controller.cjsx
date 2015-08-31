@@ -19,12 +19,10 @@ DashboardController = React.createClass
 
     @flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime
     @flowDeployAvgElapsedTime.on 'change', =>
-      console.log 'change', @flowDeployAvgElapsedTime.toJSON()
       @setState @flowDeployAvgElapsedTime.toJSON()
 
     @flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime
     @flowDeployAvgElapsedTimeOverTime.on 'change', =>
-      console.log 'change', @flowDeployAvgElapsedTimeOverTime.toJSON()
       @setState @flowDeployAvgElapsedTimeOverTime.toJSON()
 
   componentDidMount: ->
@@ -36,20 +34,20 @@ DashboardController = React.createClass
     @flowDeployAvgElapsedTimeOverTime.fetch()
 
   render: ->
-    <div>
-    <FlowStatusGauge
-      failures={@state.failures}
-      successes={@state.successes}
-      successPercentage={@state.successPercentage}
-      total={@state.total} />
+    <div className="dashboard">
+      <FlowStatusGauge
+        failures={@state.failures}
+        successes={@state.successes}
+        successPercentage={@state.successPercentage}
+        total={@state.total} />
 
-    <FlowAvgElapsedTimeGauge
-      avgElapsedTime={@state.avgElapsedTime}
-      timestamp={@state._timestamp} />
+      <FlowAvgElapsedTimeGauge
+        avgElapsedTime={@state.avgElapsedTime}
+        timestamp={@state._timestamp} />
 
-    <FlowAvgElapsedOverTimeGauge
-      elapsedTimeChartData={@state.elapsedTimeChartData}
-      timestamp={@state._timestamp} />
+      <FlowAvgElapsedOverTimeGauge
+        elapsedTimeChartData={@state.elapsedTimeChartData}
+        timestamp={@state._timestamp} />
     </div>
 
 module.exports = DashboardController

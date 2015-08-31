@@ -11,7 +11,11 @@ FlowAvgElapsedOverTimeGauge = React.createClass
   render: ->
     <div className= "gauge">
       <h1>Flow Deploy Average Over Time</h1>
-      <Line data={@props.elapsedTimeChartData} width="600" height="250" />
+      <Line width="1600"
+            height="900"
+            data={@props.elapsedTimeChartData ? {datasets: []}}
+            options={scaleFontSize: 40, scaleLabel: "<%=value%>s", scaleBeginAtZero: true}
+            redraw />
       <h3>{@formatUnixTime @props.timestamp}</h3>
     </div>
 
