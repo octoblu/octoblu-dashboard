@@ -4,8 +4,8 @@ FlowDeployAvgElapsedTime = require '../models/flow-deploy-avg-elapsed-time'
 FlowDeployAvgElapsedTimeOverTime = require '../models/flow-deploy-avg-elapsed-time-over-time'
 FlowDeployOverTime = require '../models/flow-deploy-over-time'
 
-FlowStatusGauge = require './flow-status/flow-status-gauge'
-FlowAvgElapsedTimeGauge = require './flow-status/flow-avg-elapsed-time-gauge'
+StatusGauge = require './flow-status/status-gauge'
+AvgElapsedTimeGauge = require './flow-status/avg-elapsed-time-gauge'
 OverTimeGauge = require './over-time-gauge'
 
 DashboardController = React.createClass
@@ -43,14 +43,15 @@ DashboardController = React.createClass
 
   render: ->
     <div className="dashboard">
-      <FlowStatusGauge
+      <StatusGauge
+        title="Flow Deploy Success Rate"
         failures={@state.failures}
         successes={@state.successes}
         successPercentage={@state.successPercentage}
         total={@state.total} />
 
-
-      <FlowAvgElapsedTimeGauge
+      <AvgElapsedTimeGauge
+        title="Flow Deploy Average Time"
         avgElapsedTime={@state.avgElapsedTime}
         timestamp={@state._timestamp} />
 

@@ -1,8 +1,8 @@
 React = require 'react'
 moment = require 'moment'
 
-FlowStatusGauge = React.createClass
-  displayName: 'FlowStatusGauge'
+AvgElapsedTimeGauge = React.createClass
+  displayName: 'AvgElapsedTimeGauge'
 
   formatPercentage: (percentage) =>
     return "..." unless percentage?
@@ -10,7 +10,7 @@ FlowStatusGauge = React.createClass
 
   render: ->
     <div className="gauge">
-      <h1>Flow Deploy Success Rate</h1>
+      <h1>{@props.title}</h1>
       <h2>{@formatPercentage @props.successPercentage}</h2>
       <div className="raw-metrics">
         <p className="raw-metric">
@@ -25,4 +25,4 @@ FlowStatusGauge = React.createClass
       </div>
     </div>
 
-module.exports = FlowStatusGauge
+module.exports = AvgElapsedTimeGauge
