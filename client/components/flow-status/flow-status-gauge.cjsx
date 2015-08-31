@@ -8,11 +8,8 @@ FlowStatusGauge = React.createClass
     return "..." unless percentage?
     "#{percentage.toFixed 3}%"
 
-  formatUnixTime: (unix_time) =>
-    moment(unix_time).format 'HH:mm:ss ZZ (MM/DD)'
-
   render: ->
-    <div className="flow-status-gauge">
+    <div className="gauge">
       <h1>Flow Deploy Success Rate</h1>
       <h2>{@formatPercentage @props.successPercentage}</h2>
       <div className="raw-metrics">
@@ -26,7 +23,7 @@ FlowStatusGauge = React.createClass
           {@props.total} <br /> total
         </p>
       </div>
-      <h5>last updated: {@formatUnixTime @props.timestamp}</h5>
+      <h5>Last 24 Hours</h5>
     </div>
 
 module.exports = FlowStatusGauge

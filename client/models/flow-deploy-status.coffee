@@ -29,7 +29,6 @@ class FlowDeployStatus extends Backbone.Model
       failureRate: failureRate
       failurePercentage: 100 * failureRate
       total: total
-      _timestamp: moment().valueOf()
     }
 
   fetch: (options={}) =>
@@ -42,7 +41,7 @@ class FlowDeployStatus extends Backbone.Model
   query: =>
     yesterday = moment().subtract(1, 'day')
     query = _.cloneDeep FLOW_DEPLOY_STATUS_QUERY
-    query.aggs.filter_by_timestamp.filter.range._timestamp.gte = yesterday.valueOf()
+    query.aggs.filter_by_timestamp.filter.range.beginTime.gte = yesterday.valueOf()
     query
 
 module.exports = FlowDeployStatus
