@@ -11,7 +11,7 @@ class FlowDeployAvgElapsedTimeOverTime extends Backbone.Model
       elapsedTime: bucket.avgElapsedTime.value
       key: bucket.key
 
-    labels = _.map buckets, (bucket) => moment(bucket.key).format('MM:DD HH:00')
+    labels = _.map buckets, (bucket) => moment(bucket.key).format('MM/DD HH:00')
     data = _.map buckets, (bucket) => Math.round(bucket.elapsedTime / 1000)
 
     elapsedTimeChartData:
@@ -32,7 +32,7 @@ class FlowDeployAvgElapsedTimeOverTime extends Backbone.Model
   query: =>
     yesterday = moment().subtract(1, 'day')
     query = _.cloneDeep FLOW_DEPLOY_AVG_ELAPSED_TIME_OVER_TIME_QUERY
-    query.aggs.finished.filter.and[0].range._timestamp.gte = yesterday.valueOf()
+    query.aggs.finished.filter.and[0].range.beginTime.gte = yesterday.valueOf()
     query
 
 module.exports = FlowDeployAvgElapsedTimeOverTime
