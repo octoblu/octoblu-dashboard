@@ -17,6 +17,11 @@ DashboardController = React.createClass
     @flowDeployStatus.fetch()
 
   render: ->
-    <FlowStatusGauge successPercentage={@state.successPercentage} timestamp={@state._timestamp} />
+    <FlowStatusGauge
+      failures={@state.failures}
+      successes={@state.successes}
+      successPercentage={@state.successPercentage}
+      total={@state.total}
+      timestamp={@state._timestamp} />
 
 module.exports = DashboardController
