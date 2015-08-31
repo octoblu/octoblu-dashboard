@@ -32,8 +32,8 @@ class FlowOverTime extends React.Component
 
   render: =>
     <div className= "flow-status__gauge">
-      <h2>GRAPHS!!!!!1!</h2>
-      <Line data={@state.chartData} redraw width="600" height="250"/>
+      <h2>Great Chart of Flow Deploy Over Time</h2>
+      <Line data={@state.chartData} redraw width="1000" height="1000"/>
     </div>
 
 module.exports = FlowOverTime
