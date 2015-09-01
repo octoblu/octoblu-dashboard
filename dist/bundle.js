@@ -23671,14 +23671,14 @@
 	      "avgElapsedTime": this.state.avgElapsedTime,
 	      "timestamp": this.state._timestamp
 	    }), React.createElement(OverTimeGauge, {
-	      "title": "Flow Deploy Average Over Time",
-	      "suffix": "s",
-	      "elapsedTimeChartData": this.state.elapsedTimeChartData,
-	      "timestamp": this.state._timestamp
-	    }), React.createElement(OverTimeGauge, {
 	      "title": "Flow Deploy Success Over Time",
 	      "suffix": "%",
 	      "elapsedTimeChartData": this.state.flowDeployOverTime,
+	      "timestamp": this.state._timestamp
+	    }), React.createElement(OverTimeGauge, {
+	      "title": "Flow Deploy Average Over Time",
+	      "suffix": "s",
+	      "elapsedTimeChartData": this.state.elapsedTimeChartData,
 	      "timestamp": this.state._timestamp
 	    }));
 	  }
