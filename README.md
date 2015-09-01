@@ -1,2 +1,0 @@
-# octoblu-dashboard
-The Dashboard
