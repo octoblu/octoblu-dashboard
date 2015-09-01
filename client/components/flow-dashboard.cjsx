@@ -8,8 +8,8 @@ StatusGauge = require './flow-status/status-gauge'
 AvgElapsedTimeGauge = require './flow-status/avg-elapsed-time-gauge'
 OverTimeGauge = require './over-time-gauge'
 
-DashboardController = React.createClass
-  displayName: 'DashboardController'
+FlowDashboard = React.createClass
+  displayName: 'FlowDashboard'
 
   getInitialState: ->
     {}
@@ -69,4 +69,4 @@ DashboardController = React.createClass
 
     </div>
 
-module.exports = DashboardController
+module.exports = FlowDashboard

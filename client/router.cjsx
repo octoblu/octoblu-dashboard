@@ -3,12 +3,12 @@ Router = require 'react-router'
 {Route, DefaultRoute, NotFoundRoute} = Router
 
 App = require './app'
-DashboardController = require './components/dashboard.controller'
+FlowDashboard = require './components/flow-dashboard'
 
 routes =
   <Route handler={App} path="/">
-    <DefaultRoute handler={DashboardController} />
-    <NotFoundRoute handler={DashboardController} />
+    <DefaultRoute handler={FlowDashboard} />
+    <NotFoundRoute handler={FlowDashboard} />
   </Route>
 
 Router.run routes, (Handler) ->
