@@ -56,17 +56,16 @@ FlowDashboard = React.createClass
         timestamp={@state._timestamp} />
 
       <OverTimeGauge
-        title="Flow Deploy Average Over Time"
-        suffix="s"
-        elapsedTimeChartData={@state.elapsedTimeChartData}
-        timestamp={@state._timestamp} />
-
-      <OverTimeGauge
         title="Flow Deploy Success Over Time"
         suffix="%"
         elapsedTimeChartData={@state.flowDeployOverTime}
         timestamp={@state._timestamp} />
 
+      <OverTimeGauge
+        title="Flow Deploy Average Over Time"
+        suffix="s"
+        elapsedTimeChartData={@state.elapsedTimeChartData}
+        timestamp={@state._timestamp} />
     </div>
 
 module.exports = FlowDashboard
