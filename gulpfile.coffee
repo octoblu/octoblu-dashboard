@@ -5,6 +5,7 @@ less          = require 'gulp-less'
 path          = require 'path'
 watch         = require 'gulp-autowatch'
 webpack       = require 'webpack'
+deploy        = require './deploy.coffee'
 webpackConfig = require './webpack.config'
 
 gulp.task 'less', ->
@@ -37,6 +38,11 @@ gulp.task 'watch', ->
       './client/**/*.coffee'
       './client/**/*.json'
     ]
+
+gulp.task 'deploy', ->
+  deploy (error) =>
+    return console.error error if error?
+    console.log 'Successfully deployed to gh-pages!'
 
 gulp.task 'build', ['webpack', 'less']
 
