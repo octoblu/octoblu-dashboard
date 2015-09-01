@@ -39,7 +39,7 @@ gulp.task 'watch', ->
       './client/**/*.json'
     ]
 
-gulp.task 'deploy', ->
+gulp.task 'deploy-now', ->
   deploy (error) =>
     return console.error error if error?
     console.log 'Successfully deployed to gh-pages!'
@@ -47,3 +47,5 @@ gulp.task 'deploy', ->
 gulp.task 'build', ['webpack', 'less']
 
 gulp.task 'default', ['build', 'watch', 'server']
+
+gulp.task 'deploy', ['build', 'deploy-now']
