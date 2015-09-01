@@ -4,11 +4,13 @@ Router = require 'react-router'
 
 App = require './app'
 FlowDashboard = require './components/flow-dashboard'
+GatebluDashboard = require './components/gateblu-dashboard'
 
 routes =
   <Route handler={App} path="/">
     <DefaultRoute handler={FlowDashboard} />
     <NotFoundRoute handler={FlowDashboard} />
+    <Route name="gateblu-dashboard" path="/gateblu" handler={GatebluDashboard} />
   </Route>
 
 Router.run routes, (Handler) ->

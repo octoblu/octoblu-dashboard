@@ -4,7 +4,11 @@ moment = require 'moment'
 FLOW_DEPLOY_STATUS_QUERY = require '../queries/flow-deploy-status.json'
 
 class FlowDeployStatus extends Backbone.Model
-  url: "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/_search?search_type=count"
+  
+  initialize: (attributes={}) =>
+    index = attributes.index
+    @url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/#{index}_history/_search"
+
 
   parse: (response) =>
     flowStart = _.findWhere response.aggregations.filter_by_timestamp.group_by_workflow.buckets, key: 'flow-start'

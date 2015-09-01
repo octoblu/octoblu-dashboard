@@ -1,7 +1,7 @@
 React = require('react')
 FlowDeployStatus = require '../models/flow-deploy-status'
-FlowDeployAvgElapsedTime = require '../models/flow-deploy-avg-elapsed-time'
-FlowDeployAvgElapsedTimeOverTime = require '../models/flow-deploy-avg-elapsed-time-over-time'
+DeployAvgElapsedTime = require '../models/flow-deploy-avg-elapsed-time'
+DeployAvgElapsedTimeOverTime = require '../models/flow-deploy-avg-elapsed-time-over-time'
 FlowDeployOverTime = require '../models/flow-deploy-over-time'
 
 StatusGauge = require './flow-status/status-gauge'
@@ -15,29 +15,29 @@ FlowDashboard = React.createClass
     {}
 
   componentWillMount: ->
-    @flowDeployStatus = new FlowDeployStatus index: "flow_deploy"
+    @flowDeployStatus = new FlowDeployStatus
     @flowDeployStatus.on 'change', =>
       @setState @flowDeployStatus.toJSON()
 
-    @flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime index: "flow_deploy"
-    @flowDeployAvgElapsedTime.on 'change', =>
-      @setState @flowDeployAvgElapsedTime.toJSON()
+    @DeployAvgElapsedTime = new DeployAvgElapsedTime
+    @DeployAvgElapsedTime.on 'change', =>
+      @setState @DeployAvgElapsedTime.toJSON()
 
-    @flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime index: "flow_deploy"
-    @flowDeployAvgElapsedTimeOverTime.on 'change', =>
-      @setState @flowDeployAvgElapsedTimeOverTime.toJSON()
+    @DeployAvgElapsedTimeOverTime = new DeployAvgElapsedTimeOverTime
+    @DeployAvgElapsedTimeOverTime.on 'change', =>
+      @setState @DeployAvgElapsedTimeOverTime.toJSON()
 
-    @flowDeployOverTime = new FlowDeployOverTime index: "flow_deploy"
+    @flowDeployOverTime = new FlowDeployOverTime
     @flowDeployOverTime.on 'change', =>
       @setState flowDeployOverTime: @flowDeployOverTime.toJSON()
 
   componentDidMount: ->
     setInterval @flowDeployStatus.fetch, 60 * 1000
     @flowDeployStatus.fetch()
-    setInterval @flowDeployAvgElapsedTime.fetch, 60 * 1000
-    @flowDeployAvgElapsedTime.fetch()
-    setInterval @flowDeployAvgElapsedTimeOverTime.fetch, 60 * 1000
-    @flowDeployAvgElapsedTimeOverTime.fetch()
+    setInterval @DeployAvgElapsedTime.fetch, 60 * 1000
+    @DeployAvgElapsedTime.fetch()
+    setInterval @DeployAvgElapsedTimeOverTime.fetch, 60 * 1000
+    @DeployAvgElapsedTimeOverTime.fetch()
     setInterval @flowDeployOverTime.fetch, 60 * 1000
     @flowDeployOverTime.fetch()
 

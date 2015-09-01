@@ -3,8 +3,11 @@ _ = require 'lodash'
 moment = require 'moment'
 FLOW_DEPLOY_AVG_ELAPSED_TIME_QUERY = require '../queries/flow-deploy-avg-elapsed-time.json'
 
-class FlowDeployAvgElapsedTime extends Backbone.Model
-  url: "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/_search"
+class DeployAvgElapsedTime extends Backbone.Model
+
+  initialize: (attributes={}) =>
+    index = attributes.index
+    @url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/#{index}_history/_search"
 
   parse: (response) =>
     avgElapsedTime: response.aggregations.finished.avgElapsedTime.value
@@ -22,4 +25,4 @@ class FlowDeployAvgElapsedTime extends Backbone.Model
     query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf()
     query
 
-module.exports = FlowDeployAvgElapsedTime
+module.exports = DeployAvgElapsedTime
