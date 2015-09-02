@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App, DefaultRoute, FlowDashboard, GatebluDashboard, NotFoundRoute, React, Route, Router, routes;
+	var App, DefaultRoute, FlowDashboard, FlowDeployTrace, GatebluDashboard, NotFoundRoute, React, Route, Router, routes;
 
 	React = __webpack_require__(1);
 
@@ -58,6 +58,8 @@
 
 	GatebluDashboard = __webpack_require__(311);
 
+	FlowDeployTrace = __webpack_require__(320);
+
 	routes = React.createElement(Route, {
 	  "handler": App,
 	  "path": "/"
@@ -69,6 +71,10 @@
 	  "name": "gateblu-dashboard",
 	  "path": "/gateblu",
 	  "handler": GatebluDashboard
+	}), React.createElement(Route, {
+	  "name": "flow-deploy-trace",
+	  "path": "/flow-deploy/:uuid",
+	  "handler": FlowDeployTrace
 	}));
 
 	Router.run(routes, function(Handler) {
@@ -23609,7 +23615,22 @@
 	FlowDashboard = React.createClass({
 	  displayName: 'FlowDashboard',
 	  getInitialState: function() {
-	    return {};
+	    return {
+	      flowDeployStatus: {},
+	      flowDeployOverTime: {
+	        elapsedTimeChartData: {
+	          labels: [],
+	          datasets: []
+	        }
+	      },
+	      flowDeployAvgElapsedTime: {},
+	      flowDeployAvgElapsedTimeOverTime: {
+	        elapsedTimeChartData: {
+	          labels: [],
+	          datasets: []
+	        }
+	      }
+	    };
 	  },
 	  componentWillMount: function() {
 	    this.flowDeployStatus = new FlowDeployStatus({
@@ -23617,7 +23638,19 @@
 	    });
 	    this.flowDeployStatus.on('change', (function(_this) {
 	      return function() {
-	        return _this.setState(_this.flowDeployStatus.toJSON());
+	        return _this.setState({
+	          flowDeployStatus: _this.flowDeployStatus.toJSON()
+	        });
+	      };
+	    })(this));
+	    this.flowDeployOverTime = new FlowDeployOverTime({
+	      index: "flow_deploy"
+	    });
+	    this.flowDeployOverTime.on('change', (function(_this) {
+	      return function() {
+	        return _this.setState({
+	          flowDeployOverTime: _this.flowDeployOverTime.toJSON()
+	        });
 	      };
 	    })(this));
 	    this.flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime({
@@ -23625,24 +23658,18 @@
 	    });
 	    this.flowDeployAvgElapsedTime.on('change', (function(_this) {
 	      return function() {
-	        return _this.setState(_this.flowDeployAvgElapsedTime.toJSON());
+	        return _this.setState({
+	          flowDeployAvgElapsedTime: _this.flowDeployAvgElapsedTime.toJSON()
+	        });
 	      };
 	    })(this));
 	    this.flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime({
 	      index: "flow_deploy"
 	    });
-	    this.flowDeployAvgElapsedTimeOverTime.on('change', (function(_this) {
-	      return function() {
-	        return _this.setState(_this.flowDeployAvgElapsedTimeOverTime.toJSON());
-	      };
-	    })(this));
-	    this.flowDeployOverTime = new FlowDeployOverTime({
-	      index: "flow_deploy"
-	    });
-	    return this.flowDeployOverTime.on('change', (function(_this) {
+	    return this.flowDeployAvgElapsedTimeOverTime.on('change', (function(_this) {
 	      return function() {
 	        return _this.setState({
-	          flowDeployOverTime: _this.flowDeployOverTime.toJSON()
+	          flowDeployAvgElapsedTimeOverTime: _this.flowDeployAvgElapsedTimeOverTime.toJSON()
 	        });
 	      };
 	    })(this));
@@ -23662,21 +23689,21 @@
 	      "className": "dashboard"
 	    }, React.createElement(StatusGauge, {
 	      "title": "Flow Deploy Success Rate",
-	      "failures": this.state.failures,
-	      "successes": this.state.successes,
-	      "successPercentage": this.state.successPercentage,
-	      "total": this.state.total
+	      "failures": this.state.flowDeployStatus.failures,
+	      "successes": this.state.flowDeployStatus.successes,
+	      "successPercentage": this.state.flowDeployStatus.successPercentage,
+	      "total": this.state.flowDeployStatus.total
 	    }), React.createElement(AvgElapsedTimeGauge, {
 	      "title": "Flow Deploy Average Time",
-	      "avgElapsedTime": this.state.avgElapsedTime
+	      "avgElapsedTime": this.state.flowDeployAvgElapsedTime.avgElapsedTime
 	    }), React.createElement(OverTimeGauge, {
 	      "title": "Flow Deploy Success Over Time",
 	      "suffix": "%",
-	      "elapsedTimeChartData": this.state.flowDeployOverTime
+	      "elapsedTimeChartData": this.state.flowDeployOverTime.elapsedTimeChartData
 	    }), React.createElement(OverTimeGauge, {
 	      "title": "Flow Deploy Average Over Time",
 	      "suffix": "s",
-	      "elapsedTimeChartData": this.state.elapsedTimeChartData
+	      "elapsedTimeChartData": this.state.flowDeployAvgElapsedTimeOverTime.elapsedTimeChartData
 	    }));
 	  }
 	});
@@ -60610,7 +60637,9 @@
 	        data: points
 	      }
 	    ];
-	    return chartData;
+	    return {
+	      elapsedTimeChartData: chartData
+	    };
 	  };
 
 	  FlowDeployOverTime.prototype.fetch = function(options) {
@@ -60748,26 +60777,28 @@
 /* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Line, OverTimeGauge, React, moment;
+	var Line, OverTimeGauge, React, _, moment;
 
 	React = __webpack_require__(1);
 
 	moment = __webpack_require__(204);
+
+	_ = __webpack_require__(202);
 
 	Line = __webpack_require__(301).Line;
 
 	OverTimeGauge = React.createClass({
 	  displayName: 'OverTimeGauge',
 	  render: function() {
-	    var ref;
+	    if (_.isEmpty(this.props.elapsedTimeChartData.datasets)) {
+	      return null;
+	    }
 	    return React.createElement("div", {
 	      "className": "gauge"
 	    }, React.createElement("h1", null, this.props.title), React.createElement(Line, {
 	      "width": "1600",
 	      "height": "900",
-	      "data": (ref = this.props.elapsedTimeChartData) != null ? ref : {
-	        datasets: []
-	      },
+	      "data": this.props.elapsedTimeChartData,
 	      "options": {
 	        scaleFontSize: 30,
 	        scaleLabel: "<%=value%>" + this.props.suffix,
@@ -65063,6 +65094,115 @@
 			}
 		}
 	}
+
+/***/ },
+/* 320 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FlowDeployTrace, GanttChart, React, Router, _;
+
+	React = __webpack_require__(1);
+
+	Router = __webpack_require__(157);
+
+	_ = __webpack_require__(202);
+
+	GanttChart = __webpack_require__(321);
+
+	FlowDeployTrace = React.createClass({
+	  displayName: 'FlowDeployTrace',
+	  mixins: [Router.State],
+	  getInitialState: function() {
+	    return {};
+	  },
+	  componentWillMount: function() {},
+	  componentDidMount: function() {},
+	  render: function() {
+	    console.log("uuid", this.getParams().uuid);
+	    return React.createElement("div", {
+	      "className": "dashboard"
+	    }, React.createElement(GanttChart, null));
+	  }
+	});
+
+	module.exports = FlowDeployTrace;
+
+
+/***/ },
+/* 321 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var COLORS, FAKE_DATA, GanttChart, React, moment;
+
+	React = __webpack_require__(1);
+
+	FAKE_DATA = __webpack_require__(322);
+
+	COLORS = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+
+	moment = __webpack_require__(204);
+
+	GanttChart = React.createClass({
+	  displayName: 'GanttChart',
+	  propTypes: {},
+	  drawStep: function(step, i) {
+	    var color, height, startTime, width, x;
+	    console.log(step);
+	    width = 100;
+	    height = 100;
+	    color = COLORS[i % COLORS.length];
+	    startTime = moment(step.startTime).valueOf();
+	    x = 110 * i;
+	    return React.createElement("rect", {
+	      "key": i,
+	      "x": x,
+	      "y": i * width,
+	      "width": width,
+	      "height": height,
+	      "fill": color
+	    });
+	  },
+	  drawSteps: function(steps) {
+	    return _.map(steps, this.drawStep);
+	  },
+	  getMinStartTime: function(steps) {},
+	  render: function() {
+	    return React.createElement("svg", {
+	      "xmlns": "http://www.w3.org/svg/2000",
+	      "viewBox": "0 0 1600 900",
+	      "width": "1600",
+	      "height": "900"
+	    }, this.drawSteps(FAKE_DATA));
+	  }
+	});
+
+	module.exports = GanttChart;
+
+
+/***/ },
+/* 322 */
+/***/ function(module, exports) {
+
+	module.exports = [
+	  {
+	    application: 'app-octoblu',
+	    beginTime: '2015-08-31T18:01:28-07:00',
+	    endTime: '2015-08-31T18:01:28-07:00'
+	  }, {
+	    application: 'api-octoblu',
+	    beginTime: '2015-08-31T18:01:28-07:00',
+	    endTime: '2015-08-31T18:01:48-07:00'
+	  }, {
+	    application: 'flow-service',
+	    beginTime: '2015-08-31T18:01:30-07:00',
+	    endTime: '2015-08-31T18:01:48-07:00'
+	  }, {
+	    application: 'flow-runner',
+	    beginTime: '2015-08-31T18:01:49-07:00',
+	    endTime: '2015-08-31T18:01:49-07:00'
+	  }
+	];
+
 
 /***/ }
 /******/ ]);
