@@ -1,10 +1,12 @@
-React = require('react')
-GatebluAddDeviceStatus = require '../models/gateblu/gateblu-add-device-status'
-GatebluAddDeviceAvgElapsedTime = require '../models/gateblu/gateblu-add-device-avg-elapsed-time'
-GatebluAddDeviceSuccessOverTime = require '../models/gateblu/gateblu-add-device-success-over-time'
+React = require 'react'
 
-OverTimeGauge = require './over-time-gauge'
-StatusGauge = require './flow-status/status-gauge'
+GatebluAddDeviceStatus                 = require '../models/gateblu/gateblu-add-device-status'
+GatebluAddDeviceSuccessOverTime        = require '../models/gateblu/gateblu-add-device-success-over-time'
+GatebluAddDeviceAvgElapsedTime         = require '../models/gateblu/gateblu-add-device-avg-elapsed-time'
+GatebluAddDeviceAvgElapsedTimeOverTime = require '../models/gateblu/gateblu-add-device-avg-elapsed-time-over-time'
+
+OverTimeGauge       = require './over-time-gauge'
+StatusGauge         = require './flow-status/status-gauge'
 AvgElapsedTimeGauge = require './flow-status/avg-elapsed-time-gauge'
 
 GatebluDashboard = React.createClass
@@ -34,10 +36,15 @@ GatebluDashboard = React.createClass
     @gatebluAddDeviceAvgElapsedTime.on 'change', =>
       @setState @gatebluAddDeviceAvgElapsedTime.toJSON()
 
+    @gatebluAddDeviceAvgElapsedTimeOverTime = new GatebluAddDeviceAvgElapsedTimeOverTime index: "gateblu_device_add"
+    @gatebluAddDeviceAvgElapsedTimeOverTime.on 'change', =>
+      @setState elapsedTimeChartData: @gatebluAddDeviceAvgElapsedTimeOverTime.toJSON()
+
   componentDidMount: ->
-    @periodicallyFetchForModel(@gatebluAddDeviceStatus);
-    @periodicallyFetchForModel(@gatebluAddDeviceSuccessOverTime);
-    @periodicallyFetchForModel(@gatebluAddDeviceAvgElapsedTime);
+    @periodicallyFetchForModel @gatebluAddDeviceStatus
+    @periodicallyFetchForModel @gatebluAddDeviceSuccessOverTime
+    @periodicallyFetchForModel @gatebluAddDeviceAvgElapsedTime
+    @periodicallyFetchForModel @gatebluAddDeviceAvgElapsedTimeOverTime
 
   periodicallyFetchForModel: (model) ->
     setInterval model.fetch, 60 * 1000
@@ -60,6 +67,11 @@ GatebluDashboard = React.createClass
       <AvgElapsedTimeGauge
         title="Gateblu Add Device Average Time"
         avgElapsedTime={@state.avgElapsedTime} />
+
+      <OverTimeGauge
+        title="Gateblu Add Device Average Time Over Time"
+        suffix="%"
+        elapsedTimeChartData={@state.elapsedTimeChartData} />
     </div>
 
 module.exports = GatebluDashboard
