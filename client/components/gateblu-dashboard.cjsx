@@ -59,14 +59,14 @@ GatebluDashboard = React.createClass
         successPercentage={@state.successPercentage}
         total={@state.total} />
 
+      <AvgElapsedTimeGauge
+        title="Gateblu Add Device Average Time"
+        avgElapsedTime={@state.avgElapsedTime} />
+
       <OverTimeGauge
         title="Gateblu Add Device Success Over Time"
         suffix="%"
         elapsedTimeChartData={@state.gatebluAddDeviceSuccessOverTime} />
-
-      <AvgElapsedTimeGauge
-        title="Gateblu Add Device Average Time"
-        avgElapsedTime={@state.avgElapsedTime} />
 
       <OverTimeGauge
         title="Gateblu Add Device Average Time Over Time"
