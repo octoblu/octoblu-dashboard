@@ -64449,96 +64449,181 @@
 /* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AvgElapsedTimeGauge, DeployAvgElapsedTime, DeployAvgElapsedTimeOverTime, FlowDashboard, FlowDeployOverTime, FlowDeployStatus, OverTimeGauge, React, StatusGauge;
+	var GatebluAddDeviceStatus, GatebluDashboard, React, StatusGauge;
 
 	React = __webpack_require__(1);
 
-	FlowDeployStatus = __webpack_require__(198);
-
-	DeployAvgElapsedTime = __webpack_require__(292);
-
-	DeployAvgElapsedTimeOverTime = __webpack_require__(294);
-
-	FlowDeployOverTime = __webpack_require__(296);
+	GatebluAddDeviceStatus = __webpack_require__(312);
 
 	StatusGauge = __webpack_require__(298);
 
-	AvgElapsedTimeGauge = __webpack_require__(299);
-
-	OverTimeGauge = __webpack_require__(300);
-
-	FlowDashboard = React.createClass({
-	  displayName: 'FlowDashboard',
+	GatebluDashboard = React.createClass({
+	  displayName: 'GatebluDashboard',
 	  getInitialState: function() {
-	    return {};
+	    return {
+	      total: 0,
+	      successes: 0,
+	      failures: 0,
+	      successPercentage: 0
+	    };
 	  },
 	  componentWillMount: function() {
-	    this.flowDeployStatus = new FlowDeployStatus;
-	    this.flowDeployStatus.on('change', (function(_this) {
+	    this.gatebluAddDeviceStatus = new GatebluAddDeviceStatus({
+	      index: "gateblu_device_add"
+	    });
+	    return this.gatebluAddDeviceStatus.on('change', (function(_this) {
 	      return function() {
-	        return _this.setState(_this.flowDeployStatus.toJSON());
-	      };
-	    })(this));
-	    this.DeployAvgElapsedTime = new DeployAvgElapsedTime;
-	    this.DeployAvgElapsedTime.on('change', (function(_this) {
-	      return function() {
-	        return _this.setState(_this.DeployAvgElapsedTime.toJSON());
-	      };
-	    })(this));
-	    this.DeployAvgElapsedTimeOverTime = new DeployAvgElapsedTimeOverTime;
-	    this.DeployAvgElapsedTimeOverTime.on('change', (function(_this) {
-	      return function() {
-	        return _this.setState(_this.DeployAvgElapsedTimeOverTime.toJSON());
-	      };
-	    })(this));
-	    this.flowDeployOverTime = new FlowDeployOverTime;
-	    return this.flowDeployOverTime.on('change', (function(_this) {
-	      return function() {
-	        return _this.setState({
-	          flowDeployOverTime: _this.flowDeployOverTime.toJSON()
-	        });
+	        return _this.setState(_this.gatebluAddDeviceStatus.toJSON());
 	      };
 	    })(this));
 	  },
 	  componentDidMount: function() {
-	    setInterval(this.flowDeployStatus.fetch, 60 * 1000);
-	    this.flowDeployStatus.fetch();
-	    setInterval(this.DeployAvgElapsedTime.fetch, 60 * 1000);
-	    this.DeployAvgElapsedTime.fetch();
-	    setInterval(this.DeployAvgElapsedTimeOverTime.fetch, 60 * 1000);
-	    this.DeployAvgElapsedTimeOverTime.fetch();
-	    setInterval(this.flowDeployOverTime.fetch, 60 * 1000);
-	    return this.flowDeployOverTime.fetch();
+	    setInterval(this.gatebluAddDeviceStatus.fetch, 60 * 1000);
+	    return this.gatebluAddDeviceStatus.fetch();
 	  },
 	  render: function() {
 	    return React.createElement("div", {
 	      "className": "dashboard"
 	    }, React.createElement(StatusGauge, {
-	      "title": "Flow Deploy Success Rate",
+	      "title": "Gateblu Add Device Success Rate",
 	      "failures": this.state.failures,
 	      "successes": this.state.successes,
 	      "successPercentage": this.state.successPercentage,
 	      "total": this.state.total
-	    }), React.createElement(AvgElapsedTimeGauge, {
-	      "title": "Flow Deploy Average Time",
-	      "avgElapsedTime": this.state.avgElapsedTime,
-	      "timestamp": this.state._timestamp
-	    }), React.createElement(OverTimeGauge, {
-	      "title": "Flow Deploy Average Over Time",
-	      "suffix": "s",
-	      "elapsedTimeChartData": this.state.elapsedTimeChartData,
-	      "timestamp": this.state._timestamp
-	    }), React.createElement(OverTimeGauge, {
-	      "title": "Flow Deploy Success Over Time",
-	      "suffix": "%",
-	      "elapsedTimeChartData": this.state.flowDeployOverTime,
-	      "timestamp": this.state._timestamp
 	    }));
 	  }
 	});
 
-	module.exports = FlowDashboard;
+	module.exports = GatebluDashboard;
 
+
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, GATEBLU_ADD_DEVICE_STATUS_QUERY, GatebluAddDeviceStatus, _, moment,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	_ = __webpack_require__(202);
+
+	moment = __webpack_require__(204);
+
+	GATEBLU_ADD_DEVICE_STATUS_QUERY = __webpack_require__(313);
+
+	GatebluAddDeviceStatus = (function(superClass) {
+	  extend(GatebluAddDeviceStatus, superClass);
+
+	  function GatebluAddDeviceStatus() {
+	    this.query = bind(this.query, this);
+	    this.fetch = bind(this.fetch, this);
+	    this.parse = bind(this.parse, this);
+	    this.initialize = bind(this.initialize, this);
+	    return GatebluAddDeviceStatus.__super__.constructor.apply(this, arguments);
+	  }
+
+	  GatebluAddDeviceStatus.prototype.initialize = function(attributes) {
+	    var index;
+	    if (attributes == null) {
+	      attributes = {};
+	    }
+	    index = attributes.index;
+	    return this.url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/" + index + "_history/_search";
+	  };
+
+	  GatebluAddDeviceStatus.prototype.parse = function(response) {
+	    var addDeviceStart, failureRate, failures, ref, ref1, ref2, ref3, ref4, ref5, successRate, successes, total;
+	    addDeviceStart = _.findWhere(response.aggregations.filter_by_timestamp.group_by_workflow.buckets);
+	    if (addDeviceStart == null) {
+	      addDeviceStart = {};
+	    }
+	    successes = (ref = (ref1 = _.find((ref2 = addDeviceStart.group_by_success) != null ? ref2.buckets : void 0, {
+	      key: 'T'
+	    })) != null ? ref1.doc_count : void 0) != null ? ref : 0;
+	    failures = (ref3 = (ref4 = _.find((ref5 = addDeviceStart.group_by_success) != null ? ref5.buckets : void 0, {
+	      key: 'F'
+	    })) != null ? ref4.doc_count : void 0) != null ? ref3 : 0;
+	    total = successes + failures;
+	    if (total > 0) {
+	      successRate = (1.0 * successes) / total;
+	      failureRate = (1.0 * failures) / total;
+	    } else {
+	      successRate = 1;
+	      failureRate = 0;
+	    }
+	    return {
+	      successes: successes,
+	      successRate: successRate,
+	      successPercentage: 100 * successRate,
+	      failures: failures,
+	      failureRate: failureRate,
+	      failurePercentage: 100 * failureRate,
+	      total: total
+	    };
+	  };
+
+	  GatebluAddDeviceStatus.prototype.fetch = function(options) {
+	    if (options == null) {
+	      options = {};
+	    }
+	    return GatebluAddDeviceStatus.__super__.fetch.call(this, _.defaults({}, options, {
+	      type: 'POST',
+	      data: JSON.stringify(this.query()),
+	      contentType: 'application/json'
+	    }));
+	  };
+
+	  GatebluAddDeviceStatus.prototype.query = function() {
+	    var five_minutes_ago, query, yesterday;
+	    yesterday = moment().subtract(1, 'day');
+	    five_minutes_ago = moment().subtract(5, 'minutes');
+	    query = _.cloneDeep(GATEBLU_ADD_DEVICE_STATUS_QUERY);
+	    query.aggs.filter_by_timestamp.filter.range.beginTime.gte = yesterday.valueOf();
+	    query.aggs.filter_by_timestamp.filter.range.beginTime.lte = five_minutes_ago.valueOf();
+	    return query;
+	  };
+
+	  return GatebluAddDeviceStatus;
+
+	})(Backbone.Model);
+
+	module.exports = GatebluAddDeviceStatus;
+
+
+/***/ },
+/* 313 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"aggs": {
+			"filter_by_timestamp": {
+				"filter": {
+					"range": {
+						"beginTime": {
+							"gte": 0
+						}
+					}
+				},
+				"aggs": {
+					"group_by_workflow": {
+						"terms": {
+							"field": "workflow.raw"
+						},
+						"aggs": {
+							"group_by_success": {
+								"terms": {
+									"field": "success"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 /***/ }
 /******/ ]);
