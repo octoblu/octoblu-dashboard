@@ -23668,18 +23668,15 @@
 	      "total": this.state.total
 	    }), React.createElement(AvgElapsedTimeGauge, {
 	      "title": "Flow Deploy Average Time",
-	      "avgElapsedTime": this.state.avgElapsedTime,
-	      "timestamp": this.state._timestamp
+	      "avgElapsedTime": this.state.avgElapsedTime
 	    }), React.createElement(OverTimeGauge, {
 	      "title": "Flow Deploy Success Over Time",
 	      "suffix": "%",
-	      "elapsedTimeChartData": this.state.flowDeployOverTime,
-	      "timestamp": this.state._timestamp
+	      "elapsedTimeChartData": this.state.flowDeployOverTime
 	    }), React.createElement(OverTimeGauge, {
 	      "title": "Flow Deploy Average Over Time",
 	      "suffix": "s",
-	      "elapsedTimeChartData": this.state.elapsedTimeChartData,
-	      "timestamp": this.state._timestamp
+	      "elapsedTimeChartData": this.state.elapsedTimeChartData
 	    }));
 	  }
 	});
@@ -60682,14 +60679,23 @@
 /* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AvgElapsedTimeGauge, React, moment;
+	var AvgElapsedTimeGauge, PropTypes, React, moment;
 
 	React = __webpack_require__(1);
 
 	moment = __webpack_require__(204);
 
+	PropTypes = React.PropTypes;
+
 	AvgElapsedTimeGauge = React.createClass({
 	  displayName: 'AvgElapsedTimeGauge',
+	  propTypes: {
+	    title: PropTypes.string.isRequired,
+	    total: PropTypes.number.isRequired,
+	    failures: PropTypes.number.isRequired,
+	    successes: PropTypes.number.isRequired,
+	    successPercentage: PropTypes.number.isRequired
+	  },
 	  formatPercentage: (function(_this) {
 	    return function(percentage) {
 	      if (percentage == null) {
@@ -64449,13 +64455,23 @@
 /* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var GatebluAddDeviceStatus, GatebluDashboard, React, StatusGauge;
+	var AvgElapsedTimeGauge, GatebluAddDeviceAvgElapsedTime, GatebluAddDeviceAvgElapsedTimeOverTime, GatebluAddDeviceStatus, GatebluAddDeviceSuccessOverTime, GatebluDashboard, OverTimeGauge, React, StatusGauge;
 
 	React = __webpack_require__(1);
 
 	GatebluAddDeviceStatus = __webpack_require__(312);
 
+	GatebluAddDeviceSuccessOverTime = __webpack_require__(314);
+
+	GatebluAddDeviceAvgElapsedTime = __webpack_require__(316);
+
+	GatebluAddDeviceAvgElapsedTimeOverTime = __webpack_require__(318);
+
+	OverTimeGauge = __webpack_require__(300);
+
 	StatusGauge = __webpack_require__(298);
+
+	AvgElapsedTimeGauge = __webpack_require__(299);
 
 	GatebluDashboard = React.createClass({
 	  displayName: 'GatebluDashboard',
@@ -64464,22 +64480,62 @@
 	      total: 0,
 	      successes: 0,
 	      failures: 0,
-	      successPercentage: 0
+	      successPercentage: 0,
+	      avgElapsedTime: 0,
+	      gatebluAddDeviceSuccessOverTime: {
+	        index: 'gateblu_device_add',
+	        datasets: [],
+	        labels: []
+	      }
 	    };
 	  },
 	  componentWillMount: function() {
 	    this.gatebluAddDeviceStatus = new GatebluAddDeviceStatus({
 	      index: "gateblu_device_add"
 	    });
-	    return this.gatebluAddDeviceStatus.on('change', (function(_this) {
+	    this.gatebluAddDeviceStatus.on('change', (function(_this) {
 	      return function() {
 	        return _this.setState(_this.gatebluAddDeviceStatus.toJSON());
 	      };
 	    })(this));
+	    this.gatebluAddDeviceSuccessOverTime = new GatebluAddDeviceSuccessOverTime({
+	      index: "gateblu_device_add"
+	    });
+	    this.gatebluAddDeviceSuccessOverTime.on('change', (function(_this) {
+	      return function() {
+	        return _this.setState({
+	          gatebluAddDeviceSuccessOverTime: _this.gatebluAddDeviceSuccessOverTime.toJSON()
+	        });
+	      };
+	    })(this));
+	    this.gatebluAddDeviceAvgElapsedTime = new GatebluAddDeviceAvgElapsedTime({
+	      index: "gateblu_device_add"
+	    });
+	    this.gatebluAddDeviceAvgElapsedTime.on('change', (function(_this) {
+	      return function() {
+	        return _this.setState(_this.gatebluAddDeviceAvgElapsedTime.toJSON());
+	      };
+	    })(this));
+	    this.gatebluAddDeviceAvgElapsedTimeOverTime = new GatebluAddDeviceAvgElapsedTimeOverTime({
+	      index: "gateblu_device_add"
+	    });
+	    return this.gatebluAddDeviceAvgElapsedTimeOverTime.on('change', (function(_this) {
+	      return function() {
+	        return _this.setState({
+	          elapsedTimeChartData: _this.gatebluAddDeviceAvgElapsedTimeOverTime.toJSON()
+	        });
+	      };
+	    })(this));
 	  },
 	  componentDidMount: function() {
-	    setInterval(this.gatebluAddDeviceStatus.fetch, 60 * 1000);
-	    return this.gatebluAddDeviceStatus.fetch();
+	    this.periodicallyFetchForModel(this.gatebluAddDeviceStatus);
+	    this.periodicallyFetchForModel(this.gatebluAddDeviceSuccessOverTime);
+	    this.periodicallyFetchForModel(this.gatebluAddDeviceAvgElapsedTime);
+	    return this.periodicallyFetchForModel(this.gatebluAddDeviceAvgElapsedTimeOverTime);
+	  },
+	  periodicallyFetchForModel: function(model) {
+	    setInterval(model.fetch, 60 * 1000);
+	    return model.fetch();
 	  },
 	  render: function() {
 	    return React.createElement("div", {
@@ -64490,6 +64546,17 @@
 	      "successes": this.state.successes,
 	      "successPercentage": this.state.successPercentage,
 	      "total": this.state.total
+	    }), React.createElement(AvgElapsedTimeGauge, {
+	      "title": "Gateblu Add Device Average Time",
+	      "avgElapsedTime": this.state.avgElapsedTime
+	    }), React.createElement(OverTimeGauge, {
+	      "title": "Gateblu Add Device Success Over Time",
+	      "suffix": "%",
+	      "elapsedTimeChartData": this.state.gatebluAddDeviceSuccessOverTime
+	    }), React.createElement(OverTimeGauge, {
+	      "title": "Gateblu Add Device Average Time Over Time",
+	      "suffix": "%",
+	      "elapsedTimeChartData": this.state.elapsedTimeChartData
 	    }));
 	  }
 	});
@@ -64616,6 +64683,377 @@
 							"group_by_success": {
 								"terms": {
 									"field": "success"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+/***/ },
+/* 314 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, GATEBLU_ADD_DEVICE_SUCCESS_OVER_TIME, GatebluAddDeviceSuccessOverTime, _, moment,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	_ = __webpack_require__(202);
+
+	moment = __webpack_require__(204);
+
+	GATEBLU_ADD_DEVICE_SUCCESS_OVER_TIME = __webpack_require__(315);
+
+	GatebluAddDeviceSuccessOverTime = (function(superClass) {
+	  extend(GatebluAddDeviceSuccessOverTime, superClass);
+
+	  function GatebluAddDeviceSuccessOverTime() {
+	    this.query = bind(this.query, this);
+	    this.fetch = bind(this.fetch, this);
+	    this.formatResults = bind(this.formatResults, this);
+	    this.parseBucket = bind(this.parseBucket, this);
+	    this.parse = bind(this.parse, this);
+	    this.initialize = bind(this.initialize, this);
+	    return GatebluAddDeviceSuccessOverTime.__super__.constructor.apply(this, arguments);
+	  }
+
+	  GatebluAddDeviceSuccessOverTime.prototype.initialize = function(attributes) {
+	    var index;
+	    if (attributes == null) {
+	      attributes = {};
+	    }
+	    index = attributes.index;
+	    return this.url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/" + index + "_history/_search";
+	  };
+
+	  GatebluAddDeviceSuccessOverTime.prototype.parse = function(response) {
+	    var buckets, result;
+	    buckets = response.aggregations.group_by_date.beginTime_over_time.buckets;
+	    result = _.map(buckets, this.parseBucket);
+	    return this.formatResults(result);
+	  };
+
+	  GatebluAddDeviceSuccessOverTime.prototype.parseBucket = function(bucket) {
+	    var addCount, data, failureBuckets, failureCount, successBuckets, successCount;
+	    successBuckets = _.filter(bucket.group_by_success.buckets, {
+	      key: 'T'
+	    });
+	    failureBuckets = _.filter(bucket.group_by_success.buckets, {
+	      key: 'F'
+	    });
+	    addCount = (function(_this) {
+	      return function(count, bucket) {
+	        return count += bucket.doc_count;
+	      };
+	    })(this);
+	    successCount = _.reduce(successBuckets, addCount, 0);
+	    failureCount = _.reduce(failureBuckets, addCount, 0);
+	    data = {
+	      key: bucket.key_as_string,
+	      successPercentage: (successCount / (successCount + failureCount)) * 100,
+	      failureCount: _.findWhere(bucket.group_by_success.buckets, {
+	        key: 'F'
+	      })
+	    };
+	    return data;
+	  };
+
+	  GatebluAddDeviceSuccessOverTime.prototype.formatResults = function(results) {
+	    var chartData, points;
+	    if (results == null) {
+	      results = [];
+	    }
+	    chartData = {};
+	    chartData.labels = _.pluck(results, 'key');
+	    points = [];
+	    _.each(results, (function(_this) {
+	      return function(result) {
+	        return points.push(result.successPercentage);
+	      };
+	    })(this));
+	    chartData.datasets = [
+	      {
+	        data: points
+	      }
+	    ];
+	    return chartData;
+	  };
+
+	  GatebluAddDeviceSuccessOverTime.prototype.fetch = function(options) {
+	    var defaults;
+	    if (options == null) {
+	      options = {};
+	    }
+	    defaults = {
+	      type: 'POST',
+	      data: JSON.stringify(this.query()),
+	      contentType: 'application/json'
+	    };
+	    return GatebluAddDeviceSuccessOverTime.__super__.fetch.call(this, _.defaults({}, options, defaults));
+	  };
+
+	  GatebluAddDeviceSuccessOverTime.prototype.query = function() {
+	    var query;
+	    query = _.cloneDeep(GATEBLU_ADD_DEVICE_SUCCESS_OVER_TIME);
+	    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(1, 'day').valueOf();
+	    query.aggs.group_by_date.filter.range.beginTime.lte = moment().subtract(5, 'minutes').valueOf();
+	    return query;
+	  };
+
+	  return GatebluAddDeviceSuccessOverTime;
+
+	})(Backbone.Model);
+
+	module.exports = GatebluAddDeviceSuccessOverTime;
+
+
+/***/ },
+/* 315 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"aggs": {
+			"group_by_date": {
+				"filter": {
+					"range": {
+						"beginTime": {
+							"gte": 0
+						}
+					}
+				},
+				"aggs": {
+					"beginTime_over_time": {
+						"date_histogram": {
+							"field": "beginTime",
+							"interval": "hour",
+							"format": "h aa"
+						},
+						"aggs": {
+							"group_by_success": {
+								"terms": {
+									"field": "success"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+/***/ },
+/* 316 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, GATEBLU_ADD_DEVICE_AVG_ELAPSED_TIME_QUERY, GatebluAddDeviceAvgElapsedTime, _, moment,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	_ = __webpack_require__(202);
+
+	moment = __webpack_require__(204);
+
+	GATEBLU_ADD_DEVICE_AVG_ELAPSED_TIME_QUERY = __webpack_require__(317);
+
+	GatebluAddDeviceAvgElapsedTime = (function(superClass) {
+	  extend(GatebluAddDeviceAvgElapsedTime, superClass);
+
+	  function GatebluAddDeviceAvgElapsedTime() {
+	    this.query = bind(this.query, this);
+	    this.fetch = bind(this.fetch, this);
+	    this.parse = bind(this.parse, this);
+	    this.initialize = bind(this.initialize, this);
+	    return GatebluAddDeviceAvgElapsedTime.__super__.constructor.apply(this, arguments);
+	  }
+
+	  GatebluAddDeviceAvgElapsedTime.prototype.initialize = function(attributes) {
+	    var index;
+	    if (attributes == null) {
+	      attributes = {};
+	    }
+	    index = attributes.index;
+	    return this.url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/" + index + "_history/_search";
+	  };
+
+	  GatebluAddDeviceAvgElapsedTime.prototype.parse = function(response) {
+	    return {
+	      avgElapsedTime: response.aggregations.finished.avgElapsedTime.value
+	    };
+	  };
+
+	  GatebluAddDeviceAvgElapsedTime.prototype.fetch = function(options) {
+	    if (options == null) {
+	      options = {};
+	    }
+	    return GatebluAddDeviceAvgElapsedTime.__super__.fetch.call(this, _.defaults({}, options, {
+	      type: 'POST',
+	      data: JSON.stringify(this.query()),
+	      contentType: 'application/json'
+	    }));
+	  };
+
+	  GatebluAddDeviceAvgElapsedTime.prototype.query = function() {
+	    var query, yesterday;
+	    yesterday = moment().subtract(1, 'day');
+	    query = _.cloneDeep(GATEBLU_ADD_DEVICE_AVG_ELAPSED_TIME_QUERY);
+	    query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf();
+	    return query;
+	  };
+
+	  return GatebluAddDeviceAvgElapsedTime;
+
+	})(Backbone.Model);
+
+	module.exports = GatebluAddDeviceAvgElapsedTime;
+
+
+/***/ },
+/* 317 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"aggs": {
+			"finished": {
+				"filter": {
+					"range": {
+						"beginTime": {
+							"gte": 0
+						}
+					}
+				},
+				"aggs": {
+					"avgElapsedTime": {
+						"avg": {
+							"field": "elapsedTime"
+						}
+					}
+				}
+			}
+		}
+	}
+
+/***/ },
+/* 318 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, GATEBLU_ADD_DEVICE_SUCCESS_AVG_ELAPSED_TIME_OVER_TIME_QUERY, GatebluAddDeviceSuccessAvgElapsedTimeOverTime, _, moment,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	_ = __webpack_require__(202);
+
+	moment = __webpack_require__(204);
+
+	GATEBLU_ADD_DEVICE_SUCCESS_AVG_ELAPSED_TIME_OVER_TIME_QUERY = __webpack_require__(319);
+
+	GatebluAddDeviceSuccessAvgElapsedTimeOverTime = (function(superClass) {
+	  extend(GatebluAddDeviceSuccessAvgElapsedTimeOverTime, superClass);
+
+	  function GatebluAddDeviceSuccessAvgElapsedTimeOverTime() {
+	    this.query = bind(this.query, this);
+	    this.fetch = bind(this.fetch, this);
+	    this.parse = bind(this.parse, this);
+	    this.initialize = bind(this.initialize, this);
+	    return GatebluAddDeviceSuccessAvgElapsedTimeOverTime.__super__.constructor.apply(this, arguments);
+	  }
+
+	  GatebluAddDeviceSuccessAvgElapsedTimeOverTime.prototype.initialize = function(attributes) {
+	    var index;
+	    if (attributes == null) {
+	      attributes = {};
+	    }
+	    index = attributes.index;
+	    return this.url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/" + index + "_history/_search";
+	  };
+
+	  GatebluAddDeviceSuccessAvgElapsedTimeOverTime.prototype.parse = function(response) {
+	    var buckets, data, labels;
+	    buckets = _.map(response.aggregations.finished.startTime_over_time.buckets, (function(_this) {
+	      return function(bucket) {
+	        return {
+	          elapsedTime: bucket.avgElapsedTime.value,
+	          key: bucket.key_as_string
+	        };
+	      };
+	    })(this));
+	    labels = _.pluck(buckets, 'key');
+	    data = _.map(buckets, (function(_this) {
+	      return function(bucket) {
+	        return Math.round(bucket.elapsedTime / 1000);
+	      };
+	    })(this));
+	    return {
+	      labels: labels,
+	      datasets: [
+	        {
+	          data: data
+	        }
+	      ]
+	    };
+	  };
+
+	  GatebluAddDeviceSuccessAvgElapsedTimeOverTime.prototype.fetch = function(options) {
+	    if (options == null) {
+	      options = {};
+	    }
+	    return GatebluAddDeviceSuccessAvgElapsedTimeOverTime.__super__.fetch.call(this, _.defaults({}, options, {
+	      type: 'POST',
+	      data: JSON.stringify(this.query()),
+	      contentType: 'application/json'
+	    }));
+	  };
+
+	  GatebluAddDeviceSuccessAvgElapsedTimeOverTime.prototype.query = function() {
+	    var query, yesterday;
+	    yesterday = moment().subtract(1, 'day');
+	    query = _.cloneDeep(GATEBLU_ADD_DEVICE_SUCCESS_AVG_ELAPSED_TIME_OVER_TIME_QUERY);
+	    query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf();
+	    return query;
+	  };
+
+	  return GatebluAddDeviceSuccessAvgElapsedTimeOverTime;
+
+	})(Backbone.Model);
+
+	module.exports = GatebluAddDeviceSuccessAvgElapsedTimeOverTime;
+
+
+/***/ },
+/* 319 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"aggs": {
+			"finished": {
+				"filter": {
+					"range": {
+						"beginTime": {
+							"gte": 0
+						}
+					}
+				},
+				"aggs": {
+					"startTime_over_time": {
+						"date_histogram": {
+							"field": "beginTime",
+							"interval": "hour",
+							"format": "h aa"
+						},
+						"aggs": {
+							"avgElapsedTime": {
+								"avg": {
+									"field": "elapsedTime"
 								}
 							}
 						}
