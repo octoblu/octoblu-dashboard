@@ -1,8 +1,16 @@
 React = require 'react'
 moment = require 'moment'
+PropTypes = React.PropTypes
 
 AvgElapsedTimeGauge = React.createClass
   displayName: 'AvgElapsedTimeGauge'
+
+  propTypes:
+    title: PropTypes.string.isRequired,
+    total: PropTypes.number.isRequired,
+    failures: PropTypes.number.isRequired,
+    successes: PropTypes.number.isRequired,
+    successPercentage: PropTypes.number.isRequired,
 
   formatPercentage: (percentage) =>
     return "..." unless percentage?
