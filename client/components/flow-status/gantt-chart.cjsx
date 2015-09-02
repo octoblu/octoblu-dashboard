@@ -61,7 +61,7 @@ GanttChart = React.createClass
     [0, 0, @props.graphWidth, @props.graphHeight].join ' '
 
   render: ->
-    <svg xmlns="http://www.w3.org/svg/2000"
+    <svg className="gantt-chart" xmlns="http://www.w3.org/svg/2000"
       viewBox={@getViewBox()} >
       {@drawSteps FAKE_DATA}
     </svg>
