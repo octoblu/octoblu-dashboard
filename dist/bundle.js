@@ -64482,6 +64482,7 @@
 	      failures: 0,
 	      successPercentage: 0,
 	      avgElapsedTime: 0,
+	      elapsedTimeChartData: {},
 	      gatebluAddDeviceSuccessOverTime: {
 	        index: 'gateblu_device_add',
 	        datasets: [],
@@ -64555,7 +64556,7 @@
 	      "elapsedTimeChartData": this.state.gatebluAddDeviceSuccessOverTime
 	    }), React.createElement(OverTimeGauge, {
 	      "title": "Gateblu Add Device Average Time Over Time",
-	      "suffix": "%",
+	      "suffix": "s",
 	      "elapsedTimeChartData": this.state.elapsedTimeChartData
 	    }));
 	  }
