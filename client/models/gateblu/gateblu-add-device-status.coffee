@@ -11,11 +11,12 @@ class GatebluAddDeviceStatus extends Backbone.Model
 
 
   parse: (response) =>
-    flowStart = _.findWhere response.aggregations.filter_by_timestamp.group_by_workflow.buckets, key: ''
-    flowStart ?= {}
+    addDeviceStart = _.findWhere response.aggregations.filter_by_timestamp.group_by_workflow.buckets
+    addDeviceStart ?= {}
 
-    successes = _.find(flowStart.group_by_success?.buckets, key: 'T')?.doc_count ? 0
-    failures  = _.find(flowStart.group_by_success?.buckets, key: 'F')?.doc_count ? 0
+
+    successes = _.find(addDeviceStart.group_by_success?.buckets, key: 'T')?.doc_count ? 0
+    failures  = _.find(addDeviceStart.group_by_success?.buckets, key: 'F')?.doc_count ? 0
     total     = successes + failures
 
     if total > 0

@@ -13,7 +13,7 @@ GatebluDashboard = React.createClass
     successPercentage: 0
 
   componentWillMount: ->
-    @gatebluAddDeviceStatus = new GatebluAddDeviceStatus index: "device_status_gateblu"
+    @gatebluAddDeviceStatus = new GatebluAddDeviceStatus index: "gateblu_device_add"
     @gatebluAddDeviceStatus.on 'change', =>
       @setState @gatebluAddDeviceStatus.toJSON()
 
