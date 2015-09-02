@@ -1,0 +1,29 @@
+{
+  "aggs": {
+    "group_by_date": {
+      "filter": {
+        "range": {
+          "beginTime": {
+            "gte": 0
+          }
+        }
+      },
+      "aggs": {
+        "beginTime_over_time": {
+          "date_histogram": {
+            "field": "beginTime",
+            "interval": "hour",
+            "format": "h aa"
+          },
+          "aggs": {
+            "group_by_success": {
+              "terms": {
+                "field": "success"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
