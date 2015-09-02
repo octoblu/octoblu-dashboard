@@ -65099,13 +65099,11 @@
 /* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FlowDeployTrace, GanttChart, React, Router, _;
+	var FlowDeployTrace, GanttChart, React, Router;
 
 	React = __webpack_require__(1);
 
 	Router = __webpack_require__(157);
-
-	_ = __webpack_require__(202);
 
 	GanttChart = __webpack_require__(321);
 
@@ -65118,7 +65116,6 @@
 	  componentWillMount: function() {},
 	  componentDidMount: function() {},
 	  render: function() {
-	    console.log("uuid", this.getParams().uuid);
 	    return React.createElement("div", {
 	      "className": "dashboard"
 	    }, React.createElement(GanttChart, null));
@@ -65132,7 +65129,7 @@
 /* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var COLORS, FAKE_DATA, GanttChart, React, moment;
+	var COLORS, FAKE_DATA, GanttChart, React;
 
 	React = __webpack_require__(1);
 
@@ -65140,32 +65137,24 @@
 
 	COLORS = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
 
-	moment = __webpack_require__(204);
-
 	GanttChart = React.createClass({
 	  displayName: 'GanttChart',
 	  propTypes: {},
 	  drawStep: function(step, i) {
-	    var color, height, startTime, width, x;
-	    console.log(step);
-	    width = 100;
-	    height = 100;
+	    var color, x;
 	    color = COLORS[i % COLORS.length];
-	    startTime = moment(step.startTime).valueOf();
 	    x = 110 * i;
 	    return React.createElement("rect", {
-	      "key": i,
 	      "x": x,
-	      "y": i * width,
-	      "width": width,
-	      "height": height,
+	      "y": "0",
+	      "width": "100",
+	      "height": "100",
 	      "fill": color
 	    });
 	  },
 	  drawSteps: function(steps) {
 	    return _.map(steps, this.drawStep);
 	  },
-	  getMinStartTime: function(steps) {},
 	  render: function() {
 	    return React.createElement("svg", {
 	      "xmlns": "http://www.w3.org/svg/2000",
