@@ -18,6 +18,7 @@ GatebluDashboard = React.createClass
     failures: 0
     successPercentage: 0
     avgElapsedTime: 0
+    elapsedTimeChartData: {}
     gatebluAddDeviceSuccessOverTime:
       index: 'gateblu_device_add'
       datasets: []
@@ -70,7 +71,7 @@ GatebluDashboard = React.createClass
 
       <OverTimeGauge
         title="Gateblu Add Device Average Time Over Time"
-        suffix="%"
+        suffix="s"
         elapsedTimeChartData={@state.elapsedTimeChartData} />
     </div>
 
