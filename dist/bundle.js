@@ -65099,11 +65099,13 @@
 /* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FlowDeployTrace, GanttChart, React, Router;
+	var FlowDeployTrace, GanttChart, React, Router, _;
 
 	React = __webpack_require__(1);
 
 	Router = __webpack_require__(157);
+
+	_ = __webpack_require__(202);
 
 	GanttChart = __webpack_require__(321);
 
@@ -65129,38 +65131,97 @@
 /* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var COLORS, FAKE_DATA, GanttChart, React;
+	var FAKE_DATA, GanttChart, PropTypes, React, moment;
 
 	React = __webpack_require__(1);
 
-	FAKE_DATA = __webpack_require__(322);
+	moment = __webpack_require__(204);
 
-	COLORS = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+	PropTypes = React.PropTypes;
+
+	FAKE_DATA = __webpack_require__(322);
 
 	GanttChart = React.createClass({
 	  displayName: 'GanttChart',
-	  propTypes: {},
-	  drawStep: function(step, i) {
-	    var color, x;
-	    color = COLORS[i % COLORS.length];
-	    x = 110 * i;
-	    return React.createElement("rect", {
+	  propTypes: {
+	    graphWidth: PropTypes.number,
+	    graphHeight: PropTypes.number,
+	    minWidth: PropTypes.number,
+	    colors: PropTypes.array,
+	    fontOffset: PropTypes.number
+	  },
+	  getDefaultProps: function() {
+	    return {
+	      graphWidth: 1600,
+	      graphHeight: 500,
+	      minWidth: 10,
+	      fontOffset: 400,
+	      colors: ['#fff', '#eee', '#ddd', '#ccc', '#bbb', '#aaa', '#999', '#888', '#777', '#666', '#555', '#444']
+	    };
+	  },
+	  drawStep: function(step, i, minBeginTime, maxEndTime) {
+	    var beginTime, color, duration, endTime, height, label, scale, width, x, y;
+	    scale = (this.props.graphWidth - this.props.minWidth - this.props.fontOffset) / (maxEndTime - minBeginTime);
+	    color = this.props.colors[i % this.props.colors.length];
+	    beginTime = moment(step.beginTime).valueOf();
+	    endTime = moment(step.endTime).valueOf();
+	    duration = moment(step.endTime).diff(moment(step.beginTime), 'seconds', true);
+	    width = (endTime - beginTime) * scale;
+	    if (width < this.props.minWidth) {
+	      width = this.props.minWidth;
+	    }
+	    height = 100;
+	    x = (beginTime - minBeginTime) * scale + this.props.fontOffset;
+	    y = i * (height + 10);
+	    label = step.application + " (" + duration + "s)";
+	    return React.createElement("g", {
+	      "key": i
+	    }, React.createElement("rect", {
 	      "x": x,
-	      "y": "0",
-	      "width": "100",
-	      "height": "100",
+	      "y": y,
+	      "width": width,
+	      "height": height,
+	      "fill": color,
+	      "rx": "5",
+	      "ry": "5"
+	    }), React.createElement("text", {
+	      "x": 0.,
+	      "y": y + 10 + (height / 2),
 	      "fill": color
-	    });
+	    }, label));
 	  },
 	  drawSteps: function(steps) {
-	    return _.map(steps, this.drawStep);
+	    var maxEndTime, minBeginTime;
+	    minBeginTime = this.getMinBeginTime(steps);
+	    maxEndTime = this.getMaxEndTime(steps);
+	    return _.map(steps, (function(_this) {
+	      return function(step, i) {
+	        return _this.drawStep(step, i, minBeginTime, maxEndTime);
+	      };
+	    })(this));
+	  },
+	  getMinBeginTime: function(steps) {
+	    return _.min(_.map(steps, (function(_this) {
+	      return function(step) {
+	        return moment(step.beginTime).valueOf();
+	      };
+	    })(this)));
+	  },
+	  getMaxEndTime: function(steps) {
+	    return _.max(_.map(steps, (function(_this) {
+	      return function(step) {
+	        return moment(step.endTime).valueOf();
+	      };
+	    })(this)));
+	  },
+	  getViewBox: function() {
+	    return [0, 0, this.props.graphWidth, this.props.graphHeight].join(' ');
 	  },
 	  render: function() {
 	    return React.createElement("svg", {
+	      "className": "gantt-chart",
 	      "xmlns": "http://www.w3.org/svg/2000",
-	      "viewBox": "0 0 1600 900",
-	      "width": "1600",
-	      "height": "900"
+	      "viewBox": this.getViewBox()
 	    }, this.drawSteps(FAKE_DATA));
 	  }
 	});
@@ -65182,7 +65243,7 @@
 	    beginTime: '2015-08-31T18:01:28-07:00',
 	    endTime: '2015-08-31T18:01:48-07:00'
 	  }, {
-	    application: 'flow-service',
+	    application: 'flow-deploy-service',
 	    beginTime: '2015-08-31T18:01:30-07:00',
 	    endTime: '2015-08-31T18:01:48-07:00'
 	  }, {

@@ -91,3 +91,12 @@ h5 {
 .gauge .raw-metrics .raw-metric {
   padding: 0 30px;
 }
+svg.gantt-chart {
+  width: 100%;
+  height: 100%;
+}
+svg.gantt-chart text {
+  font-family: "ComicNeue", "Helvetica", "Comic Sans MS";
+  font-size: 30px;
+  font-weight: bolder;
+}
