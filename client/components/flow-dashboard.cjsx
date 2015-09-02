@@ -12,24 +12,33 @@ FlowDashboard = React.createClass
   displayName: 'FlowDashboard'
 
   getInitialState: ->
-    {}
+    flowDeployStatus: {}
+    flowDeployOverTime:
+      elapsedTimeChartData:
+        labels: []
+        datasets: []
+    flowDeployAvgElapsedTime: {}
+    flowDeployAvgElapsedTimeOverTime:
+      elapsedTimeChartData:
+        labels: []
+        datasets: []
 
   componentWillMount: ->
     @flowDeployStatus = new FlowDeployStatus index: "flow_deploy"
     @flowDeployStatus.on 'change', =>
-      @setState @flowDeployStatus.toJSON()
-
-    @flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime index: "flow_deploy"
-    @flowDeployAvgElapsedTime.on 'change', =>
-      @setState @flowDeployAvgElapsedTime.toJSON()
-
-    @flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime index: "flow_deploy"
-    @flowDeployAvgElapsedTimeOverTime.on 'change', =>
-      @setState @flowDeployAvgElapsedTimeOverTime.toJSON()
+      @setState flowDeployStatus: @flowDeployStatus.toJSON()
 
     @flowDeployOverTime = new FlowDeployOverTime index: "flow_deploy"
     @flowDeployOverTime.on 'change', =>
       @setState flowDeployOverTime: @flowDeployOverTime.toJSON()
+
+    @flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime index: "flow_deploy"
+    @flowDeployAvgElapsedTime.on 'change', =>
+      @setState flowDeployAvgElapsedTime: @flowDeployAvgElapsedTime.toJSON()
+
+    @flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime index: "flow_deploy"
+    @flowDeployAvgElapsedTimeOverTime.on 'change', =>
+      @setState flowDeployAvgElapsedTimeOverTime: @flowDeployAvgElapsedTimeOverTime.toJSON()
 
   componentDidMount: ->
     setInterval @flowDeployStatus.fetch, 60 * 1000
@@ -45,24 +54,24 @@ FlowDashboard = React.createClass
     <div className="dashboard">
       <StatusGauge
         title="Flow Deploy Success Rate"
-        failures={@state.failures}
-        successes={@state.successes}
-        successPercentage={@state.successPercentage}
-        total={@state.total} />
+        failures={@state.flowDeployStatus.failures}
+        successes={@state.flowDeployStatus.successes}
+        successPercentage={@state.flowDeployStatus.successPercentage}
+        total={@state.flowDeployStatus.total} />
 
       <AvgElapsedTimeGauge
         title="Flow Deploy Average Time"
-        avgElapsedTime={@state.avgElapsedTime} />
+        avgElapsedTime={@state.flowDeployAvgElapsedTime.avgElapsedTime} />
 
       <OverTimeGauge
         title="Flow Deploy Success Over Time"
         suffix="%"
-        elapsedTimeChartData={@state.flowDeployOverTime} />
+        elapsedTimeChartData={@state.flowDeployOverTime.elapsedTimeChartData} />
 
       <OverTimeGauge
         title="Flow Deploy Average Over Time"
         suffix="s"
-        elapsedTimeChartData={@state.elapsedTimeChartData} />
+        elapsedTimeChartData={@state.flowDeployAvgElapsedTimeOverTime.elapsedTimeChartData} />
     </div>
 
 module.exports = FlowDashboard

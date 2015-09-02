@@ -4,7 +4,7 @@ moment = require 'moment'
 FLOW_DEPLOY_SUCCESS_OVER_TIME = require '../queries/flow-deploy-success-over-time.json'
 
 class FlowDeployOverTime extends Backbone.Model
-  
+
   initialize: (attributes={}) =>
     index = attributes.index
     @url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/#{index}_history/_search"
@@ -34,7 +34,10 @@ class FlowDeployOverTime extends Backbone.Model
     _.each results, (result) =>
       points.push result.successPercentage
     chartData.datasets = [data: points]
-    return chartData
+    
+    return {
+      elapsedTimeChartData: chartData
+    }
 
   fetch: (options={}) =>
     defaults =
