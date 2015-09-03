@@ -1,0 +1,11 @@
+{
+  "query": {
+    "filtered": {
+      "filter": {
+        "term": {
+          "deploymentUuid.raw": null
+        }
+      }
+    }
+  }
+}
