@@ -60466,11 +60466,16 @@
 	      return function(bucket) {
 	        return {
 	          elapsedTime: bucket.avgElapsedTime.value,
-	          key: bucket.key_as_string
+	          key: bucket.key
 	        };
 	      };
 	    })(this));
 	    labels = _.pluck(buckets, 'key');
+	    labels = _.map(labels, (function(_this) {
+	      return function(label) {
+	        return moment(moment.utc(label).toDate()).format('hA');
+	      };
+	    })(this));
 	    data = _.map(buckets, (function(_this) {
 	      return function(bucket) {
 	        return Math.round(bucket.elapsedTime / 1000);
@@ -60610,7 +60615,7 @@
 	    successCount = _.reduce(successBuckets, addCount, 0);
 	    failureCount = _.reduce(failureBuckets, addCount, 0);
 	    data = {
-	      key: bucket.key_as_string,
+	      key: bucket.key,
 	      successPercentage: (successCount / (successCount + failureCount)) * 100,
 	      failureCount: _.findWhere(bucket.group_by_success.buckets, {
 	        key: 'F'
@@ -60626,6 +60631,11 @@
 	    }
 	    chartData = {};
 	    chartData.labels = _.pluck(results, 'key');
+	    chartData.labels = _.map(chartData.labels, (function(_this) {
+	      return function(label) {
+	        return moment(moment.utc(label).toDate()).format('hA');
+	      };
+	    })(this));
 	    points = [];
 	    _.each(results, (function(_this) {
 	      return function(result) {
@@ -64771,7 +64781,7 @@
 	  };
 
 	  GatebluAddDeviceSuccessOverTime.prototype.parseBucket = function(bucket) {
-	    var addCount, data, failureBuckets, failureCount, successBuckets, successCount;
+	    var addCount, data, failureBuckets, failureCount, successBuckets, successCount, successPercentage;
 	    successBuckets = _.filter(bucket.group_by_success.buckets, {
 	      key: 'T'
 	    });
@@ -64785,9 +64795,13 @@
 	    })(this);
 	    successCount = _.reduce(successBuckets, addCount, 0);
 	    failureCount = _.reduce(failureBuckets, addCount, 0);
+	    successPercentage = (successCount / (successCount + failureCount)) * 100;
+	    if (!((successCount + failureCount) > 0)) {
+	      successPercentage = 100;
+	    }
 	    data = {
-	      key: bucket.key_as_string,
-	      successPercentage: (successCount / (successCount + failureCount)) * 100,
+	      key: bucket.key,
+	      successPercentage: successPercentage,
 	      failureCount: _.findWhere(bucket.group_by_success.buckets, {
 	        key: 'F'
 	      })
@@ -64802,6 +64816,11 @@
 	    }
 	    chartData = {};
 	    chartData.labels = _.pluck(results, 'key');
+	    chartData.labels = _.map(chartData.labels, (function(_this) {
+	      return function(label) {
+	        return moment(moment.utc(label).toDate()).format('hA');
+	      };
+	    })(this));
 	    points = [];
 	    _.each(results, (function(_this) {
 	      return function(result) {
@@ -65015,11 +65034,16 @@
 	      return function(bucket) {
 	        return {
 	          elapsedTime: bucket.avgElapsedTime.value,
-	          key: bucket.key_as_string
+	          key: bucket.key
 	        };
 	      };
 	    })(this));
 	    labels = _.pluck(buckets, 'key');
+	    labels = _.map(labels, (function(_this) {
+	      return function(label) {
+	        return moment(moment.utc(label).toDate()).format('hA');
+	      };
+	    })(this));
 	    data = _.map(buckets, (function(_this) {
 	      return function(bucket) {
 	        return Math.round(bucket.elapsedTime / 1000);
