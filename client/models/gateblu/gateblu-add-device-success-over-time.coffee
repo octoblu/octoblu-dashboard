@@ -21,20 +21,29 @@ class GatebluAddDeviceSuccessOverTime extends Backbone.Model
       return count += bucket.doc_count
     successCount = _.reduce successBuckets, addCount, 0
     failureCount = _.reduce failureBuckets, addCount, 0
+    successPercentage = (successCount / (successCount + failureCount)) * 100
+    successPercentage = 100 unless (successCount + failureCount) > 0
+
     data =
-      key: bucket.key_as_string
-      successPercentage: (successCount / (successCount + failureCount)) * 100
+      key: bucket.key
+      successPercentage: successPercentage
       failureCount: _.findWhere bucket.group_by_success.buckets, key: 'F'
     return data
 
   formatResults: (results=[]) =>
     chartData = {}
+
     chartData.labels = _.pluck results, 'key'
+    chartData.labels = _.map chartData.labels, (label) =>
+      moment(moment.utc(label).toDate()).format 'hA'
+
     points = []
     _.each results, (result) =>
       points.push result.successPercentage
     chartData.datasets = [data: points]
+
     return chartData
+
 
   fetch: (options={}) =>
     defaults =
