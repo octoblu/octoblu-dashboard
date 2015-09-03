@@ -1,6 +1,6 @@
 module.exports = [
-  {application: 'app-octoblu',  beginTime: '2015-08-31T18:01:28-07:00', endTime: '2015-08-31T18:01:28-07:00'}
-  {application: 'api-octoblu',  beginTime: '2015-08-31T18:01:28-07:00', endTime: '2015-08-31T18:01:48-07:00'}
-  {application: 'flow-deploy-service', beginTime: '2015-08-31T18:01:30-07:00', endTime: '2015-08-31T18:01:48-07:00'}
-  {application: 'flow-runner',  beginTime: '2015-08-31T18:01:49-07:00', endTime: '2015-08-31T18:01:49-07:00'}
+  {label: 'app-octoblu (0.2s)',         offset: 0,    width: 235}
+  {label: 'api-octoblu (3.1s)',         offset: 95,   width: 3144}
+  {label: 'flow-deploy-service (2.9s)', offset: 282,  width: 2957}
+  {label: 'flow-runner (0.2s)',         offset: 5358, width: 198}
 ]

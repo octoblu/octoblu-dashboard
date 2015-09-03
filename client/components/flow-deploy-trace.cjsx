@@ -3,6 +3,7 @@ Router = require 'react-router'
 _ = require 'lodash'
 
 GanttChart = require './flow-status/gantt-chart'
+FAKE_DATA = require './data/fake-deployment-data'
 
 FlowDeployTrace = React.createClass
   displayName: 'FlowDeployTrace'
@@ -17,7 +18,7 @@ FlowDeployTrace = React.createClass
 
   render: ->
     <div className="dashboard">
-      <GanttChart />
+      <GanttChart steps={FAKE_DATA}/>
     </div>
 
 module.exports = FlowDeployTrace
