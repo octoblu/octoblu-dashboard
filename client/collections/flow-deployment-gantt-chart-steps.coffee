@@ -1,9 +1,8 @@
 Backbone = require 'backbone'
-FlowDeploymentStep = require '../models/flow-deployment-step'
-FLOW_DEPLOYMENT_QUERY = require '../queries/flow-deployment-query.json'
+FlowDeploymentGanttChartStep = require '../models/flow-deployment-gantt-chart-step'
 
-class FlowDeploymentSteps extends Backbone.Collection
-  model: FlowDeploymentStep
+class FlowDeploymentGanttChartSteps extends Backbone.Collection
+  model: FlowDeploymentGanttChartStep
   initialize: (models,options={}) =>
     @uuid = options.uuid
 
@@ -18,4 +17,4 @@ class FlowDeploymentSteps extends Backbone.Collection
       _.extend workflow: 'flow-runner', body._source['flow-runner']
     ]
 
-module.exports = FlowDeploymentSteps
+module.exports = FlowDeploymentGanttChartSteps

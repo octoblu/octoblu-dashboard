@@ -3,10 +3,10 @@ Router = require 'react-router'
 _ = require 'lodash'
 
 GanttChart = require './flow-status/gantt-chart'
-FlowDeploymentSteps = require '../collections/flow-deployment-steps'
+FlowDeploymentGanttChartSteps = require '../collections/flow-deployment-gantt-chart-steps'
 
-FlowDeployTrace = React.createClass
-  displayName: 'FlowDeployTrace'
+FlowDeployment = React.createClass
+  displayName: 'FlowDeployment'
   mixins: [Router.State]
 
   getInitialState: ->
@@ -15,7 +15,7 @@ FlowDeployTrace = React.createClass
   componentWillMount: ->
 
   componentDidMount: ->
-    @flowDeploymentSteps = new FlowDeploymentSteps [], uuid: @getParams().uuid
+    @flowDeploymentSteps = new FlowDeploymentGanttChartSteps [], uuid: @getParams().uuid
     @flowDeploymentSteps.on 'sync', =>
       @setState flowDeploymentSteps: @flowDeploymentSteps.toJSON()
     @flowDeploymentSteps.fetch()
@@ -25,4 +25,4 @@ FlowDeployTrace = React.createClass
       <GanttChart steps={@state.flowDeploymentSteps}/>
     </div>
 
-module.exports = FlowDeployTrace
+module.exports = FlowDeployment

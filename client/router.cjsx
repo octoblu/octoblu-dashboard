@@ -5,14 +5,16 @@ Router = require 'react-router'
 App = require './app'
 FlowDashboard = require './components/flow-dashboard'
 GatebluDashboard = require './components/gateblu-dashboard'
-FlowDeployTrace = require './components/flow-deploy-trace'
+FlowDeployment = require './components/flow-deployment'
+FlowDeploymentAggs = require './components/flow-deployment-aggs'
 
 routes =
   <Route handler={App} path="/">
     <DefaultRoute handler={FlowDashboard} />
     <NotFoundRoute handler={FlowDashboard} />
     <Route name="gateblu-dashboard" path="/gateblu" handler={GatebluDashboard} />
-    <Route name="flow-deploy-trace" path="/flow-deploy/:uuid" handler={FlowDeployTrace} />
+    <Route name="flow-deployment" path="/flow-deployments/:uuid" handler={FlowDeployment} />
+    <Route name="flow-deployment-aggs" path="/flow-deployments" handler={FlowDeploymentAggs} />
   </Route>
 
 Router.run routes, (Handler) ->
