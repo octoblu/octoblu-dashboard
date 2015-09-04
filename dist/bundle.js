@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App, DefaultRoute, FlowDashboard, FlowDeployTrace, GatebluDashboard, NotFoundRoute, React, Route, Router, routes;
+	var App, DefaultRoute, FlowDashboard, FlowDeployment, FlowDeploymentAggs, GatebluDashboard, NotFoundRoute, React, Route, Router, routes;
 
 	React = __webpack_require__(1);
 
@@ -58,7 +58,9 @@
 
 	GatebluDashboard = __webpack_require__(311);
 
-	FlowDeployTrace = __webpack_require__(320);
+	FlowDeployment = __webpack_require__(320);
+
+	FlowDeploymentAggs = __webpack_require__(324);
 
 	routes = React.createElement(Route, {
 	  "handler": App,
@@ -72,9 +74,13 @@
 	  "path": "/gateblu",
 	  "handler": GatebluDashboard
 	}), React.createElement(Route, {
-	  "name": "flow-deploy-trace",
-	  "path": "/flow-deploy/:uuid",
-	  "handler": FlowDeployTrace
+	  "name": "flow-deployment",
+	  "path": "/flow-deployments/:uuid",
+	  "handler": FlowDeployment
+	}), React.createElement(Route, {
+	  "name": "flow-deployment-aggs",
+	  "path": "/flow-deployments",
+	  "handler": FlowDeploymentAggs
 	}));
 
 	Router.run(routes, function(Handler) {
@@ -65131,7 +65137,7 @@
 /* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FlowDeployTrace, FlowDeploymentSteps, GanttChart, React, Router, _;
+	var FlowDeployment, FlowDeploymentGanttChartSteps, GanttChart, React, Router, _;
 
 	React = __webpack_require__(1);
 
@@ -65141,17 +65147,17 @@
 
 	GanttChart = __webpack_require__(321);
 
-	FlowDeploymentSteps = __webpack_require__(322);
+	FlowDeploymentGanttChartSteps = __webpack_require__(322);
 
-	FlowDeployTrace = React.createClass({
-	  displayName: 'FlowDeployTrace',
+	FlowDeployment = React.createClass({
+	  displayName: 'FlowDeployment',
 	  mixins: [Router.State],
 	  getInitialState: function() {
 	    return {};
 	  },
 	  componentWillMount: function() {},
 	  componentDidMount: function() {
-	    this.flowDeploymentSteps = new FlowDeploymentSteps([], {
+	    this.flowDeploymentSteps = new FlowDeploymentGanttChartSteps([], {
 	      uuid: this.getParams().uuid
 	    });
 	    this.flowDeploymentSteps.on('sync', (function(_this) {
@@ -65172,7 +65178,7 @@
 	  }
 	});
 
-	module.exports = FlowDeployTrace;
+	module.exports = FlowDeployment;
 
 
 /***/ },
@@ -65278,41 +65284,39 @@
 /* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Backbone, FLOW_DEPLOYMENT_QUERY, FlowDeploymentStep, FlowDeploymentSteps,
+	var Backbone, FlowDeploymentGanttChartStep, FlowDeploymentGanttChartSteps,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
 	Backbone = __webpack_require__(199);
 
-	FlowDeploymentStep = __webpack_require__(323);
+	FlowDeploymentGanttChartStep = __webpack_require__(323);
 
-	FLOW_DEPLOYMENT_QUERY = __webpack_require__(324);
+	FlowDeploymentGanttChartSteps = (function(superClass) {
+	  extend(FlowDeploymentGanttChartSteps, superClass);
 
-	FlowDeploymentSteps = (function(superClass) {
-	  extend(FlowDeploymentSteps, superClass);
-
-	  function FlowDeploymentSteps() {
+	  function FlowDeploymentGanttChartSteps() {
 	    this.parse = bind(this.parse, this);
 	    this.url = bind(this.url, this);
 	    this.initialize = bind(this.initialize, this);
-	    return FlowDeploymentSteps.__super__.constructor.apply(this, arguments);
+	    return FlowDeploymentGanttChartSteps.__super__.constructor.apply(this, arguments);
 	  }
 
-	  FlowDeploymentSteps.prototype.model = FlowDeploymentStep;
+	  FlowDeploymentGanttChartSteps.prototype.model = FlowDeploymentGanttChartStep;
 
-	  FlowDeploymentSteps.prototype.initialize = function(models, options) {
+	  FlowDeploymentGanttChartSteps.prototype.initialize = function(models, options) {
 	    if (options == null) {
 	      options = {};
 	    }
 	    return this.uuid = options.uuid;
 	  };
 
-	  FlowDeploymentSteps.prototype.url = function() {
+	  FlowDeploymentGanttChartSteps.prototype.url = function() {
 	    return "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/event/" + this.uuid;
 	  };
 
-	  FlowDeploymentSteps.prototype.parse = function(body) {
+	  FlowDeploymentGanttChartSteps.prototype.parse = function(body) {
 	    return [
 	      _.extend({
 	        workflow: 'app-octoblu'
@@ -65326,11 +65330,11 @@
 	    ];
 	  };
 
-	  return FlowDeploymentSteps;
+	  return FlowDeploymentGanttChartSteps;
 
 	})(Backbone.Collection);
 
-	module.exports = FlowDeploymentSteps;
+	module.exports = FlowDeploymentGanttChartSteps;
 
 
 /***/ },
@@ -65353,6 +65357,7 @@
 	  }
 
 	  FlowDeploymentStep.prototype.parse = function(data) {
+	    console.log(JSON.stringify(data));
 	    return {
 	      label: data.workflow + " (" + ((data.elapsedTime / 1000).toFixed(2)) + "s)",
 	      offset: data.beginOffset,
@@ -65369,14 +65374,190 @@
 
 /***/ },
 /* 324 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FlowDeploymentAggs, FlowDeploymentAggsGanttChartSteps, GanttChart, React, Router, _;
+
+	React = __webpack_require__(1);
+
+	Router = __webpack_require__(157);
+
+	_ = __webpack_require__(202);
+
+	GanttChart = __webpack_require__(321);
+
+	FlowDeploymentAggsGanttChartSteps = __webpack_require__(325);
+
+	FlowDeploymentAggs = React.createClass({
+	  displayName: 'FlowDeploymentAggs',
+	  mixins: [Router.State],
+	  getInitialState: function() {
+	    return {};
+	  },
+	  componentWillMount: function() {},
+	  componentDidMount: function() {
+	    this.flowDeploymentAggsGanttChartSteps = new FlowDeploymentAggsGanttChartSteps([], {
+	      uuid: this.getParams().uuid
+	    });
+	    this.flowDeploymentAggsGanttChartSteps.on('sync', (function(_this) {
+	      return function() {
+	        return _this.setState({
+	          flowDeploymentAggsGanttChartSteps: _this.flowDeploymentAggsGanttChartSteps.toJSON()
+	        });
+	      };
+	    })(this));
+	    return this.flowDeploymentAggsGanttChartSteps.fetch();
+	  },
+	  render: function() {
+	    return React.createElement("div", {
+	      "className": "dashboard"
+	    }, React.createElement(GanttChart, {
+	      "steps": this.state.flowDeploymentAggsGanttChartSteps
+	    }));
+	  }
+	});
+
+	module.exports = FlowDeploymentAggs;
+
+
+/***/ },
+/* 325 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, FLOW_DEPLOYMENT_AGGS_QUERY, FlowDeploymentGanttAggsChartSteps, FlowDeploymentGanttChartStep, moment,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	moment = __webpack_require__(204);
+
+	FlowDeploymentGanttChartStep = __webpack_require__(323);
+
+	FLOW_DEPLOYMENT_AGGS_QUERY = __webpack_require__(326);
+
+	FlowDeploymentGanttAggsChartSteps = (function(superClass) {
+	  extend(FlowDeploymentGanttAggsChartSteps, superClass);
+
+	  function FlowDeploymentGanttAggsChartSteps() {
+	    this.query = bind(this.query, this);
+	    this.fetch = bind(this.fetch, this);
+	    this.parse = bind(this.parse, this);
+	    this.url = bind(this.url, this);
+	    return FlowDeploymentGanttAggsChartSteps.__super__.constructor.apply(this, arguments);
+	  }
+
+	  FlowDeploymentGanttAggsChartSteps.prototype.model = FlowDeploymentGanttChartStep;
+
+	  FlowDeploymentGanttAggsChartSteps.prototype.url = function() {
+	    return "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/_search?search_type=count";
+	  };
+
+	  FlowDeploymentGanttAggsChartSteps.prototype.parse = function(body) {
+	    var aggs;
+	    aggs = body.aggregations.last_24_hours;
+	    return [
+	      {
+	        workflow: 'app-octoblu',
+	        beginOffset: aggs['app-octoblu-beginOffset'].value,
+	        elapsedTime: aggs['app-octoblu-elapsedTime'].value
+	      }, {
+	        workflow: 'api-octoblu',
+	        beginOffset: aggs['api-octoblu-beginOffset'].value,
+	        elapsedTime: aggs['api-octoblu-elapsedTime'].value
+	      }, {
+	        workflow: 'flow-deploy-service',
+	        beginOffset: aggs['flow-deploy-service-beginOffset'].value,
+	        elapsedTime: aggs['flow-deploy-service-elapsedTime'].value
+	      }, {
+	        workflow: 'flow-runner',
+	        beginOffset: aggs['flow-runner-beginOffset'].value,
+	        elapsedTime: aggs['flow-runner-elapsedTime'].value
+	      }
+	    ];
+	  };
+
+	  FlowDeploymentGanttAggsChartSteps.prototype.fetch = function(options) {
+	    if (options == null) {
+	      options = {};
+	    }
+	    return FlowDeploymentGanttAggsChartSteps.__super__.fetch.call(this, _.defaults({}, options, {
+	      type: 'POST',
+	      data: JSON.stringify(this.query()),
+	      contentType: 'application/json'
+	    }));
+	  };
+
+	  FlowDeploymentGanttAggsChartSteps.prototype.query = function() {
+	    var query, yesterday;
+	    yesterday = moment().subtract(1, 'day');
+	    query = _.cloneDeep(FLOW_DEPLOYMENT_AGGS_QUERY);
+	    query.aggs.last_24_hours.filter.range.beginTime.gte = yesterday.valueOf();
+	    return query;
+	  };
+
+	  return FlowDeploymentGanttAggsChartSteps;
+
+	})(Backbone.Collection);
+
+	module.exports = FlowDeploymentGanttAggsChartSteps;
+
+
+/***/ },
+/* 326 */
 /***/ function(module, exports) {
 
 	module.exports = {
-		"query": {
-			"filtered": {
+		"aggs": {
+			"last_24_hours": {
 				"filter": {
-					"term": {
-						"deploymentUuid.raw": null
+					"range": {
+						"beginTime": {
+							"gte": 1441239517578
+						}
+					}
+				},
+				"aggs": {
+					"app-octoblu-beginOffset": {
+						"avg": {
+							"field": "app-octoblu.beginOffset"
+						}
+					},
+					"app-octoblu-elapsedTime": {
+						"avg": {
+							"field": "app-octoblu.elapsedTime"
+						}
+					},
+					"api-octoblu-beginOffset": {
+						"avg": {
+							"field": "api-octoblu.beginOffset"
+						}
+					},
+					"api-octoblu-elapsedTime": {
+						"avg": {
+							"field": "api-octoblu.elapsedTime"
+						}
+					},
+					"flow-deploy-service-beginOffset": {
+						"avg": {
+							"field": "flow-deploy-service.beginOffset"
+						}
+					},
+					"flow-deploy-service-elapsedTime": {
+						"avg": {
+							"field": "flow-deploy-service.elapsedTime"
+						}
+					},
+					"flow-runner-beginOffset": {
+						"avg": {
+							"field": "flow-runner.beginOffset"
+						}
+					},
+					"flow-runner-elapsedTime": {
+						"avg": {
+							"field": "flow-runner.elapsedTime"
+						}
 					}
 				}
 			}
