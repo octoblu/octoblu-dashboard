@@ -48,4 +48,8 @@ class FlowDeploymentGanttAggsChartSteps extends Backbone.Collection
     query.aggs.last_24_hours.filter.range.beginTime.gte = yesterday.valueOf()
     query
 
+  totalTime: =>
+    stepTimes = @map (model) => model.get('offset') + model.get('width')
+    _.max stepTimes
+
 module.exports = FlowDeploymentGanttAggsChartSteps

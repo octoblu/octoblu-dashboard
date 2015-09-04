@@ -7,22 +7,28 @@ GanttChart = React.createClass
   displayName: 'GanttChart'
 
   propTypes:
-    graphWidth:  PropTypes.number
-    graphHeight: PropTypes.number
-    stepHeight:  PropTypes.number
-    minStepWidth:    PropTypes.number
-    colors:      PropTypes.array
-    labelOffset: PropTypes.number
-    steps:       PropTypes.array
+    colors:       PropTypes.array
+    graphHeight:  PropTypes.number
+    graphWidth:   PropTypes.number
+    labelWidth:  PropTypes.number
+    minStepWidth: PropTypes.number
+    stepHeight:   PropTypes.number
+    steps:        PropTypes.array
+    title:        PropTypes.string
+    titleColor:   PropTypes.string
+    titleHeight:  PropTypes.number
 
   getDefaultProps: ->
-    graphWidth: 1600
-    graphHeight: 500
-    stepHeight: 100
-    minStepWidth: 10
-    labelOffset: 400
     colors: ['#fff', '#eee', '#ddd', '#ccc', '#bbb', '#aaa', '#999', '#888', '#777', '#666', '#555', '#444']
+    graphHeight: 500
+    graphWidth: 1600
+    labelWidth: 400
+    minStepWidth: 10
+    stepHeight: 100
     steps: []
+    title: 'Gantt Chart'
+    titleColor: '#fff'
+    titleHeight: 100
 
   drawStep: (step, i, scale) ->
     color = @props.colors[i % @props.colors.length]
@@ -33,8 +39,8 @@ GanttChart = React.createClass
     width  = @props.minStepWidth if width < @props.minStepWidth
     width = 0 unless step.offset? && step.width?
 
-    x = @props.labelOffset + (step.offset * scale)
-    y = i * (height + 10)
+    x = @props.labelWidth + (step.offset * scale)
+    y = (i * (height + 10)) + @props.titleHeight
 
     label = step.label
 
@@ -46,10 +52,18 @@ GanttChart = React.createClass
   drawSteps: ->
     steps = @props.steps
     width = @getWidth steps
-    scale = (@props.graphWidth - @props.labelOffset) / (width + @props.minStepWidth)
+    scale = (@props.graphWidth - @props.labelWidth) / (width + @props.minStepWidth)
 
     _.map steps, (step, i) =>
       @drawStep step, i, scale
+
+  drawTitle: ->
+    <text className="title"
+          x={@props.graphWidth / 2}
+          y={@props.titleHeight / 2}
+          width={@props.graphWidth}
+          fill={@props.titleColor}
+          >{@props.title}</text>
 
   getWidth: (steps) ->
     stepSize = _.map steps, (step) =>
@@ -63,6 +77,7 @@ GanttChart = React.createClass
   render: ->
     <svg className="gantt-chart" xmlns="http://www.w3.org/svg/2000"
       viewBox={@getViewBox()} >
+      {@drawTitle()}
       {@drawSteps()}
     </svg>
 

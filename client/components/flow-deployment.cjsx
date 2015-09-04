@@ -15,14 +15,22 @@ FlowDeployment = React.createClass
   componentWillMount: ->
 
   componentDidMount: ->
-    @flowDeploymentSteps = new FlowDeploymentGanttChartSteps [], uuid: @getParams().uuid
-    @flowDeploymentSteps.on 'sync', =>
-      @setState flowDeploymentSteps: @flowDeploymentSteps.toJSON()
-    @flowDeploymentSteps.fetch()
+    @flowDeploymentGanttChartSteps = new FlowDeploymentGanttChartSteps [], uuid: @getParams().uuid
+    @flowDeploymentGanttChartSteps.on 'sync', =>
+      @setState flowDeploymentGanttChartSteps: @flowDeploymentGanttChartSteps.toJSON()
+    @flowDeploymentGanttChartSteps.fetch()
+
+  getTitle: ->
+    uuid       = @getParams().uuid
+    totalTimeMilliseconds  = @flowDeploymentGanttChartSteps?.totalTime()
+    return 'loading...' unless totalTimeMilliseconds?
+    totalTime = (totalTimeMilliseconds / 1000).toFixed 2
+
+    "#{uuid} (#{totalTime}s)"
 
   render: ->
     <div className="dashboard">
-      <GanttChart steps={@state.flowDeploymentSteps}/>
+      <GanttChart steps={@state.flowDeploymentGanttChartSteps} title={@getTitle()}/>
     </div>
 
 module.exports = FlowDeployment

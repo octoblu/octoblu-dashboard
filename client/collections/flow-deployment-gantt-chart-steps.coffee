@@ -1,4 +1,7 @@
 Backbone = require 'backbone'
+moment   = require 'moment'
+_        = require 'lodash'
+
 FlowDeploymentGanttChartStep = require '../models/flow-deployment-gantt-chart-step'
 
 class FlowDeploymentGanttChartSteps extends Backbone.Collection
@@ -16,5 +19,9 @@ class FlowDeploymentGanttChartSteps extends Backbone.Collection
       _.extend workflow: 'flow-deploy-service', body._source['flow-deploy-service']
       _.extend workflow: 'flow-runner', body._source['flow-runner']
     ]
+
+  totalTime: =>
+    stepTimes = @map (model) => model.get('offset') + model.get('width')
+    _.max stepTimes
 
 module.exports = FlowDeploymentGanttChartSteps
