@@ -11,18 +11,22 @@ class GatebluAddDeviceSuccessOverTime extends Backbone.Model
 
   parse: (response) =>
     buckets = response.aggregations.group_by_date.beginTime_over_time.buckets
+
     result = _.map buckets, @parseBucket
     return @formatResults result
 
   parseBucket: (bucket) =>
     successBuckets = _.filter bucket.group_by_success.buckets, key: 'T'
     failureBuckets = _.filter bucket.group_by_success.buckets, key: 'F'
+
     addCount = (count, bucket) =>
       return count += bucket.doc_count
+
     successCount = _.reduce successBuckets, addCount, 0
     failureCount = _.reduce failureBuckets, addCount, 0
+
     successPercentage = (successCount / (successCount + failureCount)) * 100
-    successPercentage = 100 unless (successCount + failureCount) > 0
+    successPercentage = 100 if successCount == 0 && failureCount == 0
 
     data =
       key: bucket.key
