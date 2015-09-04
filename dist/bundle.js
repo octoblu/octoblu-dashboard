@@ -60538,7 +60538,8 @@
 						"date_histogram": {
 							"field": "beginTime",
 							"interval": "hour",
-							"format": "h aa"
+							"format": "h aa",
+							"min_doc_count": 0
 						},
 						"aggs": {
 							"avgElapsedTime": {
@@ -60600,7 +60601,7 @@
 	  };
 
 	  FlowDeployOverTime.prototype.parseBucket = function(bucket) {
-	    var addCount, data, failureBuckets, failureCount, successBuckets, successCount;
+	    var addCount, data, failureBuckets, failureCount, successBuckets, successCount, successPercentage;
 	    successBuckets = _.filter(bucket.group_by_success.buckets, {
 	      key: 'T'
 	    });
@@ -60614,9 +60615,13 @@
 	    })(this);
 	    successCount = _.reduce(successBuckets, addCount, 0);
 	    failureCount = _.reduce(failureBuckets, addCount, 0);
+	    successPercentage = (successCount / (successCount + failureCount)) * 100;
+	    if (successCount === 0 && failureCount === 0) {
+	      successPercentage = 100;
+	    }
 	    data = {
 	      key: bucket.key,
-	      successPercentage: (successCount / (successCount + failureCount)) * 100,
+	      successPercentage: successPercentage,
 	      failureCount: _.findWhere(bucket.group_by_success.buckets, {
 	        key: 'F'
 	      })
@@ -60699,7 +60704,8 @@
 						"date_histogram": {
 							"field": "beginTime",
 							"interval": "hour",
-							"format": "h aa"
+							"format": "h aa",
+							"min_doc_count": 0
 						},
 						"aggs": {
 							"group_by_success": {
@@ -64796,7 +64802,7 @@
 	    successCount = _.reduce(successBuckets, addCount, 0);
 	    failureCount = _.reduce(failureBuckets, addCount, 0);
 	    successPercentage = (successCount / (successCount + failureCount)) * 100;
-	    if (!((successCount + failureCount) > 0)) {
+	    if (successCount === 0 && failureCount === 0) {
 	      successPercentage = 100;
 	    }
 	    data = {
@@ -64882,7 +64888,8 @@
 						"date_histogram": {
 							"field": "beginTime",
 							"interval": "hour",
-							"format": "h aa"
+							"format": "h aa",
+							"min_doc_count": 0
 						},
 						"aggs": {
 							"group_by_success": {
@@ -65104,7 +65111,8 @@
 						"date_histogram": {
 							"field": "beginTime",
 							"interval": "hour",
-							"format": "h aa"
+							"format": "h aa",
+							"min_doc_count": 0
 						},
 						"aggs": {
 							"avgElapsedTime": {
@@ -65123,7 +65131,7 @@
 /* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FlowDeployTrace, GanttChart, React, Router, _;
+	var FlowDeployTrace, FlowDeploymentSteps, GanttChart, React, Router, _;
 
 	React = __webpack_require__(1);
 
@@ -65133,6 +65141,8 @@
 
 	GanttChart = __webpack_require__(321);
 
+	FlowDeploymentSteps = __webpack_require__(322);
+
 	FlowDeployTrace = React.createClass({
 	  displayName: 'FlowDeployTrace',
 	  mixins: [Router.State],
@@ -65140,11 +65150,25 @@
 	    return {};
 	  },
 	  componentWillMount: function() {},
-	  componentDidMount: function() {},
+	  componentDidMount: function() {
+	    this.flowDeploymentSteps = new FlowDeploymentSteps([], {
+	      uuid: this.getParams().uuid
+	    });
+	    this.flowDeploymentSteps.on('sync', (function(_this) {
+	      return function() {
+	        return _this.setState({
+	          flowDeploymentSteps: _this.flowDeploymentSteps.toJSON()
+	        });
+	      };
+	    })(this));
+	    return this.flowDeploymentSteps.fetch();
+	  },
 	  render: function() {
 	    return React.createElement("div", {
 	      "className": "dashboard"
-	    }, React.createElement(GanttChart, null));
+	    }, React.createElement(GanttChart, {
+	      "steps": this.state.flowDeploymentSteps
+	    }));
 	  }
 	});
 
@@ -65155,7 +65179,7 @@
 /* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FAKE_DATA, GanttChart, PropTypes, React, moment;
+	var GanttChart, PropTypes, React, moment;
 
 	React = __webpack_require__(1);
 
@@ -65163,41 +65187,42 @@
 
 	PropTypes = React.PropTypes;
 
-	FAKE_DATA = __webpack_require__(322);
-
 	GanttChart = React.createClass({
 	  displayName: 'GanttChart',
 	  propTypes: {
 	    graphWidth: PropTypes.number,
 	    graphHeight: PropTypes.number,
-	    minWidth: PropTypes.number,
+	    stepHeight: PropTypes.number,
+	    minStepWidth: PropTypes.number,
 	    colors: PropTypes.array,
-	    fontOffset: PropTypes.number
+	    labelOffset: PropTypes.number,
+	    steps: PropTypes.array
 	  },
 	  getDefaultProps: function() {
 	    return {
 	      graphWidth: 1600,
 	      graphHeight: 500,
-	      minWidth: 10,
-	      fontOffset: 400,
-	      colors: ['#fff', '#eee', '#ddd', '#ccc', '#bbb', '#aaa', '#999', '#888', '#777', '#666', '#555', '#444']
+	      stepHeight: 100,
+	      minStepWidth: 10,
+	      labelOffset: 400,
+	      colors: ['#fff', '#eee', '#ddd', '#ccc', '#bbb', '#aaa', '#999', '#888', '#777', '#666', '#555', '#444'],
+	      steps: []
 	    };
 	  },
-	  drawStep: function(step, i, minBeginTime, maxEndTime) {
-	    var beginTime, color, duration, endTime, height, label, scale, width, x, y;
-	    scale = (this.props.graphWidth - this.props.minWidth - this.props.fontOffset) / (maxEndTime - minBeginTime);
+	  drawStep: function(step, i, scale) {
+	    var color, height, label, width, x, y;
 	    color = this.props.colors[i % this.props.colors.length];
-	    beginTime = moment(step.beginTime).valueOf();
-	    endTime = moment(step.endTime).valueOf();
-	    duration = moment(step.endTime).diff(moment(step.beginTime), 'seconds', true);
-	    width = (endTime - beginTime) * scale;
-	    if (width < this.props.minWidth) {
-	      width = this.props.minWidth;
+	    height = this.props.stepHeight;
+	    width = step.width * scale;
+	    if (width < this.props.minStepWidth) {
+	      width = this.props.minStepWidth;
 	    }
-	    height = 100;
-	    x = (beginTime - minBeginTime) * scale + this.props.fontOffset;
+	    if (!((step.offset != null) && (step.width != null))) {
+	      width = 0;
+	    }
+	    x = this.props.labelOffset + (step.offset * scale);
 	    y = i * (height + 10);
-	    label = step.application + " (" + duration + "s)";
+	    label = step.label;
 	    return React.createElement("g", {
 	      "key": i
 	    }, React.createElement("rect", {
@@ -65214,29 +65239,25 @@
 	      "fill": color
 	    }, label));
 	  },
-	  drawSteps: function(steps) {
-	    var maxEndTime, minBeginTime;
-	    minBeginTime = this.getMinBeginTime(steps);
-	    maxEndTime = this.getMaxEndTime(steps);
+	  drawSteps: function() {
+	    var scale, steps, width;
+	    steps = this.props.steps;
+	    width = this.getWidth(steps);
+	    scale = (this.props.graphWidth - this.props.labelOffset) / (width + this.props.minStepWidth);
 	    return _.map(steps, (function(_this) {
 	      return function(step, i) {
-	        return _this.drawStep(step, i, minBeginTime, maxEndTime);
+	        return _this.drawStep(step, i, scale);
 	      };
 	    })(this));
 	  },
-	  getMinBeginTime: function(steps) {
-	    return _.min(_.map(steps, (function(_this) {
+	  getWidth: function(steps) {
+	    var stepSize;
+	    stepSize = _.map(steps, (function(_this) {
 	      return function(step) {
-	        return moment(step.beginTime).valueOf();
+	        return step.offset + step.width;
 	      };
-	    })(this)));
-	  },
-	  getMaxEndTime: function(steps) {
-	    return _.max(_.map(steps, (function(_this) {
-	      return function(step) {
-	        return moment(step.endTime).valueOf();
-	      };
-	    })(this)));
+	    })(this));
+	    return _.max(stepSize);
 	  },
 	  getViewBox: function() {
 	    return [0, 0, this.props.graphWidth, this.props.graphHeight].join(' ');
@@ -65246,7 +65267,7 @@
 	      "className": "gantt-chart",
 	      "xmlns": "http://www.w3.org/svg/2000",
 	      "viewBox": this.getViewBox()
-	    }, this.drawSteps(FAKE_DATA));
+	    }, this.drawSteps());
 	  }
 	});
 
@@ -65255,28 +65276,112 @@
 
 /***/ },
 /* 322 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, FLOW_DEPLOYMENT_QUERY, FlowDeploymentStep, FlowDeploymentSteps,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	FlowDeploymentStep = __webpack_require__(323);
+
+	FLOW_DEPLOYMENT_QUERY = __webpack_require__(324);
+
+	FlowDeploymentSteps = (function(superClass) {
+	  extend(FlowDeploymentSteps, superClass);
+
+	  function FlowDeploymentSteps() {
+	    this.parse = bind(this.parse, this);
+	    this.url = bind(this.url, this);
+	    this.initialize = bind(this.initialize, this);
+	    return FlowDeploymentSteps.__super__.constructor.apply(this, arguments);
+	  }
+
+	  FlowDeploymentSteps.prototype.model = FlowDeploymentStep;
+
+	  FlowDeploymentSteps.prototype.initialize = function(models, options) {
+	    if (options == null) {
+	      options = {};
+	    }
+	    return this.uuid = options.uuid;
+	  };
+
+	  FlowDeploymentSteps.prototype.url = function() {
+	    return "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/event/" + this.uuid;
+	  };
+
+	  FlowDeploymentSteps.prototype.parse = function(body) {
+	    return [
+	      _.extend({
+	        workflow: 'app-octoblu'
+	      }, body._source['app-octoblu']), _.extend({
+	        workflow: 'api-octoblu'
+	      }, body._source['api-octoblu']), _.extend({
+	        workflow: 'flow-deploy-service'
+	      }, body._source['flow-deploy-service']), _.extend({
+	        workflow: 'flow-runner'
+	      }, body._source['flow-runner'])
+	    ];
+	  };
+
+	  return FlowDeploymentSteps;
+
+	})(Backbone.Collection);
+
+	module.exports = FlowDeploymentSteps;
+
+
+/***/ },
+/* 323 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, FlowDeploymentStep,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	FlowDeploymentStep = (function(superClass) {
+	  extend(FlowDeploymentStep, superClass);
+
+	  function FlowDeploymentStep() {
+	    this.parse = bind(this.parse, this);
+	    return FlowDeploymentStep.__super__.constructor.apply(this, arguments);
+	  }
+
+	  FlowDeploymentStep.prototype.parse = function(data) {
+	    return {
+	      label: data.workflow + " (" + ((data.elapsedTime / 1000).toFixed(2)) + "s)",
+	      offset: data.beginOffset,
+	      width: data.elapsedTime
+	    };
+	  };
+
+	  return FlowDeploymentStep;
+
+	})(Backbone.Model);
+
+	module.exports = FlowDeploymentStep;
+
+
+/***/ },
+/* 324 */
 /***/ function(module, exports) {
 
-	module.exports = [
-	  {
-	    application: 'app-octoblu',
-	    beginTime: '2015-08-31T18:01:28-07:00',
-	    endTime: '2015-08-31T18:01:28-07:00'
-	  }, {
-	    application: 'api-octoblu',
-	    beginTime: '2015-08-31T18:01:28-07:00',
-	    endTime: '2015-08-31T18:01:48-07:00'
-	  }, {
-	    application: 'flow-deploy-service',
-	    beginTime: '2015-08-31T18:01:30-07:00',
-	    endTime: '2015-08-31T18:01:48-07:00'
-	  }, {
-	    application: 'flow-runner',
-	    beginTime: '2015-08-31T18:01:49-07:00',
-	    endTime: '2015-08-31T18:01:49-07:00'
-	  }
-	];
-
+	module.exports = {
+		"query": {
+			"filtered": {
+				"filter": {
+					"term": {
+						"deploymentUuid.raw": null
+					}
+				}
+			}
+		}
+	}
 
 /***/ }
 /******/ ]);
