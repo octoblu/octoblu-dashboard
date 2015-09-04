@@ -100,3 +100,6 @@ svg.gantt-chart text {
   font-size: 30px;
   font-weight: bolder;
 }
+svg.gantt-chart text.title {
+  text-anchor: middle;
+}

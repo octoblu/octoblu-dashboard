@@ -65157,23 +65157,34 @@
 	  },
 	  componentWillMount: function() {},
 	  componentDidMount: function() {
-	    this.flowDeploymentSteps = new FlowDeploymentGanttChartSteps([], {
+	    this.flowDeploymentGanttChartSteps = new FlowDeploymentGanttChartSteps([], {
 	      uuid: this.getParams().uuid
 	    });
-	    this.flowDeploymentSteps.on('sync', (function(_this) {
+	    this.flowDeploymentGanttChartSteps.on('sync', (function(_this) {
 	      return function() {
 	        return _this.setState({
-	          flowDeploymentSteps: _this.flowDeploymentSteps.toJSON()
+	          flowDeploymentGanttChartSteps: _this.flowDeploymentGanttChartSteps.toJSON()
 	        });
 	      };
 	    })(this));
-	    return this.flowDeploymentSteps.fetch();
+	    return this.flowDeploymentGanttChartSteps.fetch();
+	  },
+	  getTitle: function() {
+	    var ref, totalTime, totalTimeMilliseconds, uuid;
+	    uuid = this.getParams().uuid;
+	    totalTimeMilliseconds = (ref = this.flowDeploymentGanttChartSteps) != null ? ref.totalTime() : void 0;
+	    if (totalTimeMilliseconds == null) {
+	      return 'loading...';
+	    }
+	    totalTime = (totalTimeMilliseconds / 1000).toFixed(2);
+	    return uuid + " (" + totalTime + "s)";
 	  },
 	  render: function() {
 	    return React.createElement("div", {
 	      "className": "dashboard"
 	    }, React.createElement(GanttChart, {
-	      "steps": this.state.flowDeploymentSteps
+	      "steps": this.state.flowDeploymentGanttChartSteps,
+	      "title": this.getTitle()
 	    }));
 	  }
 	});
@@ -65196,23 +65207,29 @@
 	GanttChart = React.createClass({
 	  displayName: 'GanttChart',
 	  propTypes: {
-	    graphWidth: PropTypes.number,
-	    graphHeight: PropTypes.number,
-	    stepHeight: PropTypes.number,
-	    minStepWidth: PropTypes.number,
 	    colors: PropTypes.array,
-	    labelOffset: PropTypes.number,
-	    steps: PropTypes.array
+	    graphHeight: PropTypes.number,
+	    graphWidth: PropTypes.number,
+	    labelWidth: PropTypes.number,
+	    minStepWidth: PropTypes.number,
+	    stepHeight: PropTypes.number,
+	    steps: PropTypes.array,
+	    title: PropTypes.string,
+	    titleColor: PropTypes.string,
+	    titleHeight: PropTypes.number
 	  },
 	  getDefaultProps: function() {
 	    return {
-	      graphWidth: 1600,
-	      graphHeight: 500,
-	      stepHeight: 100,
-	      minStepWidth: 10,
-	      labelOffset: 400,
 	      colors: ['#fff', '#eee', '#ddd', '#ccc', '#bbb', '#aaa', '#999', '#888', '#777', '#666', '#555', '#444'],
-	      steps: []
+	      graphHeight: 500,
+	      graphWidth: 1600,
+	      labelWidth: 400,
+	      minStepWidth: 10,
+	      stepHeight: 100,
+	      steps: [],
+	      title: 'Gantt Chart',
+	      titleColor: '#fff',
+	      titleHeight: 100
 	    };
 	  },
 	  drawStep: function(step, i, scale) {
@@ -65226,8 +65243,8 @@
 	    if (!((step.offset != null) && (step.width != null))) {
 	      width = 0;
 	    }
-	    x = this.props.labelOffset + (step.offset * scale);
-	    y = i * (height + 10);
+	    x = this.props.labelWidth + (step.offset * scale);
+	    y = (i * (height + 10)) + this.props.titleHeight;
 	    label = step.label;
 	    return React.createElement("g", {
 	      "key": i
@@ -65249,12 +65266,21 @@
 	    var scale, steps, width;
 	    steps = this.props.steps;
 	    width = this.getWidth(steps);
-	    scale = (this.props.graphWidth - this.props.labelOffset) / (width + this.props.minStepWidth);
+	    scale = (this.props.graphWidth - this.props.labelWidth) / (width + this.props.minStepWidth);
 	    return _.map(steps, (function(_this) {
 	      return function(step, i) {
 	        return _this.drawStep(step, i, scale);
 	      };
 	    })(this));
+	  },
+	  drawTitle: function() {
+	    return React.createElement("text", {
+	      "className": "title",
+	      "x": this.props.graphWidth / 2,
+	      "y": this.props.titleHeight / 2,
+	      "width": this.props.graphWidth,
+	      "fill": this.props.titleColor
+	    }, this.props.title);
 	  },
 	  getWidth: function(steps) {
 	    var stepSize;
@@ -65273,7 +65299,7 @@
 	      "className": "gantt-chart",
 	      "xmlns": "http://www.w3.org/svg/2000",
 	      "viewBox": this.getViewBox()
-	    }, this.drawSteps());
+	    }, this.drawTitle(), this.drawSteps());
 	  }
 	});
 
@@ -65284,12 +65310,16 @@
 /* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Backbone, FlowDeploymentGanttChartStep, FlowDeploymentGanttChartSteps,
+	var Backbone, FlowDeploymentGanttChartStep, FlowDeploymentGanttChartSteps, _, moment,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
 	Backbone = __webpack_require__(199);
+
+	moment = __webpack_require__(204);
+
+	_ = __webpack_require__(202);
 
 	FlowDeploymentGanttChartStep = __webpack_require__(323);
 
@@ -65297,6 +65327,7 @@
 	  extend(FlowDeploymentGanttChartSteps, superClass);
 
 	  function FlowDeploymentGanttChartSteps() {
+	    this.totalTime = bind(this.totalTime, this);
 	    this.parse = bind(this.parse, this);
 	    this.url = bind(this.url, this);
 	    this.initialize = bind(this.initialize, this);
@@ -65330,6 +65361,16 @@
 	    ];
 	  };
 
+	  FlowDeploymentGanttChartSteps.prototype.totalTime = function() {
+	    var stepTimes;
+	    stepTimes = this.map((function(_this) {
+	      return function(model) {
+	        return model.get('offset') + model.get('width');
+	      };
+	    })(this));
+	    return _.max(stepTimes);
+	  };
+
 	  return FlowDeploymentGanttChartSteps;
 
 	})(Backbone.Collection);
@@ -65357,7 +65398,6 @@
 	  }
 
 	  FlowDeploymentStep.prototype.parse = function(data) {
-	    console.log(JSON.stringify(data));
 	    return {
 	      label: data.workflow + " (" + ((data.elapsedTime / 1000).toFixed(2)) + "s)",
 	      offset: data.beginOffset,
@@ -65376,13 +65416,15 @@
 /* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FlowDeploymentAggs, FlowDeploymentAggsGanttChartSteps, GanttChart, React, Router, _;
+	var FlowDeploymentAggs, FlowDeploymentAggsGanttChartSteps, GanttChart, React, Router, _, moment;
 
 	React = __webpack_require__(1);
 
 	Router = __webpack_require__(157);
 
 	_ = __webpack_require__(202);
+
+	moment = __webpack_require__(204);
 
 	GanttChart = __webpack_require__(321);
 
@@ -65408,11 +65450,21 @@
 	    })(this));
 	    return this.flowDeploymentAggsGanttChartSteps.fetch();
 	  },
+	  getTitle: function() {
+	    var ref, totalTime, totalTimeMilliseconds;
+	    totalTimeMilliseconds = (ref = this.flowDeploymentAggsGanttChartSteps) != null ? ref.totalTime() : void 0;
+	    if (totalTimeMilliseconds == null) {
+	      return 'loading...';
+	    }
+	    totalTime = (totalTimeMilliseconds / 1000).toFixed(2);
+	    return "Last 24 hours (" + totalTime + "s)";
+	  },
 	  render: function() {
 	    return React.createElement("div", {
 	      "className": "dashboard"
 	    }, React.createElement(GanttChart, {
-	      "steps": this.state.flowDeploymentAggsGanttChartSteps
+	      "steps": this.state.flowDeploymentAggsGanttChartSteps,
+	      "title": this.getTitle()
 	    }));
 	  }
 	});
@@ -65441,6 +65493,7 @@
 	  extend(FlowDeploymentGanttAggsChartSteps, superClass);
 
 	  function FlowDeploymentGanttAggsChartSteps() {
+	    this.totalTime = bind(this.totalTime, this);
 	    this.query = bind(this.query, this);
 	    this.fetch = bind(this.fetch, this);
 	    this.parse = bind(this.parse, this);
@@ -65495,6 +65548,16 @@
 	    query = _.cloneDeep(FLOW_DEPLOYMENT_AGGS_QUERY);
 	    query.aggs.last_24_hours.filter.range.beginTime.gte = yesterday.valueOf();
 	    return query;
+	  };
+
+	  FlowDeploymentGanttAggsChartSteps.prototype.totalTime = function() {
+	    var stepTimes;
+	    stepTimes = this.map((function(_this) {
+	      return function(model) {
+	        return model.get('offset') + model.get('width');
+	      };
+	    })(this));
+	    return _.max(stepTimes);
 	  };
 
 	  return FlowDeploymentGanttAggsChartSteps;
