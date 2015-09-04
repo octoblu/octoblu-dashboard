@@ -3,7 +3,7 @@ Router = require 'react-router'
 _ = require 'lodash'
 
 GanttChart = require './flow-status/gantt-chart'
-FAKE_DATA = require './data/fake-deployment-data'
+FlowDeploymentSteps = require '../collections/flow-deployment-steps'
 
 FlowDeployTrace = React.createClass
   displayName: 'FlowDeployTrace'
@@ -15,10 +15,14 @@ FlowDeployTrace = React.createClass
   componentWillMount: ->
 
   componentDidMount: ->
+    @flowDeploymentSteps = new FlowDeploymentSteps [], uuid: @getParams().uuid
+    @flowDeploymentSteps.on 'sync', =>
+      @setState flowDeploymentSteps: @flowDeploymentSteps.toJSON()
+    @flowDeploymentSteps.fetch()
 
   render: ->
     <div className="dashboard">
-      <GanttChart steps={FAKE_DATA}/>
+      <GanttChart steps={@state.flowDeploymentSteps}/>
     </div>
 
 module.exports = FlowDeployTrace

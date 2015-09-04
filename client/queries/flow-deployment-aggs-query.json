@@ -1,0 +1,55 @@
+{
+   "aggs": {
+      "last_24_hours": {
+         "filter": {
+            "range": {
+               "beginTime": {
+                  "gte": 1441239517578
+               }
+            }
+         },
+         "aggs": {
+            "app-octoblu-beginOffset": {
+               "avg": {
+                  "field": "app-octoblu.beginOffset"
+               }
+            },
+            "app-octoblu-elapsedTime": {
+               "avg": {
+                  "field": "app-octoblu.elapsedTime"
+               }
+            },
+            "api-octoblu-beginOffset": {
+               "avg": {
+                  "field": "api-octoblu.beginOffset"
+               }
+            },
+            "api-octoblu-elapsedTime": {
+               "avg": {
+                  "field": "api-octoblu.elapsedTime"
+               }
+            },
+            "flow-deploy-service-beginOffset": {
+               "avg": {
+                  "field": "flow-deploy-service.beginOffset"
+               }
+            },
+            "flow-deploy-service-elapsedTime": {
+               "avg": {
+                  "field": "flow-deploy-service.elapsedTime"
+               }
+            },
+            "flow-runner-beginOffset": {
+               "avg": {
+                  "field": "flow-runner.beginOffset"
+               }
+            },
+            "flow-runner-elapsedTime": {
+               "avg": {
+                  "field": "flow-runner.elapsedTime"
+               }
+            }
+         }
+      }
+   }
+}
