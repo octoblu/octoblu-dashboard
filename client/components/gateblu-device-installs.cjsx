@@ -16,7 +16,7 @@ GatebluDeviceInstallsDashboard = React.createClass
     @gatebluDeviceInstalls.on 'change', =>
       @setState
         isFetching: false
-        devices: @gatebluDeviceInstalls.toJSON().devices
+        devices: _.sortBy @gatebluDeviceInstalls.toJSON().devices, 'successPercentage'
 
 
   componentDidMount: ->
