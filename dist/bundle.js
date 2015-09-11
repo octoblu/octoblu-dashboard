@@ -65665,7 +65665,7 @@
 	      return function() {
 	        return _this.setState({
 	          isFetching: false,
-	          devices: _this.gatebluDeviceInstalls.toJSON().devices
+	          devices: _.sortBy(_this.gatebluDeviceInstalls.toJSON().devices, 'successPercentage')
 	        });
 	      };
 	    })(this));
