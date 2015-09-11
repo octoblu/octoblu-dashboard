@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var App, DefaultRoute, FlowDashboard, FlowDeployment, FlowDeploymentAggs, GatebluDashboard, NotFoundRoute, React, Route, Router, routes;
+	var App, DefaultRoute, FlowDashboard, FlowDeployment, FlowDeploymentAggs, GatebluDashboard, GatebluDeviceInstalls, NotFoundRoute, React, Route, Router, routes;
 
 	React = __webpack_require__(1);
 
@@ -62,6 +62,8 @@
 
 	FlowDeploymentAggs = __webpack_require__(324);
 
+	GatebluDeviceInstalls = __webpack_require__(327);
+
 	routes = React.createElement(Route, {
 	  "handler": App,
 	  "path": "/"
@@ -73,6 +75,10 @@
 	  "name": "gateblu-dashboard",
 	  "path": "/gateblu",
 	  "handler": GatebluDashboard
+	}), React.createElement(Route, {
+	  "name": "gateblu-device-installs",
+	  "path": "/gateblu/device-installs",
+	  "handler": GatebluDeviceInstalls
 	}), React.createElement(Route, {
 	  "name": "flow-deployment",
 	  "path": "/flow-deployments/:uuid",
@@ -286,7 +292,9 @@
 	        currentQueue = queue;
 	        queue = [];
 	        while (++queueIndex < len) {
-	            currentQueue[queueIndex].run();
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
 	        }
 	        queueIndex = -1;
 	        len = queue.length;
@@ -338,7 +346,6 @@
 	    throw new Error('process.binding is not supported');
 	};
 
-	// TODO(shtylman)
 	process.cwd = function () { return '/' };
 	process.chdir = function (dir) {
 	    throw new Error('process.chdir is not supported');
@@ -23819,7 +23826,7 @@
 /* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {//     Backbone.js 1.2.2
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {//     Backbone.js 1.2.3
 
 	//     (c) 2010-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	//     Backbone may be freely distributed under the MIT license.
@@ -23865,7 +23872,7 @@
 	  var slice = Array.prototype.slice;
 
 	  // Current version of the library. Keep in sync with `package.json`.
-	  Backbone.VERSION = '1.2.2';
+	  Backbone.VERSION = '1.2.3';
 
 	  // For Backbone's purposes, jQuery, Zepto, Ender, or My Library (kidding) owns
 	  // the `$` variable.
@@ -24587,6 +24594,7 @@
 
 	  // Splices `insert` into `array` at index `at`.
 	  var splice = function(array, insert, at) {
+	    at = Math.min(Math.max(at, 0), array.length);
 	    var tail = Array(array.length - at);
 	    var length = insert.length;
 	    for (var i = 0; i < tail.length; i++) tail[i] = array[i + at];
@@ -65620,6 +65628,300 @@
 					"flow-runner-elapsedTime": {
 						"avg": {
 							"field": "flow-runner.elapsedTime"
+						}
+					}
+				}
+			}
+		}
+	}
+
+/***/ },
+/* 327 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var DeviceInstallsTable, GatebluDeviceInstalls, GatebluDeviceInstallsDashboard, React, _;
+
+	React = __webpack_require__(1);
+
+	_ = __webpack_require__(202);
+
+	DeviceInstallsTable = __webpack_require__(328);
+
+	GatebluDeviceInstalls = __webpack_require__(331);
+
+	GatebluDeviceInstallsDashboard = React.createClass({
+	  displayName: 'GatebluDeviceInstallsDashboard',
+	  getInitialState: function() {
+	    return {
+	      isFetching: true,
+	      devices: []
+	    };
+	  },
+	  componentWillMount: function() {
+	    this.gatebluDeviceInstalls = new GatebluDeviceInstalls({
+	      index: "gateblu_device_detail"
+	    });
+	    return this.gatebluDeviceInstalls.on('change', (function(_this) {
+	      return function() {
+	        return _this.setState({
+	          isFetching: false,
+	          devices: _this.gatebluDeviceInstalls.toJSON().devices
+	        });
+	      };
+	    })(this));
+	  },
+	  componentDidMount: function() {
+	    return this.periodicallyFetchForModel(this.gatebluDeviceInstalls);
+	  },
+	  periodicallyFetchForModel: function(model) {
+	    setInterval(model.fetch, 60 * 1000);
+	    return model.fetch();
+	  },
+	  render: function() {
+	    return React.createElement("div", {
+	      "className": "dashboard"
+	    }, React.createElement(DeviceInstallsTable, {
+	      "devices": this.state.devices,
+	      "isFetching": this.state.isFetching
+	    }));
+	  }
+	});
+
+	module.exports = GatebluDeviceInstallsDashboard;
+
+
+/***/ },
+/* 328 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var DeviceInstallsTable, LoadingIndicator, Percentagify, React, _;
+
+	React = __webpack_require__(1);
+
+	_ = __webpack_require__(202);
+
+	LoadingIndicator = __webpack_require__(329);
+
+	Percentagify = __webpack_require__(330);
+
+	DeviceInstallsTable = React.createClass({
+	  displayName: 'DeviceInstallsTable',
+	  propTypes: {
+	    devices: React.PropTypes.array.isRequired,
+	    isFetching: React.PropTypes.bool.isRequired
+	  },
+	  renderTableRowItem: function(device, index) {
+	    return React.createElement("tr", {
+	      "key": index
+	    }, React.createElement("td", {
+	      "className": "tabel-row table-row--name",
+	      "colSpan": "10"
+	    }, device.name), React.createElement("td", {
+	      "className": "table-row",
+	      "colSpan": "5"
+	    }, React.createElement(Percentagify, {
+	      "value": device.successPercentage
+	    })), React.createElement("td", {
+	      "className": "table-row",
+	      "colSpan": "2"
+	    }, device.successes), React.createElement("td", {
+	      "className": "table-row",
+	      "colSpan": "2"
+	    }, device.failures));
+	  },
+	  render: function() {
+	    if (this.props.isFetching) {
+	      return React.createElement(LoadingIndicator, null);
+	    }
+	    return React.createElement("table", {
+	      "className": "device-install-table"
+	    }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", {
+	      "className": "table-header",
+	      "colSpan": "10"
+	    }, "Device Name"), React.createElement("th", {
+	      "className": "table-header",
+	      "colSpan": "5"
+	    }, "Success Rate"), React.createElement("th", {
+	      "className": "table-header",
+	      "colSpan": "2"
+	    }, "Successes"), React.createElement("th", {
+	      "className": "table-header",
+	      "colSpan": "2"
+	    }, "Failures"))), React.createElement("tbody", null, _.map(this.props.devices, this.renderTableRowItem)));
+	  }
+	});
+
+	module.exports = DeviceInstallsTable;
+
+
+/***/ },
+/* 329 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LoadingIndicator, React;
+
+	React = __webpack_require__(1);
+
+	LoadingIndicator = React.createClass({
+	  displayName: 'LoadingIndicator',
+	  render: function() {
+	    return React.createElement("div", {
+	      "className": "LoadingIndicator"
+	    }, React.createElement("p", null, "Loading..."));
+	  }
+	});
+
+	module.exports = LoadingIndicator;
+
+
+/***/ },
+/* 330 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Percentagify, React;
+
+	React = __webpack_require__(1);
+
+	Percentagify = React.createClass({
+	  displayName: 'Percentagify',
+	  propTypes: {
+	    value: React.PropTypes.number.isRequired
+	  },
+	  formatPercentage: (function(_this) {
+	    return function(value) {
+	      if (Math.round(value) === value) {
+	        return value + "%";
+	      }
+	      if (value == null) {
+	        return "...";
+	      }
+	      return (value.toFixed(2)) + "%";
+	    };
+	  })(this),
+	  render: function() {
+	    return React.createElement("span", null, this.formatPercentage(this.props.value));
+	  }
+	});
+
+	module.exports = Percentagify;
+
+
+/***/ },
+/* 331 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Backbone, GATEBLU_DEVICE_INSTALLS_QUERY, GatebluDeviceInstalls, _, moment,
+	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+	  hasProp = {}.hasOwnProperty;
+
+	Backbone = __webpack_require__(199);
+
+	_ = __webpack_require__(202);
+
+	moment = __webpack_require__(204);
+
+	GATEBLU_DEVICE_INSTALLS_QUERY = __webpack_require__(332);
+
+	GatebluDeviceInstalls = (function(superClass) {
+	  extend(GatebluDeviceInstalls, superClass);
+
+	  function GatebluDeviceInstalls() {
+	    this.query = bind(this.query, this);
+	    this.fetch = bind(this.fetch, this);
+	    this.normalize = bind(this.normalize, this);
+	    this.parse = bind(this.parse, this);
+	    this.initialize = bind(this.initialize, this);
+	    return GatebluDeviceInstalls.__super__.constructor.apply(this, arguments);
+	  }
+
+	  GatebluDeviceInstalls.prototype.initialize = function(attributes) {
+	    var index;
+	    if (attributes == null) {
+	      attributes = {};
+	    }
+	    index = attributes.index;
+	    return this.url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/" + index + "_history/_search";
+	  };
+
+	  GatebluDeviceInstalls.prototype.parse = function(response) {
+	    var devices;
+	    devices = response.aggregations.group_by_connector.buckets;
+	    if (devices == null) {
+	      devices = [];
+	    }
+	    return {
+	      devices: _.map(devices, this.normalize)
+	    };
+	  };
+
+	  GatebluDeviceInstalls.prototype.normalize = function(device) {
+	    var failures, successRate, successes, total;
+	    successes = device.group_by_succeses.buckets[0].key;
+	    failures = device.group_by_failures.buckets[0].key;
+	    total = successes + failures;
+	    if (total > 0) {
+	      successRate = (1.0 * successes) / total;
+	    } else {
+	      successRate = 1;
+	    }
+	    return {
+	      name: device.key,
+	      total: total,
+	      successes: successes,
+	      failures: failures,
+	      successPercentage: 100 * successRate
+	    };
+	  };
+
+	  GatebluDeviceInstalls.prototype.fetch = function(options) {
+	    if (options == null) {
+	      options = {};
+	    }
+	    return GatebluDeviceInstalls.__super__.fetch.call(this, _.defaults({}, options, {
+	      type: 'POST',
+	      data: JSON.stringify(this.query()),
+	      contentType: 'application/json'
+	    }));
+	  };
+
+	  GatebluDeviceInstalls.prototype.query = function() {
+	    var five_minutes_ago, query, yesterday;
+	    yesterday = moment().subtract(1, 'day');
+	    five_minutes_ago = moment().subtract(5, 'minutes');
+	    query = _.cloneDeep(GATEBLU_DEVICE_INSTALLS_QUERY);
+	    return query;
+	  };
+
+	  return GatebluDeviceInstalls;
+
+	})(Backbone.Model);
+
+	module.exports = GatebluDeviceInstalls;
+
+
+/***/ },
+/* 332 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"aggs": {
+			"group_by_connector": {
+				"terms": {
+					"field": "connector.raw",
+					"size": 0
+				},
+				"aggs": {
+					"group_by_failures": {
+						"terms": {
+							"field": "failures",
+							"size": 0
+						}
+					},
+					"group_by_succeses": {
+						"terms": {
+							"field": "successes",
+							"size": 0
 						}
 					}
 				}
