@@ -1,0 +1,24 @@
+{
+   "aggs": {
+      "group_by_connector": {
+         "terms": {
+            "field": "connector.raw",
+            "size": 0
+         },
+         "aggs": {
+            "group_by_failures": {
+               "terms": {
+                  "field": "failures",
+                  "size": 0
+               }
+            },
+            "group_by_succeses": {
+                "terms": {
+                    "field": "successes",
+                    "size": 0
+                }
+            }
+         }
+      }
+   }
+}
