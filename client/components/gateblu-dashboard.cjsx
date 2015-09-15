@@ -26,22 +26,23 @@ GatebluDashboard = React.createClass
 
   componentWillMount: ->
     @gatebluAddDeviceStatus = new GatebluAddDeviceStatus index: "gateblu_device_add"
+    @gatebluAddDeviceSuccessOverTime = new GatebluAddDeviceSuccessOverTime index: "gateblu_device_add"
+    @gatebluAddDeviceAvgElapsedTime = new GatebluAddDeviceAvgElapsedTime index: "gateblu_device_add"
+    @gatebluAddDeviceAvgElapsedTimeOverTime = new GatebluAddDeviceAvgElapsedTimeOverTime index: "gateblu_device_add"
+
+  componentDidMount: ->
     @gatebluAddDeviceStatus.on 'change', =>
       @setState @gatebluAddDeviceStatus.toJSON()
 
-    @gatebluAddDeviceSuccessOverTime = new GatebluAddDeviceSuccessOverTime index: "gateblu_device_add"
     @gatebluAddDeviceSuccessOverTime.on 'change', =>
       @setState gatebluAddDeviceSuccessOverTime: @gatebluAddDeviceSuccessOverTime.toJSON()
 
-    @gatebluAddDeviceAvgElapsedTime = new GatebluAddDeviceAvgElapsedTime index: "gateblu_device_add"
     @gatebluAddDeviceAvgElapsedTime.on 'change', =>
       @setState @gatebluAddDeviceAvgElapsedTime.toJSON()
 
-    @gatebluAddDeviceAvgElapsedTimeOverTime = new GatebluAddDeviceAvgElapsedTimeOverTime index: "gateblu_device_add"
     @gatebluAddDeviceAvgElapsedTimeOverTime.on 'change', =>
       @setState elapsedTimeChartData: @gatebluAddDeviceAvgElapsedTimeOverTime.toJSON()
 
-  componentDidMount: ->
     @periodicallyFetchForModel @gatebluAddDeviceStatus
     @periodicallyFetchForModel @gatebluAddDeviceSuccessOverTime
     @periodicallyFetchForModel @gatebluAddDeviceAvgElapsedTime
