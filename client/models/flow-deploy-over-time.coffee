@@ -4,6 +4,9 @@ moment = require 'moment'
 FLOW_DEPLOY_SUCCESS_OVER_TIME = require '../queries/flow-deploy-success-over-time.json'
 
 class FlowDeployOverTime extends Backbone.Model
+  defaults:
+    inLast: '1d'
+    byUnit: 'hour'
 
   initialize: (attributes={}) =>
     index = attributes.index
@@ -38,7 +41,7 @@ class FlowDeployOverTime extends Backbone.Model
 
     chartData.labels = _.pluck results, 'key'
     chartData.labels = _.map chartData.labels, (label) =>
-      moment(moment.utc(label).toDate()).format 'hA'
+      moment(moment.utc(label).toDate()).format @chartDateFormat()
 
     points = []
     _.each results, (result) =>
@@ -58,9 +61,18 @@ class FlowDeployOverTime extends Backbone.Model
     super _.defaults {}, options, defaults
 
   query: =>
+    {inLast, byUnit} = @toJSON()
+    time = parseInt _.first inLast.match /\d+/
+    timeUnit = _.first inLast.match /[a-zA-Z]+/
+
     query = _.cloneDeep FLOW_DEPLOY_SUCCESS_OVER_TIME
-    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(1, 'day').valueOf()
+    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(time, timeUnit).valueOf()
     query.aggs.group_by_date.filter.range.beginTime.lte = moment().subtract(5, 'minutes').valueOf()
+    query.aggs.group_by_date.aggs.beginTime_over_time.date_histogram.interval = byUnit
     return query
+
+  chartDateFormat: =>
+    return 'hA' if @get('byUnit') == 'hour'
+    return 'ddd'
 
 module.exports = FlowDeployOverTime

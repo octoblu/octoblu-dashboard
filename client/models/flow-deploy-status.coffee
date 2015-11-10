@@ -4,11 +4,12 @@ moment = require 'moment'
 FLOW_DEPLOY_STATUS_QUERY = require '../queries/flow-deploy-status.json'
 
 class FlowDeployStatus extends Backbone.Model
-  
+  defaults:
+    inLast: '1d'
+
   initialize: (attributes={}) =>
     index = attributes.index
     @url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/#{index}_history/_search"
-
 
   parse: (response) =>
     flowStart = _.findWhere response.aggregations.filter_by_timestamp.group_by_workflow.buckets, key: 'flow-start'
@@ -43,7 +44,11 @@ class FlowDeployStatus extends Backbone.Model
     )
 
   query: =>
-    yesterday = moment().subtract(1, 'day')
+    inLast = @get 'inLast'
+    time = parseInt _.first inLast.match /\d+/
+    timeUnit = _.first inLast.match /[a-zA-Z]+/
+
+    yesterday = moment().subtract(time, timeUnit)
     five_minutes_ago = moment().subtract(5, 'minutes')
     query = _.cloneDeep FLOW_DEPLOY_STATUS_QUERY
     query.aggs.filter_by_timestamp.filter.range.beginTime.gte = yesterday.valueOf()

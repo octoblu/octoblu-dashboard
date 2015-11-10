@@ -4,6 +4,8 @@ moment = require 'moment'
 FLOW_DEPLOY_AVG_ELAPSED_TIME_QUERY = require '../queries/flow-deploy-avg-elapsed-time.json'
 
 class DeployAvgElapsedTime extends Backbone.Model
+  defaults:
+    inLast: '1d'
 
   initialize: (attributes={}) =>
     index = attributes.index
@@ -20,7 +22,11 @@ class DeployAvgElapsedTime extends Backbone.Model
     )
 
   query: =>
-    yesterday = moment().subtract(1, 'day')
+    inLast = @get 'inLast'
+    time = parseInt _.first inLast.match /\d+/
+    timeUnit = _.first inLast.match /[a-zA-Z]+/
+
+    yesterday = moment().subtract(time, timeUnit)
     query = _.cloneDeep FLOW_DEPLOY_AVG_ELAPSED_TIME_QUERY
     query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf()
     query

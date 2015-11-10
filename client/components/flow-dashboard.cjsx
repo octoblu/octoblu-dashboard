@@ -23,20 +23,33 @@ FlowDashboard = React.createClass
         labels: []
         datasets: []
 
+  componentWillReceiveProps: (nextProps) ->
+    {inLast, byUnit} = nextProps.query
+
+    @flowDeployStatus.set inLast: inLast, byUnit: byUnit
+    @flowDeployStatus.fetch()
+    @flowDeployOverTime.set inLast: inLast, byUnit: byUnit
+    @flowDeployOverTime.fetch()
+    @flowDeployAvgElapsedTime.set inLast: inLast, byUnit: byUnit
+    @flowDeployAvgElapsedTime.fetch()
+    @flowDeployAvgElapsedTimeOverTime.set inLast: inLast, byUnit: byUnit
+    @flowDeployAvgElapsedTimeOverTime.fetch()
+
   componentWillMount: ->
-    @flowDeployStatus = new FlowDeployStatus index: "flow_deploy"
+    {inLast, byUnit} = @props.query
+    @flowDeployStatus = new FlowDeployStatus index: 'flow_deploy', inLast: inLast, byUnit: byUnit
     @flowDeployStatus.on 'change', =>
       @setState flowDeployStatus: @flowDeployStatus.toJSON()
 
-    @flowDeployOverTime = new FlowDeployOverTime index: "flow_deploy"
+    @flowDeployOverTime = new FlowDeployOverTime index: 'flow_deploy', inLast: inLast, byUnit: byUnit
     @flowDeployOverTime.on 'change', =>
       @setState flowDeployOverTime: @flowDeployOverTime.toJSON()
 
-    @flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime index: "flow_deploy"
+    @flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime index: 'flow_deploy', inLast: inLast, byUnit: byUnit
     @flowDeployAvgElapsedTime.on 'change', =>
       @setState flowDeployAvgElapsedTime: @flowDeployAvgElapsedTime.toJSON()
 
-    @flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime index: "flow_deploy"
+    @flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime index: 'flow_deploy', inLast: inLast, byUnit: byUnit
     @flowDeployAvgElapsedTimeOverTime.on 'change', =>
       @setState flowDeployAvgElapsedTimeOverTime: @flowDeployAvgElapsedTimeOverTime.toJSON()
 

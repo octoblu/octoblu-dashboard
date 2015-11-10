@@ -19,5 +19,5 @@ routes =
     <Route name="flow-deployment-aggs" path="/flow-deployments/?" handler={FlowDeploymentAggs} />
   </Route>
 
-Router.run routes, (Handler) ->
-  React.render(<Handler/>, document.getElementById('app'))
+Router.run routes, (Handler, state) ->
+  React.render(<Handler query={state.query} />, document.getElementById('app'))

@@ -43,7 +43,7 @@ class FlowDeploymentGanttAggsChartSteps extends Backbone.Collection
     )
 
   query: =>
-    yesterday = moment().subtract(1, 'day')
+    yesterday = moment().subtract(24, 'hours')
     query = _.cloneDeep FLOW_DEPLOYMENT_AGGS_QUERY
     query.aggs.last_24_hours.filter.range.beginTime.gte = yesterday.valueOf()
     query
