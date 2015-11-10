@@ -52,17 +52,17 @@
 
 	Route = Router.Route, DefaultRoute = Router.DefaultRoute, NotFoundRoute = Router.NotFoundRoute;
 
-	App = __webpack_require__(196);
+	App = __webpack_require__(199);
 
-	FlowDashboard = __webpack_require__(197);
+	FlowDashboard = __webpack_require__(200);
 
-	GatebluDashboard = __webpack_require__(311);
+	GatebluDashboard = __webpack_require__(314);
 
-	FlowDeployment = __webpack_require__(320);
+	FlowDeployment = __webpack_require__(323);
 
-	FlowDeploymentAggs = __webpack_require__(324);
+	FlowDeploymentAggs = __webpack_require__(327);
 
-	GatebluDeviceInstalls = __webpack_require__(327);
+	GatebluDeviceInstalls = __webpack_require__(330);
 
 	routes = React.createElement(Route, {
 	  "handler": App,
@@ -89,8 +89,10 @@
 	  "handler": FlowDeploymentAggs
 	}));
 
-	Router.run(routes, function(Handler) {
-	  return React.render(React.createElement(Handler, null), document.getElementById('app'));
+	Router.run(routes, function(Handler, state) {
+	  return React.render(React.createElement(Handler, {
+	    "query": state.query
+	  }), document.getElementById('app'));
 	});
 
 
@@ -292,7 +294,9 @@
 	        currentQueue = queue;
 	        queue = [];
 	        while (++queueIndex < len) {
-	            currentQueue[queueIndex].run();
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
 	        }
 	        queueIndex = -1;
 	        len = queue.length;
@@ -344,7 +348,6 @@
 	    throw new Error('process.binding is not supported');
 	};
 
-	// TODO(shtylman)
 	process.cwd = function () { return '/' };
 	process.chdir = function (dir) {
 	    throw new Error('process.chdir is not supported');
@@ -20476,34 +20479,34 @@
 	'use strict';
 
 	exports.DefaultRoute = __webpack_require__(158);
-	exports.Link = __webpack_require__(171);
-	exports.NotFoundRoute = __webpack_require__(172);
-	exports.Redirect = __webpack_require__(173);
-	exports.Route = __webpack_require__(170);
-	exports.ActiveHandler = __webpack_require__(168);
+	exports.Link = __webpack_require__(173);
+	exports.NotFoundRoute = __webpack_require__(174);
+	exports.Redirect = __webpack_require__(175);
+	exports.Route = __webpack_require__(172);
+	exports.ActiveHandler = __webpack_require__(170);
 	exports.RouteHandler = exports.ActiveHandler;
 
-	exports.HashLocation = __webpack_require__(174);
-	exports.HistoryLocation = __webpack_require__(177);
-	exports.RefreshLocation = __webpack_require__(178);
-	exports.StaticLocation = __webpack_require__(179);
-	exports.TestLocation = __webpack_require__(180);
+	exports.HashLocation = __webpack_require__(176);
+	exports.HistoryLocation = __webpack_require__(180);
+	exports.RefreshLocation = __webpack_require__(181);
+	exports.StaticLocation = __webpack_require__(182);
+	exports.TestLocation = __webpack_require__(183);
 
-	exports.ImitateBrowserBehavior = __webpack_require__(181);
-	exports.ScrollToTopBehavior = __webpack_require__(182);
+	exports.ImitateBrowserBehavior = __webpack_require__(184);
+	exports.ScrollToTopBehavior = __webpack_require__(185);
 
-	exports.History = __webpack_require__(176);
-	exports.Navigation = __webpack_require__(183);
-	exports.State = __webpack_require__(184);
+	exports.History = __webpack_require__(178);
+	exports.Navigation = __webpack_require__(186);
+	exports.State = __webpack_require__(187);
 
 	exports.createRoute = __webpack_require__(160).createRoute;
 	exports.createDefaultRoute = __webpack_require__(160).createDefaultRoute;
 	exports.createNotFoundRoute = __webpack_require__(160).createNotFoundRoute;
 	exports.createRedirect = __webpack_require__(160).createRedirect;
-	exports.createRoutesFromReactChildren = __webpack_require__(185);
+	exports.createRoutesFromReactChildren = __webpack_require__(188);
 
-	exports.create = __webpack_require__(186);
-	exports.run = __webpack_require__(195);
+	exports.create = __webpack_require__(189);
+	exports.run = __webpack_require__(198);
 
 /***/ },
 /* 158 */
@@ -20511,13 +20514,15 @@
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var PropTypes = __webpack_require__(159);
-	var RouteHandler = __webpack_require__(168);
-	var Route = __webpack_require__(170);
+	var RouteHandler = __webpack_require__(170);
+	var Route = __webpack_require__(172);
 
 	/**
 	 * A <DefaultRoute> component is a special kind of <Route> that
@@ -20527,22 +20532,20 @@
 	 */
 
 	var DefaultRoute = (function (_Route) {
+	  _inherits(DefaultRoute, _Route);
+
 	  function DefaultRoute() {
 	    _classCallCheck(this, DefaultRoute);
 
-	    if (_Route != null) {
-	      _Route.apply(this, arguments);
-	    }
+	    _get(Object.getPrototypeOf(DefaultRoute.prototype), 'constructor', this).apply(this, arguments);
 	  }
 
-	  _inherits(DefaultRoute, _Route);
+	  // TODO: Include these in the above class definition
+	  // once we can use ES7 property initializers.
+	  // https://github.com/babel/babel/issues/619
 
 	  return DefaultRoute;
 	})(Route);
-
-	// TODO: Include these in the above class definition
-	// once we can use ES7 property initializers.
-	// https://github.com/babel/babel/issues/619
 
 	DefaultRoute.propTypes = {
 	  name: PropTypes.string,
@@ -20573,9 +20576,7 @@
 	   * Indicates that a prop should be falsy.
 	   */
 	  falsy: function falsy(props, propName, componentName) {
-	    if (props[propName]) {
-	      return new Error('<' + componentName + '> should not have a "' + propName + '" prop');
-	    }
+	    if (props[propName]) return new Error('<' + componentName + '> should not have a "' + propName + '" prop');
 	  },
 
 	  /**
@@ -20599,57 +20600,19 @@
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 	var assign = __webpack_require__(13);
-	var invariant = __webpack_require__(7);
-	var warning = __webpack_require__(15);
-	var PathUtils = __webpack_require__(161);
+	var invariant = __webpack_require__(161);
+	var warning = __webpack_require__(162);
+	var PathUtils = __webpack_require__(163);
 
 	var _currentRoute;
 
 	var Route = (function () {
-	  function Route(name, path, ignoreScrollBehavior, isDefault, isNotFound, onEnter, onLeave, handler) {
-	    _classCallCheck(this, Route);
-
-	    this.name = name;
-	    this.path = path;
-	    this.paramNames = PathUtils.extractParamNames(this.path);
-	    this.ignoreScrollBehavior = !!ignoreScrollBehavior;
-	    this.isDefault = !!isDefault;
-	    this.isNotFound = !!isNotFound;
-	    this.onEnter = onEnter;
-	    this.onLeave = onLeave;
-	    this.handler = handler;
-	  }
-
-	  _createClass(Route, [{
-	    key: 'appendChild',
-
-	    /**
-	     * Appends the given route to this route's child routes.
-	     */
-	    value: function appendChild(route) {
-	      invariant(route instanceof Route, 'route.appendChild must use a valid Route');
-
-	      if (!this.childRoutes) this.childRoutes = [];
-
-	      this.childRoutes.push(route);
-	    }
-	  }, {
-	    key: 'toString',
-	    value: function toString() {
-	      var string = '<Route';
-
-	      if (this.name) string += ' name="' + this.name + '"';
-
-	      string += ' path="' + this.path + '">';
-
-	      return string;
-	    }
-	  }], [{
+	  _createClass(Route, null, [{
 	    key: 'createRoute',
 
 	    /**
@@ -20748,28 +20711,26 @@
 
 	      return route;
 	    }
-	  }, {
-	    key: 'createDefaultRoute',
 
 	    /**
 	     * Creates and returns a route that is rendered when its parent matches
 	     * the current URL.
 	     */
+	  }, {
+	    key: 'createDefaultRoute',
 	    value: function createDefaultRoute(options) {
 	      return Route.createRoute(assign({}, options, { isDefault: true }));
 	    }
-	  }, {
-	    key: 'createNotFoundRoute',
 
 	    /**
 	     * Creates and returns a route that is rendered when its parent matches
 	     * the current URL but none of its siblings do.
 	     */
+	  }, {
+	    key: 'createNotFoundRoute',
 	    value: function createNotFoundRoute(options) {
 	      return Route.createRoute(assign({}, options, { isNotFound: true }));
 	    }
-	  }, {
-	    key: 'createRedirect',
 
 	    /**
 	     * Creates and returns a route that automatically redirects the transition
@@ -20783,6 +20744,8 @@
 	     * - query        The query to use in the redirect URL. Defaults
 	     *                to using the current query
 	     */
+	  }, {
+	    key: 'createRedirect',
 	    value: function createRedirect(options) {
 	      return Route.createRoute(assign({}, options, {
 	        path: options.path || options.from || '*',
@@ -20790,6 +20753,46 @@
 	          transition.redirect(options.to, options.params || params, options.query || query);
 	        }
 	      }));
+	    }
+	  }]);
+
+	  function Route(name, path, ignoreScrollBehavior, isDefault, isNotFound, onEnter, onLeave, handler) {
+	    _classCallCheck(this, Route);
+
+	    this.name = name;
+	    this.path = path;
+	    this.paramNames = PathUtils.extractParamNames(this.path);
+	    this.ignoreScrollBehavior = !!ignoreScrollBehavior;
+	    this.isDefault = !!isDefault;
+	    this.isNotFound = !!isNotFound;
+	    this.onEnter = onEnter;
+	    this.onLeave = onLeave;
+	    this.handler = handler;
+	  }
+
+	  /**
+	   * Appends the given route to this route's child routes.
+	   */
+
+	  _createClass(Route, [{
+	    key: 'appendChild',
+	    value: function appendChild(route) {
+	      invariant(route instanceof Route, 'route.appendChild must use a valid Route');
+
+	      if (!this.childRoutes) this.childRoutes = [];
+
+	      this.childRoutes.push(route);
+	    }
+	  }, {
+	    key: 'toString',
+	    value: function toString() {
+	      var string = '<Route';
+
+	      if (this.name) string += ' name="' + this.name + '"';
+
+	      string += ' path="' + this.path + '">';
+
+	      return string;
 	    }
 	  }]);
 
@@ -20802,15 +20805,140 @@
 /* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule invariant
+	 */
+
 	'use strict';
 
-	var invariant = __webpack_require__(7);
-	var assign = __webpack_require__(162);
-	var qs = __webpack_require__(163);
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var invariant = function(condition, format, a, b, c, d, e, f) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	        'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        'Invariant Violation: ' +
+	        format.replace(/%s/g, function() { return args[argIndex++]; })
+	      );
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	module.exports = invariant;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of https://github.com/facebook/react/tree/0.13-stable.
+	 * An additional grant of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule warning
+	 */
+
+	"use strict";
+
+	/**
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var __DEV__ = process.env.NODE_ENV !== 'production';
+
+	var warning = function warning() {};
+
+	if (__DEV__) {
+	  warning = function (condition, format) {
+	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+	      args[_key - 2] = arguments[_key];
+	    }
+
+	    if (format === undefined) {
+	      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+	    }
+
+	    if (format.length < 10 || /^[s\W]*$/.test(format)) {
+	      throw new Error('The warning format should be able to uniquely identify this ' + 'warning. Please, use a more descriptive format than: ' + format);
+	    }
+
+	    if (format.indexOf('Failed Composite propType: ') === 0) {
+	      return; // Ignore CompositeComponent proptype check.
+	    }
+
+	    if (!condition) {
+	      var argIndex = 0;
+	      var message = 'Warning: ' + format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      });
+	      console.warn(message);
+	      try {
+	        // --- Welcome to debugging React ---
+	        // This error was thrown as a convenience so that you can use this stack
+	        // to find the callsite that caused this warning to fire.
+	        throw new Error(message);
+	      } catch (x) {}
+	    }
+	  };
+	}
+
+	module.exports = warning;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var invariant = __webpack_require__(161);
+	var assign = __webpack_require__(164);
+	var qs = __webpack_require__(165);
 
 	var paramCompileMatcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|[*.()\[\]\\+|{}^$]/g;
 	var paramInjectMatcher = /:([a-zA-Z_$][a-zA-Z0-9_$?]*[?]?)|[*]/g;
-	var paramInjectTrailingSlashMatcher = /\/\/\?|\/\?\/|\/\?/g;
+	var paramInjectTrailingSlashMatcher = /\/\/\?|\/\?\/|\/\?(?![^\/=]+=.*$)/g;
 	var queryMatcher = /\?(.*)$/;
 
 	var _compiledPatterns = {};
@@ -20875,9 +21003,9 @@
 
 	    var match = path.match(matcher);
 
-	    if (!match) {
-	      return null;
-	    }var params = {};
+	    if (!match) return null;
+
+	    var params = {};
 
 	    paramNames.forEach(function (paramName, index) {
 	      params[paramName] = match[index + 1];
@@ -20947,9 +21075,9 @@
 
 	    var queryString = qs.stringify(query, { arrayFormat: 'brackets' });
 
-	    if (queryString) {
-	      return PathUtils.withoutQuery(path) + '?' + queryString;
-	    }return PathUtils.withoutQuery(path);
+	    if (queryString) return PathUtils.withoutQuery(path) + '?' + queryString;
+
+	    return PathUtils.withoutQuery(path);
 	  }
 
 	};
@@ -20957,7 +21085,7 @@
 	module.exports = PathUtils;
 
 /***/ },
-/* 162 */
+/* 164 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20989,20 +21117,20 @@
 
 
 /***/ },
-/* 163 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(164);
+	module.exports = __webpack_require__(166);
 
 
 /***/ },
-/* 164 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Load modules
 
-	var Stringify = __webpack_require__(165);
-	var Parse = __webpack_require__(167);
+	var Stringify = __webpack_require__(167);
+	var Parse = __webpack_require__(169);
 
 
 	// Declare internals
@@ -21017,12 +21145,12 @@
 
 
 /***/ },
-/* 165 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Load modules
 
-	var Utils = __webpack_require__(166);
+	var Utils = __webpack_require__(168);
 
 
 	// Declare internals
@@ -21120,7 +21248,7 @@
 
 
 /***/ },
-/* 166 */
+/* 168 */
 /***/ function(module, exports) {
 
 	// Load modules
@@ -21258,12 +21386,12 @@
 
 
 /***/ },
-/* 167 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Load modules
 
-	var Utils = __webpack_require__(166);
+	var Utils = __webpack_require__(168);
 
 
 	// Declare internals
@@ -21425,19 +21553,21 @@
 
 
 /***/ },
-/* 168 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(1);
-	var ContextWrapper = __webpack_require__(169);
+	var ContextWrapper = __webpack_require__(171);
 	var assign = __webpack_require__(13);
 	var PropTypes = __webpack_require__(159);
 
@@ -21449,15 +21579,17 @@
 	 */
 
 	var RouteHandler = (function (_React$Component) {
+	  _inherits(RouteHandler, _React$Component);
+
 	  function RouteHandler() {
 	    _classCallCheck(this, RouteHandler);
 
-	    if (_React$Component != null) {
-	      _React$Component.apply(this, arguments);
-	    }
+	    _get(Object.getPrototypeOf(RouteHandler.prototype), 'constructor', this).apply(this, arguments);
 	  }
 
-	  _inherits(RouteHandler, _React$Component);
+	  // TODO: Include these in the above class definition
+	  // once we can use ES7 property initializers.
+	  // https://github.com/babel/babel/issues/619
 
 	  _createClass(RouteHandler, [{
 	    key: 'getChildContext',
@@ -21496,9 +21628,9 @@
 	    value: function createChildRouteHandler(props) {
 	      var route = this.context.router.getRouteAtDepth(this.getRouteDepth());
 
-	      if (route == null) {
-	        return null;
-	      }var childProps = assign({}, props || this.props, {
+	      if (route == null) return null;
+
+	      var childProps = assign({}, props || this.props, {
 	        ref: REF_NAME,
 	        params: this.context.router.getCurrentParams(),
 	        query: this.context.router.getCurrentQuery()
@@ -21522,10 +21654,6 @@
 	  return RouteHandler;
 	})(React.Component);
 
-	// TODO: Include these in the above class definition
-	// once we can use ES7 property initializers.
-	// https://github.com/babel/babel/issues/619
-
 	RouteHandler.contextTypes = {
 	  routeDepth: PropTypes.number.isRequired,
 	  router: PropTypes.router.isRequired
@@ -21538,16 +21666,8 @@
 	module.exports = RouteHandler;
 
 /***/ },
-/* 169 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
 	/**
 	 * This component is necessary to get around a context warning
@@ -21555,18 +21675,26 @@
 	 * between the "owner" and "parent" contexts.
 	 */
 
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var React = __webpack_require__(1);
 
 	var ContextWrapper = (function (_React$Component) {
+	  _inherits(ContextWrapper, _React$Component);
+
 	  function ContextWrapper() {
 	    _classCallCheck(this, ContextWrapper);
 
-	    if (_React$Component != null) {
-	      _React$Component.apply(this, arguments);
-	    }
+	    _get(Object.getPrototypeOf(ContextWrapper.prototype), 'constructor', this).apply(this, arguments);
 	  }
-
-	  _inherits(ContextWrapper, _React$Component);
 
 	  _createClass(ContextWrapper, [{
 	    key: 'render',
@@ -21581,21 +21709,23 @@
 	module.exports = ContextWrapper;
 
 /***/ },
-/* 170 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(1);
-	var invariant = __webpack_require__(7);
+	var invariant = __webpack_require__(161);
 	var PropTypes = __webpack_require__(159);
-	var RouteHandler = __webpack_require__(168);
+	var RouteHandler = __webpack_require__(170);
 
 	/**
 	 * <Route> components specify components that are rendered to the page when the
@@ -21628,7 +21758,7 @@
 	 *   var App = React.createClass({
 	 *     render: function () {
 	 *       return (
-	 *         <div class="application">
+	 *         <div className="application">
 	 *           <RouteHandler/>
 	 *         </div>
 	 *       );
@@ -21639,15 +21769,17 @@
 	 */
 
 	var Route = (function (_React$Component) {
+	  _inherits(Route, _React$Component);
+
 	  function Route() {
 	    _classCallCheck(this, Route);
 
-	    if (_React$Component != null) {
-	      _React$Component.apply(this, arguments);
-	    }
+	    _get(Object.getPrototypeOf(Route.prototype), 'constructor', this).apply(this, arguments);
 	  }
 
-	  _inherits(Route, _React$Component);
+	  // TODO: Include these in the above class definition
+	  // once we can use ES7 property initializers.
+	  // https://github.com/babel/babel/issues/619
 
 	  _createClass(Route, [{
 	    key: 'render',
@@ -21658,10 +21790,6 @@
 
 	  return Route;
 	})(React.Component);
-
-	// TODO: Include these in the above class definition
-	// once we can use ES7 property initializers.
-	// https://github.com/babel/babel/issues/619
 
 	Route.propTypes = {
 	  name: PropTypes.string,
@@ -21677,16 +21805,18 @@
 	module.exports = Route;
 
 /***/ },
-/* 171 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(1);
 	var assign = __webpack_require__(13);
@@ -21720,15 +21850,17 @@
 	 */
 
 	var Link = (function (_React$Component) {
+	  _inherits(Link, _React$Component);
+
 	  function Link() {
 	    _classCallCheck(this, Link);
 
-	    if (_React$Component != null) {
-	      _React$Component.apply(this, arguments);
-	    }
+	    _get(Object.getPrototypeOf(Link.prototype), 'constructor', this).apply(this, arguments);
 	  }
 
-	  _inherits(Link, _React$Component);
+	  // TODO: Include these in the above class definition
+	  // once we can use ES7 property initializers.
+	  // https://github.com/babel/babel/issues/619
 
 	  _createClass(Link, [{
 	    key: 'handleClick',
@@ -21738,30 +21870,30 @@
 
 	      if (this.props.onClick) clickResult = this.props.onClick(event);
 
-	      if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
-	        return;
-	      }if (clickResult === false || event.defaultPrevented === true) allowTransition = false;
+	      if (isModifiedEvent(event) || !isLeftClickEvent(event)) return;
+
+	      if (clickResult === false || event.defaultPrevented === true) allowTransition = false;
 
 	      event.preventDefault();
 
 	      if (allowTransition) this.context.router.transitionTo(this.props.to, this.props.params, this.props.query);
 	    }
-	  }, {
-	    key: 'getHref',
 
 	    /**
 	     * Returns the value of the "href" attribute to use on the DOM element.
 	     */
+	  }, {
+	    key: 'getHref',
 	    value: function getHref() {
 	      return this.context.router.makeHref(this.props.to, this.props.params, this.props.query);
 	    }
-	  }, {
-	    key: 'getClassName',
 
 	    /**
 	     * Returns the value of the "class" attribute to use on the DOM element, which contains
 	     * the value of the activeClassName property when this <Link> is active.
 	     */
+	  }, {
+	    key: 'getClassName',
 	    value: function getClassName() {
 	      var className = this.props.className;
 
@@ -21792,10 +21924,6 @@
 	  return Link;
 	})(React.Component);
 
-	// TODO: Include these in the above class definition
-	// once we can use ES7 property initializers.
-	// https://github.com/babel/babel/issues/619
-
 	Link.contextTypes = {
 	  router: PropTypes.router.isRequired
 	};
@@ -21817,18 +21945,20 @@
 	module.exports = Link;
 
 /***/ },
-/* 172 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var PropTypes = __webpack_require__(159);
-	var RouteHandler = __webpack_require__(168);
-	var Route = __webpack_require__(170);
+	var RouteHandler = __webpack_require__(170);
+	var Route = __webpack_require__(172);
 
 	/**
 	 * A <NotFoundRoute> is a special kind of <Route> that
@@ -21839,22 +21969,20 @@
 	 */
 
 	var NotFoundRoute = (function (_Route) {
+	  _inherits(NotFoundRoute, _Route);
+
 	  function NotFoundRoute() {
 	    _classCallCheck(this, NotFoundRoute);
 
-	    if (_Route != null) {
-	      _Route.apply(this, arguments);
-	    }
+	    _get(Object.getPrototypeOf(NotFoundRoute.prototype), 'constructor', this).apply(this, arguments);
 	  }
 
-	  _inherits(NotFoundRoute, _Route);
+	  // TODO: Include these in the above class definition
+	  // once we can use ES7 property initializers.
+	  // https://github.com/babel/babel/issues/619
 
 	  return NotFoundRoute;
 	})(Route);
-
-	// TODO: Include these in the above class definition
-	// once we can use ES7 property initializers.
-	// https://github.com/babel/babel/issues/619
 
 	NotFoundRoute.propTypes = {
 	  name: PropTypes.string,
@@ -21870,17 +21998,19 @@
 	module.exports = NotFoundRoute;
 
 /***/ },
-/* 173 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-	var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var PropTypes = __webpack_require__(159);
-	var Route = __webpack_require__(170);
+	var Route = __webpack_require__(172);
 
 	/**
 	 * A <Redirect> component is a special kind of <Route> that always
@@ -21888,22 +22018,20 @@
 	 */
 
 	var Redirect = (function (_Route) {
+	  _inherits(Redirect, _Route);
+
 	  function Redirect() {
 	    _classCallCheck(this, Redirect);
 
-	    if (_Route != null) {
-	      _Route.apply(this, arguments);
-	    }
+	    _get(Object.getPrototypeOf(Redirect.prototype), 'constructor', this).apply(this, arguments);
 	  }
 
-	  _inherits(Redirect, _Route);
+	  // TODO: Include these in the above class definition
+	  // once we can use ES7 property initializers.
+	  // https://github.com/babel/babel/issues/619
 
 	  return Redirect;
 	})(Route);
-
-	// TODO: Include these in the above class definition
-	// once we can use ES7 property initializers.
-	// https://github.com/babel/babel/issues/619
 
 	Redirect.propTypes = {
 	  path: PropTypes.string,
@@ -21918,13 +22046,13 @@
 	module.exports = Redirect;
 
 /***/ },
-/* 174 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var LocationActions = __webpack_require__(175);
-	var History = __webpack_require__(176);
+	var LocationActions = __webpack_require__(177);
+	var History = __webpack_require__(178);
 
 	var _listeners = [];
 	var _isListening = false;
@@ -21946,9 +22074,9 @@
 	function ensureSlash() {
 	  var path = HashLocation.getCurrentPath();
 
-	  if (path.charAt(0) === '/') {
-	    return true;
-	  }HashLocation.replace('/' + path);
+	  if (path.charAt(0) === '/') return true;
+
+	  HashLocation.replace('/' + path);
 
 	  return false;
 	}
@@ -22034,7 +22162,7 @@
 	module.exports = HashLocation;
 
 /***/ },
-/* 175 */
+/* 177 */
 /***/ function(module, exports) {
 
 	/**
@@ -22064,13 +22192,13 @@
 	module.exports = LocationActions;
 
 /***/ },
-/* 176 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var invariant = __webpack_require__(7);
-	var canUseDOM = __webpack_require__(51).canUseDOM;
+	var invariant = __webpack_require__(161);
+	var canUseDOM = __webpack_require__(179);
 
 	var History = {
 
@@ -22099,13 +22227,25 @@
 	module.exports = History;
 
 /***/ },
-/* 177 */
+/* 179 */
+/***/ function(module, exports) {
+
+	var canUseDOM = !!(
+	  typeof window !== 'undefined' &&
+	  window.document &&
+	  window.document.createElement
+	);
+
+	module.exports = canUseDOM;
+
+/***/ },
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var LocationActions = __webpack_require__(175);
-	var History = __webpack_require__(176);
+	var LocationActions = __webpack_require__(177);
+	var History = __webpack_require__(178);
 
 	var _listeners = [];
 	var _isListening = false;
@@ -22122,9 +22262,7 @@
 	}
 
 	function onPopState(event) {
-	  if (event.state === undefined) {
-	    return;
-	  } // Ignore extraneous popstate events in WebKit.
+	  if (event.state === undefined) return; // Ignore extraneous popstate events in WebKit.
 
 	  notifyChange(LocationActions.POP);
 	}
@@ -22190,13 +22328,13 @@
 	module.exports = HistoryLocation;
 
 /***/ },
-/* 178 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var HistoryLocation = __webpack_require__(177);
-	var History = __webpack_require__(176);
+	var HistoryLocation = __webpack_require__(180);
+	var History = __webpack_require__(178);
 
 	/**
 	 * A Location that uses full page refreshes. This is used as
@@ -22226,16 +22364,16 @@
 	module.exports = RefreshLocation;
 
 /***/ },
-/* 179 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var invariant = __webpack_require__(7);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var invariant = __webpack_require__(161);
 
 	function throwCannotModify() {
 	  invariant(false, 'You cannot modify a static location');
@@ -22254,6 +22392,10 @@
 	    this.path = path;
 	  }
 
+	  // TODO: Include these in the above class definition
+	  // once we can use ES7 property initializers.
+	  // https://github.com/babel/babel/issues/619
+
 	  _createClass(StaticLocation, [{
 	    key: 'getCurrentPath',
 	    value: function getCurrentPath() {
@@ -22269,10 +22411,6 @@
 	  return StaticLocation;
 	})();
 
-	// TODO: Include these in the above class definition
-	// once we can use ES7 property initializers.
-	// https://github.com/babel/babel/issues/619
-
 	StaticLocation.prototype.push = throwCannotModify;
 	StaticLocation.prototype.replace = throwCannotModify;
 	StaticLocation.prototype.pop = throwCannotModify;
@@ -22280,18 +22418,18 @@
 	module.exports = StaticLocation;
 
 /***/ },
-/* 180 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var invariant = __webpack_require__(7);
-	var LocationActions = __webpack_require__(175);
-	var History = __webpack_require__(176);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var invariant = __webpack_require__(161);
+	var LocationActions = __webpack_require__(177);
+	var History = __webpack_require__(178);
 
 	/**
 	 * A location that is convenient for testing and does not require a DOM.
@@ -22303,15 +22441,11 @@
 
 	    this.history = history || [];
 	    this.listeners = [];
+	    this.needsDOM = false;
 	    this._updateHistoryLength();
 	  }
 
 	  _createClass(TestLocation, [{
-	    key: 'needsDOM',
-	    get: function () {
-	      return false;
-	    }
-	  }, {
 	    key: '_updateHistoryLength',
 	    value: function _updateHistoryLength() {
 	      History.length = this.history.length;
@@ -22379,12 +22513,12 @@
 	module.exports = TestLocation;
 
 /***/ },
-/* 181 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var LocationActions = __webpack_require__(175);
+	var LocationActions = __webpack_require__(177);
 
 	/**
 	 * A scroll behavior that attempts to imitate the default behavior
@@ -22413,7 +22547,7 @@
 	module.exports = ImitateBrowserBehavior;
 
 /***/ },
-/* 182 */
+/* 185 */
 /***/ function(module, exports) {
 
 	/**
@@ -22433,7 +22567,7 @@
 	module.exports = ScrollToTopBehavior;
 
 /***/ },
-/* 183 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22508,7 +22642,7 @@
 	module.exports = Navigation;
 
 /***/ },
-/* 184 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22587,7 +22721,7 @@
 	module.exports = State;
 
 /***/ },
-/* 185 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint -W084 */
@@ -22595,10 +22729,10 @@
 
 	var React = __webpack_require__(1);
 	var assign = __webpack_require__(13);
-	var warning = __webpack_require__(15);
+	var warning = __webpack_require__(162);
 	var DefaultRoute = __webpack_require__(158);
-	var NotFoundRoute = __webpack_require__(172);
-	var Redirect = __webpack_require__(173);
+	var NotFoundRoute = __webpack_require__(174);
+	var Redirect = __webpack_require__(175);
 	var Route = __webpack_require__(160);
 
 	function checkPropTypes(componentName, propTypes, props) {
@@ -22626,20 +22760,20 @@
 	}
 
 	function createRouteFromReactElement(element) {
-	  if (!React.isValidElement(element)) {
-	    return;
-	  }var type = element.type;
+	  if (!React.isValidElement(element)) return;
+
+	  var type = element.type;
 	  var props = assign({}, type.defaultProps, element.props);
 
 	  if (type.propTypes) checkPropTypes(type.displayName, type.propTypes, props);
 
-	  if (type === DefaultRoute) {
-	    return Route.createDefaultRoute(createRouteOptions(props));
-	  }if (type === NotFoundRoute) {
-	    return Route.createNotFoundRoute(createRouteOptions(props));
-	  }if (type === Redirect) {
-	    return Route.createRedirect(createRouteOptions(props));
-	  }return Route.createRoute(createRouteOptions(props), function () {
+	  if (type === DefaultRoute) return Route.createDefaultRoute(createRouteOptions(props));
+
+	  if (type === NotFoundRoute) return Route.createNotFoundRoute(createRouteOptions(props));
+
+	  if (type === Redirect) return Route.createRedirect(createRouteOptions(props));
+
+	  return Route.createRoute(createRouteOptions(props), function () {
 	    if (props.children) createRoutesFromReactChildren(props.children);
 	  });
 	}
@@ -22673,34 +22807,34 @@
 	module.exports = createRoutesFromReactChildren;
 
 /***/ },
-/* 186 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/* jshint -W058 */
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var warning = __webpack_require__(15);
-	var invariant = __webpack_require__(7);
-	var canUseDOM = __webpack_require__(51).canUseDOM;
-	var LocationActions = __webpack_require__(175);
-	var ImitateBrowserBehavior = __webpack_require__(181);
-	var HashLocation = __webpack_require__(174);
-	var HistoryLocation = __webpack_require__(177);
-	var RefreshLocation = __webpack_require__(178);
-	var StaticLocation = __webpack_require__(179);
-	var ScrollHistory = __webpack_require__(187);
-	var createRoutesFromReactChildren = __webpack_require__(185);
-	var isReactChildren = __webpack_require__(189);
-	var Transition = __webpack_require__(190);
+	var warning = __webpack_require__(162);
+	var invariant = __webpack_require__(161);
+	var canUseDOM = __webpack_require__(179);
+	var LocationActions = __webpack_require__(177);
+	var ImitateBrowserBehavior = __webpack_require__(184);
+	var HashLocation = __webpack_require__(176);
+	var HistoryLocation = __webpack_require__(180);
+	var RefreshLocation = __webpack_require__(181);
+	var StaticLocation = __webpack_require__(182);
+	var ScrollHistory = __webpack_require__(190);
+	var createRoutesFromReactChildren = __webpack_require__(188);
+	var isReactChildren = __webpack_require__(192);
+	var Transition = __webpack_require__(193);
 	var PropTypes = __webpack_require__(159);
-	var Redirect = __webpack_require__(192);
-	var History = __webpack_require__(176);
-	var Cancellation = __webpack_require__(191);
-	var Match = __webpack_require__(193);
+	var Redirect = __webpack_require__(195);
+	var History = __webpack_require__(178);
+	var Cancellation = __webpack_require__(194);
+	var Match = __webpack_require__(196);
 	var Route = __webpack_require__(160);
-	var supportsHistory = __webpack_require__(194);
-	var PathUtils = __webpack_require__(161);
+	var supportsHistory = __webpack_require__(197);
+	var PathUtils = __webpack_require__(163);
 
 	/**
 	 * The default location for new routers.
@@ -22713,9 +22847,9 @@
 	var DEFAULT_SCROLL_BEHAVIOR = canUseDOM ? ImitateBrowserBehavior : null;
 
 	function hasProperties(object, properties) {
-	  for (var propertyName in properties) if (properties.hasOwnProperty(propertyName) && object[propertyName] !== properties[propertyName]) {
-	    return false;
-	  }return true;
+	  for (var propertyName in properties) if (properties.hasOwnProperty(propertyName) && object[propertyName] !== properties[propertyName]) return false;
+
+	  return true;
 	}
 
 	function hasMatch(routes, route, prevParams, nextParams, prevQuery, nextQuery) {
@@ -22759,15 +22893,15 @@
 	}
 
 	function paramsAreActive(activeParams, params) {
-	  for (var property in params) if (String(activeParams[property]) !== String(params[property])) {
-	    return false;
-	  }return true;
+	  for (var property in params) if (String(activeParams[property]) !== String(params[property])) return false;
+
+	  return true;
 	}
 
 	function queryIsActive(activeQuery, query) {
-	  for (var property in query) if (String(activeQuery[property]) !== String(query[property])) {
-	    return false;
-	  }return true;
+	  for (var property in query) if (String(activeQuery[property]) !== String(query[property])) return false;
+
+	  return true;
 	}
 
 	/**
@@ -22979,9 +23113,7 @@
 	        var prevPath = state.path;
 	        var isRefreshing = action == null;
 
-	        if (prevPath === path && !isRefreshing) {
-	          return;
-	        } // Nothing to do!
+	        if (prevPath === path && !isRefreshing) return; // Nothing to do!
 
 	        // Record the scroll position as early as possible to
 	        // get it before browsers try update it automatically.
@@ -23138,9 +23270,9 @@
 	       * Returns true if the given route, params, and query are active.
 	       */
 	      isActive: function isActive(to, params, query) {
-	        if (PathUtils.isAbsolute(to)) {
-	          return to === state.path;
-	        }return routeIsActive(state.routes, to) && paramsAreActive(state.params, params) && (query == null || queryIsActive(state.query, query));
+	        if (PathUtils.isAbsolute(to)) return to === state.path;
+
+	        return routeIsActive(state.routes, to) && paramsAreActive(state.params, params) && (query == null || queryIsActive(state.query, query));
 	      }
 
 	    },
@@ -23193,22 +23325,22 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 187 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var invariant = __webpack_require__(7);
-	var canUseDOM = __webpack_require__(51).canUseDOM;
-	var getWindowScrollPosition = __webpack_require__(188);
+	var invariant = __webpack_require__(161);
+	var canUseDOM = __webpack_require__(179);
+	var getWindowScrollPosition = __webpack_require__(191);
 
 	function shouldUpdateScroll(state, prevState) {
-	  if (!prevState) {
-	    return true;
-	  } // Don't update scroll position when only the query has changed.
-	  if (state.pathname === prevState.pathname) {
-	    return false;
-	  }var routes = state.routes;
+	  if (!prevState) return true;
+
+	  // Don't update scroll position when only the query has changed.
+	  if (state.pathname === prevState.pathname) return false;
+
+	  var routes = state.routes;
 	  var prevRoutes = prevState.routes;
 
 	  var sharedAncestorRoutes = routes.filter(function (route) {
@@ -23261,9 +23393,9 @@
 	  },
 
 	  _updateScroll: function _updateScroll(prevState) {
-	    if (!shouldUpdateScroll(this.state, prevState)) {
-	      return;
-	    }var scrollBehavior = this.constructor.getScrollBehavior();
+	    if (!shouldUpdateScroll(this.state, prevState)) return;
+
+	    var scrollBehavior = this.constructor.getScrollBehavior();
 
 	    if (scrollBehavior) scrollBehavior.updateScrollPosition(this.constructor.getScrollPosition(this.state.path), this.state.action);
 	  }
@@ -23273,13 +23405,13 @@
 	module.exports = ScrollHistory;
 
 /***/ },
-/* 188 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var invariant = __webpack_require__(7);
-	var canUseDOM = __webpack_require__(51).canUseDOM;
+	var invariant = __webpack_require__(161);
+	var canUseDOM = __webpack_require__(179);
 
 	/**
 	 * Returns the current scroll position of the window as { x, y }.
@@ -23296,7 +23428,7 @@
 	module.exports = getWindowScrollPosition;
 
 /***/ },
-/* 189 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23314,15 +23446,15 @@
 	module.exports = isReactChildren;
 
 /***/ },
-/* 190 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint -W058 */
 
 	'use strict';
 
-	var Cancellation = __webpack_require__(191);
-	var Redirect = __webpack_require__(192);
+	var Cancellation = __webpack_require__(194);
+	var Redirect = __webpack_require__(195);
 
 	/**
 	 * Encapsulates a transition to a given path.
@@ -23394,7 +23526,7 @@
 	module.exports = Transition;
 
 /***/ },
-/* 191 */
+/* 194 */
 /***/ function(module, exports) {
 
 	/**
@@ -23408,7 +23540,7 @@
 	module.exports = Cancellation;
 
 /***/ },
-/* 192 */
+/* 195 */
 /***/ function(module, exports) {
 
 	/**
@@ -23425,17 +23557,17 @@
 	module.exports = Redirect;
 
 /***/ },
-/* 193 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* jshint -W084 */
 	'use strict';
-
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	/* jshint -W084 */
-	var PathUtils = __webpack_require__(161);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var PathUtils = __webpack_require__(163);
 
 	function deepSearch(route, pathname, query) {
 	  // Check the subtree first to find the most deeply-nested match.
@@ -23457,29 +23589,20 @@
 
 	  // No child routes matched; try the default route.
 	  var defaultRoute = route.defaultRoute;
-	  if (defaultRoute && (params = PathUtils.extractParams(defaultRoute.path, pathname))) {
-	    return new Match(pathname, params, query, [route, defaultRoute]);
-	  } // Does the "not found" route match?
+	  if (defaultRoute && (params = PathUtils.extractParams(defaultRoute.path, pathname))) return new Match(pathname, params, query, [route, defaultRoute]);
+
+	  // Does the "not found" route match?
 	  var notFoundRoute = route.notFoundRoute;
-	  if (notFoundRoute && (params = PathUtils.extractParams(notFoundRoute.path, pathname))) {
-	    return new Match(pathname, params, query, [route, notFoundRoute]);
-	  } // Last attempt: check this route.
+	  if (notFoundRoute && (params = PathUtils.extractParams(notFoundRoute.path, pathname))) return new Match(pathname, params, query, [route, notFoundRoute]);
+
+	  // Last attempt: check this route.
 	  var params = PathUtils.extractParams(route.path, pathname);
-	  if (params) {
-	    return new Match(pathname, params, query, [route]);
-	  }return null;
+	  if (params) return new Match(pathname, params, query, [route]);
+
+	  return null;
 	}
 
 	var Match = (function () {
-	  function Match(pathname, params, query, routes) {
-	    _classCallCheck(this, Match);
-
-	    this.pathname = pathname;
-	    this.params = params;
-	    this.query = query;
-	    this.routes = routes;
-	  }
-
 	  _createClass(Match, null, [{
 	    key: 'findMatch',
 
@@ -23499,13 +23622,22 @@
 	    }
 	  }]);
 
+	  function Match(pathname, params, query, routes) {
+	    _classCallCheck(this, Match);
+
+	    this.pathname = pathname;
+	    this.params = params;
+	    this.query = query;
+	    this.routes = routes;
+	  }
+
 	  return Match;
 	})();
 
 	module.exports = Match;
 
 /***/ },
-/* 194 */
+/* 197 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23526,12 +23658,12 @@
 	module.exports = supportsHistory;
 
 /***/ },
-/* 195 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createRouter = __webpack_require__(186);
+	var createRouter = __webpack_require__(189);
 
 	/**
 	 * A high-level convenience method that creates, configures, and
@@ -23581,7 +23713,7 @@
 	module.exports = runRouter;
 
 /***/ },
-/* 196 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var App, Link, React, Route, RouteHandler, Router;
@@ -23603,26 +23735,26 @@
 
 
 /***/ },
-/* 197 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AvgElapsedTimeGauge, FlowDashboard, FlowDeployAvgElapsedTime, FlowDeployAvgElapsedTimeOverTime, FlowDeployOverTime, FlowDeployStatus, OverTimeGauge, React, StatusGauge;
 
 	React = __webpack_require__(1);
 
-	FlowDeployStatus = __webpack_require__(198);
+	FlowDeployStatus = __webpack_require__(201);
 
-	FlowDeployAvgElapsedTime = __webpack_require__(292);
+	FlowDeployAvgElapsedTime = __webpack_require__(295);
 
-	FlowDeployAvgElapsedTimeOverTime = __webpack_require__(294);
+	FlowDeployAvgElapsedTimeOverTime = __webpack_require__(297);
 
-	FlowDeployOverTime = __webpack_require__(296);
+	FlowDeployOverTime = __webpack_require__(299);
 
-	StatusGauge = __webpack_require__(298);
+	StatusGauge = __webpack_require__(301);
 
-	AvgElapsedTimeGauge = __webpack_require__(299);
+	AvgElapsedTimeGauge = __webpack_require__(302);
 
-	OverTimeGauge = __webpack_require__(300);
+	OverTimeGauge = __webpack_require__(303);
 
 	FlowDashboard = React.createClass({
 	  displayName: 'FlowDashboard',
@@ -23644,9 +23776,37 @@
 	      }
 	    };
 	  },
+	  componentWillReceiveProps: function(nextProps) {
+	    var byUnit, inLast, ref;
+	    ref = nextProps.query, inLast = ref.inLast, byUnit = ref.byUnit;
+	    this.flowDeployStatus.set({
+	      inLast: inLast,
+	      byUnit: byUnit
+	    });
+	    this.flowDeployStatus.fetch();
+	    this.flowDeployOverTime.set({
+	      inLast: inLast,
+	      byUnit: byUnit
+	    });
+	    this.flowDeployOverTime.fetch();
+	    this.flowDeployAvgElapsedTime.set({
+	      inLast: inLast,
+	      byUnit: byUnit
+	    });
+	    this.flowDeployAvgElapsedTime.fetch();
+	    this.flowDeployAvgElapsedTimeOverTime.set({
+	      inLast: inLast,
+	      byUnit: byUnit
+	    });
+	    return this.flowDeployAvgElapsedTimeOverTime.fetch();
+	  },
 	  componentWillMount: function() {
+	    var byUnit, inLast, ref;
+	    ref = this.props.query, inLast = ref.inLast, byUnit = ref.byUnit;
 	    this.flowDeployStatus = new FlowDeployStatus({
-	      index: "flow_deploy"
+	      index: 'flow_deploy',
+	      inLast: inLast,
+	      byUnit: byUnit
 	    });
 	    this.flowDeployStatus.on('change', (function(_this) {
 	      return function() {
@@ -23656,7 +23816,9 @@
 	      };
 	    })(this));
 	    this.flowDeployOverTime = new FlowDeployOverTime({
-	      index: "flow_deploy"
+	      index: 'flow_deploy',
+	      inLast: inLast,
+	      byUnit: byUnit
 	    });
 	    this.flowDeployOverTime.on('change', (function(_this) {
 	      return function() {
@@ -23666,7 +23828,9 @@
 	      };
 	    })(this));
 	    this.flowDeployAvgElapsedTime = new FlowDeployAvgElapsedTime({
-	      index: "flow_deploy"
+	      index: 'flow_deploy',
+	      inLast: inLast,
+	      byUnit: byUnit
 	    });
 	    this.flowDeployAvgElapsedTime.on('change', (function(_this) {
 	      return function() {
@@ -23676,7 +23840,9 @@
 	      };
 	    })(this));
 	    this.flowDeployAvgElapsedTimeOverTime = new FlowDeployAvgElapsedTimeOverTime({
-	      index: "flow_deploy"
+	      index: 'flow_deploy',
+	      inLast: inLast,
+	      byUnit: byUnit
 	    });
 	    return this.flowDeployAvgElapsedTimeOverTime.on('change', (function(_this) {
 	      return function() {
@@ -23724,7 +23890,7 @@
 
 
 /***/ },
-/* 198 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, FLOW_DEPLOY_STATUS_QUERY, FlowDeployStatus, _, moment,
@@ -23732,13 +23898,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	FLOW_DEPLOY_STATUS_QUERY = __webpack_require__(291);
+	FLOW_DEPLOY_STATUS_QUERY = __webpack_require__(294);
 
 	FlowDeployStatus = (function(superClass) {
 	  extend(FlowDeployStatus, superClass);
@@ -23750,6 +23916,10 @@
 	    this.initialize = bind(this.initialize, this);
 	    return FlowDeployStatus.__super__.constructor.apply(this, arguments);
 	  }
+
+	  FlowDeployStatus.prototype.defaults = {
+	    inLast: '1d'
+	  };
 
 	  FlowDeployStatus.prototype.initialize = function(attributes) {
 	    var index;
@@ -23805,8 +23975,11 @@
 	  };
 
 	  FlowDeployStatus.prototype.query = function() {
-	    var five_minutes_ago, query, yesterday;
-	    yesterday = moment().subtract(1, 'day');
+	    var five_minutes_ago, inLast, query, time, timeUnit, yesterday;
+	    inLast = this.get('inLast');
+	    time = parseInt(_.first(inLast.match(/\d+/)));
+	    timeUnit = _.first(inLast.match(/[a-zA-Z]+/));
+	    yesterday = moment().subtract(time, timeUnit);
 	    five_minutes_ago = moment().subtract(5, 'minutes');
 	    query = _.cloneDeep(FLOW_DEPLOY_STATUS_QUERY);
 	    query.aggs.filter_by_timestamp.filter.range.beginTime.gte = yesterday.valueOf();
@@ -23822,10 +23995,10 @@
 
 
 /***/ },
-/* 199 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {//     Backbone.js 1.2.2
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {//     Backbone.js 1.2.3
 
 	//     (c) 2010-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	//     Backbone may be freely distributed under the MIT license.
@@ -23841,7 +24014,7 @@
 
 	  // Set up Backbone appropriately for the environment. Start with AMD.
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(200), __webpack_require__(201), exports], __WEBPACK_AMD_DEFINE_RESULT__ = function(_, $, exports) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(203), __webpack_require__(204), exports], __WEBPACK_AMD_DEFINE_RESULT__ = function(_, $, exports) {
 	      // Export global even in AMD case in case this script is loaded with
 	      // others that may still expect a global Backbone.
 	      root.Backbone = factory(root, exports, _, $);
@@ -23871,7 +24044,7 @@
 	  var slice = Array.prototype.slice;
 
 	  // Current version of the library. Keep in sync with `package.json`.
-	  Backbone.VERSION = '1.2.2';
+	  Backbone.VERSION = '1.2.3';
 
 	  // For Backbone's purposes, jQuery, Zepto, Ender, or My Library (kidding) owns
 	  // the `$` variable.
@@ -24593,6 +24766,7 @@
 
 	  // Splices `insert` into `array` at index `at`.
 	  var splice = function(array, insert, at) {
+	    at = Math.min(Math.max(at, 0), array.length);
 	    var tail = Array(array.length - at);
 	    var length = insert.length;
 	    for (var i = 0; i < tail.length; i++) tail[i] = array[i + at];
@@ -25722,7 +25896,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 200 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -27276,7 +27450,7 @@
 
 
 /***/ },
-/* 201 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -36492,7 +36666,7 @@
 
 
 /***/ },
-/* 202 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
@@ -48847,10 +49021,10 @@
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(203)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(206)(module), (function() { return this; }())))
 
 /***/ },
-/* 203 */
+/* 206 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -48866,7 +49040,7 @@
 
 
 /***/ },
-/* 204 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
@@ -49137,7 +49311,7 @@
 	                module && module.exports) {
 	            try {
 	                oldLocale = globalLocale._abbr;
-	                __webpack_require__(205)("./" + name);
+	                __webpack_require__(208)("./" + name);
 	                // because defineLocale currently also sets the global locale, we
 	                // want to undo that for lazy loaded locales
 	                locale_locales__getSetGlobalLocale(oldLocale);
@@ -52064,183 +52238,183 @@
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(203)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(206)(module)))
 
 /***/ },
-/* 205 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 206,
-		"./af.js": 206,
-		"./ar": 207,
-		"./ar-ma": 208,
-		"./ar-ma.js": 208,
-		"./ar-sa": 209,
-		"./ar-sa.js": 209,
-		"./ar-tn": 210,
-		"./ar-tn.js": 210,
-		"./ar.js": 207,
-		"./az": 211,
-		"./az.js": 211,
-		"./be": 212,
-		"./be.js": 212,
-		"./bg": 213,
-		"./bg.js": 213,
-		"./bn": 214,
-		"./bn.js": 214,
-		"./bo": 215,
-		"./bo.js": 215,
-		"./br": 216,
-		"./br.js": 216,
-		"./bs": 217,
-		"./bs.js": 217,
-		"./ca": 218,
-		"./ca.js": 218,
-		"./cs": 219,
-		"./cs.js": 219,
-		"./cv": 220,
-		"./cv.js": 220,
-		"./cy": 221,
-		"./cy.js": 221,
-		"./da": 222,
-		"./da.js": 222,
-		"./de": 223,
-		"./de-at": 224,
-		"./de-at.js": 224,
-		"./de.js": 223,
-		"./el": 225,
-		"./el.js": 225,
-		"./en-au": 226,
-		"./en-au.js": 226,
-		"./en-ca": 227,
-		"./en-ca.js": 227,
-		"./en-gb": 228,
-		"./en-gb.js": 228,
-		"./eo": 229,
-		"./eo.js": 229,
-		"./es": 230,
-		"./es.js": 230,
-		"./et": 231,
-		"./et.js": 231,
-		"./eu": 232,
-		"./eu.js": 232,
-		"./fa": 233,
-		"./fa.js": 233,
-		"./fi": 234,
-		"./fi.js": 234,
-		"./fo": 235,
-		"./fo.js": 235,
-		"./fr": 236,
-		"./fr-ca": 237,
-		"./fr-ca.js": 237,
-		"./fr.js": 236,
-		"./fy": 238,
-		"./fy.js": 238,
-		"./gl": 239,
-		"./gl.js": 239,
-		"./he": 240,
-		"./he.js": 240,
-		"./hi": 241,
-		"./hi.js": 241,
-		"./hr": 242,
-		"./hr.js": 242,
-		"./hu": 243,
-		"./hu.js": 243,
-		"./hy-am": 244,
-		"./hy-am.js": 244,
-		"./id": 245,
-		"./id.js": 245,
-		"./is": 246,
-		"./is.js": 246,
-		"./it": 247,
-		"./it.js": 247,
-		"./ja": 248,
-		"./ja.js": 248,
-		"./jv": 249,
-		"./jv.js": 249,
-		"./ka": 250,
-		"./ka.js": 250,
-		"./km": 251,
-		"./km.js": 251,
-		"./ko": 252,
-		"./ko.js": 252,
-		"./lb": 253,
-		"./lb.js": 253,
-		"./lt": 254,
-		"./lt.js": 254,
-		"./lv": 255,
-		"./lv.js": 255,
-		"./me": 256,
-		"./me.js": 256,
-		"./mk": 257,
-		"./mk.js": 257,
-		"./ml": 258,
-		"./ml.js": 258,
-		"./mr": 259,
-		"./mr.js": 259,
-		"./ms": 260,
-		"./ms-my": 261,
-		"./ms-my.js": 261,
-		"./ms.js": 260,
-		"./my": 262,
-		"./my.js": 262,
-		"./nb": 263,
-		"./nb.js": 263,
-		"./ne": 264,
-		"./ne.js": 264,
-		"./nl": 265,
-		"./nl.js": 265,
-		"./nn": 266,
-		"./nn.js": 266,
-		"./pl": 267,
-		"./pl.js": 267,
-		"./pt": 268,
-		"./pt-br": 269,
-		"./pt-br.js": 269,
-		"./pt.js": 268,
-		"./ro": 270,
-		"./ro.js": 270,
-		"./ru": 271,
-		"./ru.js": 271,
-		"./si": 272,
-		"./si.js": 272,
-		"./sk": 273,
-		"./sk.js": 273,
-		"./sl": 274,
-		"./sl.js": 274,
-		"./sq": 275,
-		"./sq.js": 275,
-		"./sr": 276,
-		"./sr-cyrl": 277,
-		"./sr-cyrl.js": 277,
-		"./sr.js": 276,
-		"./sv": 278,
-		"./sv.js": 278,
-		"./ta": 279,
-		"./ta.js": 279,
-		"./th": 280,
-		"./th.js": 280,
-		"./tl-ph": 281,
-		"./tl-ph.js": 281,
-		"./tr": 282,
-		"./tr.js": 282,
-		"./tzl": 283,
-		"./tzl.js": 283,
-		"./tzm": 284,
-		"./tzm-latn": 285,
-		"./tzm-latn.js": 285,
-		"./tzm.js": 284,
-		"./uk": 286,
-		"./uk.js": 286,
-		"./uz": 287,
-		"./uz.js": 287,
-		"./vi": 288,
-		"./vi.js": 288,
-		"./zh-cn": 289,
-		"./zh-cn.js": 289,
-		"./zh-tw": 290,
-		"./zh-tw.js": 290
+		"./af": 209,
+		"./af.js": 209,
+		"./ar": 210,
+		"./ar-ma": 211,
+		"./ar-ma.js": 211,
+		"./ar-sa": 212,
+		"./ar-sa.js": 212,
+		"./ar-tn": 213,
+		"./ar-tn.js": 213,
+		"./ar.js": 210,
+		"./az": 214,
+		"./az.js": 214,
+		"./be": 215,
+		"./be.js": 215,
+		"./bg": 216,
+		"./bg.js": 216,
+		"./bn": 217,
+		"./bn.js": 217,
+		"./bo": 218,
+		"./bo.js": 218,
+		"./br": 219,
+		"./br.js": 219,
+		"./bs": 220,
+		"./bs.js": 220,
+		"./ca": 221,
+		"./ca.js": 221,
+		"./cs": 222,
+		"./cs.js": 222,
+		"./cv": 223,
+		"./cv.js": 223,
+		"./cy": 224,
+		"./cy.js": 224,
+		"./da": 225,
+		"./da.js": 225,
+		"./de": 226,
+		"./de-at": 227,
+		"./de-at.js": 227,
+		"./de.js": 226,
+		"./el": 228,
+		"./el.js": 228,
+		"./en-au": 229,
+		"./en-au.js": 229,
+		"./en-ca": 230,
+		"./en-ca.js": 230,
+		"./en-gb": 231,
+		"./en-gb.js": 231,
+		"./eo": 232,
+		"./eo.js": 232,
+		"./es": 233,
+		"./es.js": 233,
+		"./et": 234,
+		"./et.js": 234,
+		"./eu": 235,
+		"./eu.js": 235,
+		"./fa": 236,
+		"./fa.js": 236,
+		"./fi": 237,
+		"./fi.js": 237,
+		"./fo": 238,
+		"./fo.js": 238,
+		"./fr": 239,
+		"./fr-ca": 240,
+		"./fr-ca.js": 240,
+		"./fr.js": 239,
+		"./fy": 241,
+		"./fy.js": 241,
+		"./gl": 242,
+		"./gl.js": 242,
+		"./he": 243,
+		"./he.js": 243,
+		"./hi": 244,
+		"./hi.js": 244,
+		"./hr": 245,
+		"./hr.js": 245,
+		"./hu": 246,
+		"./hu.js": 246,
+		"./hy-am": 247,
+		"./hy-am.js": 247,
+		"./id": 248,
+		"./id.js": 248,
+		"./is": 249,
+		"./is.js": 249,
+		"./it": 250,
+		"./it.js": 250,
+		"./ja": 251,
+		"./ja.js": 251,
+		"./jv": 252,
+		"./jv.js": 252,
+		"./ka": 253,
+		"./ka.js": 253,
+		"./km": 254,
+		"./km.js": 254,
+		"./ko": 255,
+		"./ko.js": 255,
+		"./lb": 256,
+		"./lb.js": 256,
+		"./lt": 257,
+		"./lt.js": 257,
+		"./lv": 258,
+		"./lv.js": 258,
+		"./me": 259,
+		"./me.js": 259,
+		"./mk": 260,
+		"./mk.js": 260,
+		"./ml": 261,
+		"./ml.js": 261,
+		"./mr": 262,
+		"./mr.js": 262,
+		"./ms": 263,
+		"./ms-my": 264,
+		"./ms-my.js": 264,
+		"./ms.js": 263,
+		"./my": 265,
+		"./my.js": 265,
+		"./nb": 266,
+		"./nb.js": 266,
+		"./ne": 267,
+		"./ne.js": 267,
+		"./nl": 268,
+		"./nl.js": 268,
+		"./nn": 269,
+		"./nn.js": 269,
+		"./pl": 270,
+		"./pl.js": 270,
+		"./pt": 271,
+		"./pt-br": 272,
+		"./pt-br.js": 272,
+		"./pt.js": 271,
+		"./ro": 273,
+		"./ro.js": 273,
+		"./ru": 274,
+		"./ru.js": 274,
+		"./si": 275,
+		"./si.js": 275,
+		"./sk": 276,
+		"./sk.js": 276,
+		"./sl": 277,
+		"./sl.js": 277,
+		"./sq": 278,
+		"./sq.js": 278,
+		"./sr": 279,
+		"./sr-cyrl": 280,
+		"./sr-cyrl.js": 280,
+		"./sr.js": 279,
+		"./sv": 281,
+		"./sv.js": 281,
+		"./ta": 282,
+		"./ta.js": 282,
+		"./th": 283,
+		"./th.js": 283,
+		"./tl-ph": 284,
+		"./tl-ph.js": 284,
+		"./tr": 285,
+		"./tr.js": 285,
+		"./tzl": 286,
+		"./tzl.js": 286,
+		"./tzm": 287,
+		"./tzm-latn": 288,
+		"./tzm-latn.js": 288,
+		"./tzm.js": 287,
+		"./uk": 289,
+		"./uk.js": 289,
+		"./uz": 290,
+		"./uz.js": 290,
+		"./vi": 291,
+		"./vi.js": 291,
+		"./zh-cn": 292,
+		"./zh-cn.js": 292,
+		"./zh-tw": 293,
+		"./zh-tw.js": 293
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -52253,11 +52427,11 @@
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 205;
+	webpackContext.id = 208;
 
 
 /***/ },
-/* 206 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -52265,7 +52439,7 @@
 	//! author : Werner Mollentze : https://github.com/wernerm
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -52334,7 +52508,7 @@
 	}));
 
 /***/ },
-/* 207 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -52344,7 +52518,7 @@
 	//! Native plural forms: forabi https://github.com/forabi
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -52474,7 +52648,7 @@
 	}));
 
 /***/ },
-/* 208 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -52483,7 +52657,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -52537,7 +52711,7 @@
 	}));
 
 /***/ },
-/* 209 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -52545,7 +52719,7 @@
 	//! author : Suhail Alkowaileet : https://github.com/xsoh
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -52644,14 +52818,14 @@
 	}));
 
 /***/ },
-/* 210 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale  : Tunisian Arabic (ar-tn)
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -52705,7 +52879,7 @@
 	}));
 
 /***/ },
-/* 211 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -52713,7 +52887,7 @@
 	//! author : topchiyev : https://github.com/topchiyev
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -52813,7 +52987,7 @@
 	}));
 
 /***/ },
-/* 212 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -52823,7 +52997,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -52964,7 +53138,7 @@
 	}));
 
 /***/ },
-/* 213 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -52972,7 +53146,7 @@
 	//! author : Krasen Borisov : https://github.com/kraz
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53058,7 +53232,7 @@
 	}));
 
 /***/ },
-/* 214 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53066,7 +53240,7 @@
 	//! author : Kaushik Gandhi : https://github.com/kaushikgandhi
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53175,7 +53349,7 @@
 	}));
 
 /***/ },
-/* 215 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53183,7 +53357,7 @@
 	//! author : Thupten N. Chakrishar : https://github.com/vajradog
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53289,7 +53463,7 @@
 	}));
 
 /***/ },
-/* 216 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53297,7 +53471,7 @@
 	//! author : Jean-Baptiste Le Duigou : https://github.com/jbleduigou
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53400,7 +53574,7 @@
 	}));
 
 /***/ },
-/* 217 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53409,7 +53583,7 @@
 	//! based on (hr) translation by Bojan Marković
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53545,7 +53719,7 @@
 	}));
 
 /***/ },
-/* 218 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53553,7 +53727,7 @@
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53628,7 +53802,7 @@
 	}));
 
 /***/ },
-/* 219 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53636,7 +53810,7 @@
 	//! author : petrbela : https://github.com/petrbela
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53789,7 +53963,7 @@
 	}));
 
 /***/ },
-/* 220 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53797,7 +53971,7 @@
 	//! author : Anatoly Mironov : https://github.com/mirontoli
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53856,7 +54030,7 @@
 	}));
 
 /***/ },
-/* 221 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53864,7 +54038,7 @@
 	//! author : Robert Allen
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -53939,7 +54113,7 @@
 	}));
 
 /***/ },
-/* 222 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -53947,7 +54121,7 @@
 	//! author : Ulrik Nielsen : https://github.com/mrbase
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54003,7 +54177,7 @@
 	}));
 
 /***/ },
-/* 223 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54012,7 +54186,7 @@
 	//! author: Menelion Elensúle: https://github.com/Oire
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54082,7 +54256,7 @@
 	}));
 
 /***/ },
-/* 224 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54092,7 +54266,7 @@
 	//! author : Martin Groller : https://github.com/MadMG
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54162,7 +54336,7 @@
 	}));
 
 /***/ },
-/* 225 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54170,7 +54344,7 @@
 	//! author : Aggelos Karalias : https://github.com/mehiel
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54260,14 +54434,14 @@
 	}));
 
 /***/ },
-/* 226 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
 	//! locale : australian english (en-au)
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54330,7 +54504,7 @@
 	}));
 
 /***/ },
-/* 227 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54338,7 +54512,7 @@
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54397,7 +54571,7 @@
 	}));
 
 /***/ },
-/* 228 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54405,7 +54579,7 @@
 	//! author : Chris Gedrim : https://github.com/chrisgedrim
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54468,7 +54642,7 @@
 	}));
 
 /***/ },
-/* 229 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54478,7 +54652,7 @@
 	//!          Se ne, bonvolu korekti kaj avizi min por ke mi povas lerni!
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54545,7 +54719,7 @@
 	}));
 
 /***/ },
-/* 230 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54553,7 +54727,7 @@
 	//! author : Julio Napurí : https://github.com/julionc
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54628,7 +54802,7 @@
 	}));
 
 /***/ },
-/* 231 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54637,7 +54811,7 @@
 	//! improvements : Illimar Tambek : https://github.com/ragulka
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54712,7 +54886,7 @@
 	}));
 
 /***/ },
-/* 232 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54720,7 +54894,7 @@
 	//! author : Eneko Illarramendi : https://github.com/eillarra
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54780,7 +54954,7 @@
 	}));
 
 /***/ },
-/* 233 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54788,7 +54962,7 @@
 	//! author : Ebrahim Byagowi : https://github.com/ebraminio
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -54889,7 +55063,7 @@
 	}));
 
 /***/ },
-/* 234 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -54897,7 +55071,7 @@
 	//! author : Tarmo Aidantausta : https://github.com/bleadof
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55000,7 +55174,7 @@
 	}));
 
 /***/ },
-/* 235 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55008,7 +55182,7 @@
 	//! author : Ragnar Johannesen : https://github.com/ragnar123
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55064,7 +55238,7 @@
 	}));
 
 /***/ },
-/* 236 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55072,7 +55246,7 @@
 	//! author : John Fischer : https://github.com/jfroffice
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55130,7 +55304,7 @@
 	}));
 
 /***/ },
-/* 237 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55138,7 +55312,7 @@
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55192,7 +55366,7 @@
 	}));
 
 /***/ },
-/* 238 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55200,7 +55374,7 @@
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55267,7 +55441,7 @@
 	}));
 
 /***/ },
-/* 239 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55275,7 +55449,7 @@
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55346,7 +55520,7 @@
 	}));
 
 /***/ },
-/* 240 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55356,7 +55530,7 @@
 	//! author : Tal Ater : https://github.com/TalAter
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55432,7 +55606,7 @@
 	}));
 
 /***/ },
-/* 241 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55440,7 +55614,7 @@
 	//! author : Mayank Singhal : https://github.com/mayanksinghal
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55559,7 +55733,7 @@
 	}));
 
 /***/ },
-/* 242 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55567,7 +55741,7 @@
 	//! author : Bojan Marković : https://github.com/bmarkovic
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55703,7 +55877,7 @@
 	}));
 
 /***/ },
-/* 243 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55711,7 +55885,7 @@
 	//! author : Adam Brunner : https://github.com/adambrunner
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55816,7 +55990,7 @@
 	}));
 
 /***/ },
-/* 244 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55824,7 +55998,7 @@
 	//! author : Armendarabyan : https://github.com/armendarabyan
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -55931,7 +56105,7 @@
 	}));
 
 /***/ },
-/* 245 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -55940,7 +56114,7 @@
 	//! reference: http://id.wikisource.org/wiki/Pedoman_Umum_Ejaan_Bahasa_Indonesia_yang_Disempurnakan
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56018,7 +56192,7 @@
 	}));
 
 /***/ },
-/* 246 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56026,7 +56200,7 @@
 	//! author : Hinrik Örn Sigurðsson : https://github.com/hinrik
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56149,7 +56323,7 @@
 	}));
 
 /***/ },
-/* 247 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56158,7 +56332,7 @@
 	//! author: Mattia Larentis: https://github.com/nostalgiaz
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56223,7 +56397,7 @@
 	}));
 
 /***/ },
-/* 248 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56231,7 +56405,7 @@
 	//! author : LI Long : https://github.com/baryon
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56292,7 +56466,7 @@
 	}));
 
 /***/ },
-/* 249 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56301,7 +56475,7 @@
 	//! reference: http://jv.wikipedia.org/wiki/Basa_Jawa
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56379,7 +56553,7 @@
 	}));
 
 /***/ },
-/* 250 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56387,7 +56561,7 @@
 	//! author : Irakli Janiashvili : https://github.com/irakli-janiashvili
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56486,7 +56660,7 @@
 	}));
 
 /***/ },
-/* 251 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56494,7 +56668,7 @@
 	//! author : Kruy Vanna : https://github.com/kruyvanna
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56548,7 +56722,7 @@
 	}));
 
 /***/ },
-/* 252 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56560,7 +56734,7 @@
 	//! - Jeeeyul Lee <jeeeyul@gmail.com>
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56620,7 +56794,7 @@
 	}));
 
 /***/ },
-/* 253 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56628,7 +56802,7 @@
 	//! author : mweimerskirch : https://github.com/mweimerskirch, David Raison : https://github.com/kwisatz
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56758,7 +56932,7 @@
 	}));
 
 /***/ },
-/* 254 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56766,7 +56940,7 @@
 	//! author : Mindaugas Mozūras : https://github.com/mmozuras
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56887,7 +57061,7 @@
 	}));
 
 /***/ },
-/* 255 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56896,7 +57070,7 @@
 	//! author : Jānis Elmeris : https://github.com/JanisE
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -56987,7 +57161,7 @@
 	}));
 
 /***/ },
-/* 256 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -56995,7 +57169,7 @@
 	//! author : Miodrag Nikač <miodrag@restartit.me> : https://github.com/miodragnikac
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57100,7 +57274,7 @@
 	}));
 
 /***/ },
-/* 257 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57108,7 +57282,7 @@
 	//! author : Borislav Mickov : https://github.com/B0k0
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57194,7 +57368,7 @@
 	}));
 
 /***/ },
-/* 258 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57202,7 +57376,7 @@
 	//! author : Floyd Pink : https://github.com/floydpink
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57269,7 +57443,7 @@
 	}));
 
 /***/ },
-/* 259 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57277,7 +57451,7 @@
 	//! author : Harshad Kale : https://github.com/kalehv
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57394,7 +57568,7 @@
 	}));
 
 /***/ },
-/* 260 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57402,7 +57576,7 @@
 	//! author : Weldan Jamili : https://github.com/weldan
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57480,7 +57654,7 @@
 	}));
 
 /***/ },
-/* 261 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57488,7 +57662,7 @@
 	//! author : Weldan Jamili : https://github.com/weldan
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57566,7 +57740,7 @@
 	}));
 
 /***/ },
-/* 262 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57574,7 +57748,7 @@
 	//! author : Squar team, mysquar.com
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57663,7 +57837,7 @@
 	}));
 
 /***/ },
-/* 263 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57672,7 +57846,7 @@
 	//!           Sigurd Gartmann : https://github.com/sigurdga
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57728,7 +57902,7 @@
 	}));
 
 /***/ },
-/* 264 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57736,7 +57910,7 @@
 	//! author : suvash : https://github.com/suvash
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57855,7 +58029,7 @@
 	}));
 
 /***/ },
-/* 265 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57863,7 +58037,7 @@
 	//! author : Joris Röling : https://github.com/jjupiter
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57930,7 +58104,7 @@
 	}));
 
 /***/ },
-/* 266 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -57938,7 +58112,7 @@
 	//! author : https://github.com/mechuwind
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -57994,7 +58168,7 @@
 	}));
 
 /***/ },
-/* 267 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58002,7 +58176,7 @@
 	//! author : Rafal Hirsz : https://github.com/evoL
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58103,7 +58277,7 @@
 	}));
 
 /***/ },
-/* 268 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58111,7 +58285,7 @@
 	//! author : Jefferson : https://github.com/jalex79
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58171,7 +58345,7 @@
 	}));
 
 /***/ },
-/* 269 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58179,7 +58353,7 @@
 	//! author : Caio Ribeiro Pereira : https://github.com/caio-ribeiro-pereira
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58235,7 +58409,7 @@
 	}));
 
 /***/ },
-/* 270 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58244,7 +58418,7 @@
 	//! author : Valentin Agachi : https://github.com/avaly
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58313,7 +58487,7 @@
 	}));
 
 /***/ },
-/* 271 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58322,7 +58496,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58481,7 +58655,7 @@
 	}));
 
 /***/ },
-/* 272 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58489,7 +58663,7 @@
 	//! author : Sampath Sitinamaluwa : https://github.com/sampathsris
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58550,7 +58724,7 @@
 	}));
 
 /***/ },
-/* 273 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58559,7 +58733,7 @@
 	//! based on work of petrbela : https://github.com/petrbela
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58712,7 +58886,7 @@
 	}));
 
 /***/ },
-/* 274 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58720,7 +58894,7 @@
 	//! author : Robert Sedovšek : https://github.com/sedovsek
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58876,7 +59050,7 @@
 	}));
 
 /***/ },
-/* 275 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58886,7 +59060,7 @@
 	//! author : Oerd Cukalla : https://github.com/oerd (fixes)
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -58949,7 +59123,7 @@
 	}));
 
 /***/ },
-/* 276 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -58957,7 +59131,7 @@
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59061,7 +59235,7 @@
 	}));
 
 /***/ },
-/* 277 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59069,7 +59243,7 @@
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59173,7 +59347,7 @@
 	}));
 
 /***/ },
-/* 278 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59181,7 +59355,7 @@
 	//! author : Jens Alm : https://github.com/ulmus
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59244,7 +59418,7 @@
 	}));
 
 /***/ },
-/* 279 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59252,7 +59426,7 @@
 	//! author : Arjunkumar Krishnamoorthy : https://github.com/tk120404
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59343,7 +59517,7 @@
 	}));
 
 /***/ },
-/* 280 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59351,7 +59525,7 @@
 	//! author : Kridsada Thanabulpong : https://github.com/sirn
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59412,7 +59586,7 @@
 	}));
 
 /***/ },
-/* 281 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59420,7 +59594,7 @@
 	//! author : Dan Hagman
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59478,7 +59652,7 @@
 	}));
 
 /***/ },
-/* 282 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59487,7 +59661,7 @@
 	//!           Burak Yiğit Kaya: https://github.com/BYK
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59572,7 +59746,7 @@
 	}));
 
 /***/ },
-/* 283 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59580,7 +59754,7 @@
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v with the help of Iustì Canun
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59661,7 +59835,7 @@
 	}));
 
 /***/ },
-/* 284 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59669,7 +59843,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59723,7 +59897,7 @@
 	}));
 
 /***/ },
-/* 285 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59731,7 +59905,7 @@
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59785,7 +59959,7 @@
 	}));
 
 /***/ },
-/* 286 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59794,7 +59968,7 @@
 	//! Author : Menelion Elensúle : https://github.com/Oire
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -59942,7 +60116,7 @@
 	}));
 
 /***/ },
-/* 287 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -59950,7 +60124,7 @@
 	//! author : Sardor Muminov : https://github.com/muminoff
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -60004,7 +60178,7 @@
 	}));
 
 /***/ },
-/* 288 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -60012,7 +60186,7 @@
 	//! author : Bang Nguyen : https://github.com/bangnk
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -60074,7 +60248,7 @@
 	}));
 
 /***/ },
-/* 289 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -60083,7 +60257,7 @@
 	//! author : Zeno Zeng : https://github.com/zenozeng
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -60205,7 +60379,7 @@
 	}));
 
 /***/ },
-/* 290 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
@@ -60213,7 +60387,7 @@
 	//! author : Ben : https://github.com/ben-lin
 
 	(function (global, factory) {
-	    true ? factory(__webpack_require__(204)) :
+	    true ? factory(__webpack_require__(207)) :
 	   typeof define === 'function' && define.amd ? define(['moment'], factory) :
 	   factory(global.moment)
 	}(this, function (moment) { 'use strict';
@@ -60310,7 +60484,7 @@
 	}));
 
 /***/ },
-/* 291 */
+/* 294 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -60339,10 +60513,10 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 292 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, DeployAvgElapsedTime, FLOW_DEPLOY_AVG_ELAPSED_TIME_QUERY, _, moment,
@@ -60350,13 +60524,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	FLOW_DEPLOY_AVG_ELAPSED_TIME_QUERY = __webpack_require__(293);
+	FLOW_DEPLOY_AVG_ELAPSED_TIME_QUERY = __webpack_require__(296);
 
 	DeployAvgElapsedTime = (function(superClass) {
 	  extend(DeployAvgElapsedTime, superClass);
@@ -60368,6 +60542,10 @@
 	    this.initialize = bind(this.initialize, this);
 	    return DeployAvgElapsedTime.__super__.constructor.apply(this, arguments);
 	  }
+
+	  DeployAvgElapsedTime.prototype.defaults = {
+	    inLast: '1d'
+	  };
 
 	  DeployAvgElapsedTime.prototype.initialize = function(attributes) {
 	    var index;
@@ -60396,8 +60574,11 @@
 	  };
 
 	  DeployAvgElapsedTime.prototype.query = function() {
-	    var query, yesterday;
-	    yesterday = moment().subtract(1, 'day');
+	    var inLast, query, time, timeUnit, yesterday;
+	    inLast = this.get('inLast');
+	    time = parseInt(_.first(inLast.match(/\d+/)));
+	    timeUnit = _.first(inLast.match(/[a-zA-Z]+/));
+	    yesterday = moment().subtract(time, timeUnit);
 	    query = _.cloneDeep(FLOW_DEPLOY_AVG_ELAPSED_TIME_QUERY);
 	    query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf();
 	    return query;
@@ -60411,7 +60592,7 @@
 
 
 /***/ },
-/* 293 */
+/* 296 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -60433,10 +60614,10 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 294 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, DeployAvgElapsedTimeOverTime, FLOW_DEPLOY_AVG_ELAPSED_TIME_OVER_TIME_QUERY, _, moment,
@@ -60444,24 +60625,30 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	FLOW_DEPLOY_AVG_ELAPSED_TIME_OVER_TIME_QUERY = __webpack_require__(295);
+	FLOW_DEPLOY_AVG_ELAPSED_TIME_OVER_TIME_QUERY = __webpack_require__(298);
 
 	DeployAvgElapsedTimeOverTime = (function(superClass) {
 	  extend(DeployAvgElapsedTimeOverTime, superClass);
 
 	  function DeployAvgElapsedTimeOverTime() {
+	    this.chartDateFormat = bind(this.chartDateFormat, this);
 	    this.query = bind(this.query, this);
 	    this.fetch = bind(this.fetch, this);
 	    this.parse = bind(this.parse, this);
 	    this.initialize = bind(this.initialize, this);
 	    return DeployAvgElapsedTimeOverTime.__super__.constructor.apply(this, arguments);
 	  }
+
+	  DeployAvgElapsedTimeOverTime.prototype.defaults = {
+	    inLast: '1d',
+	    byUnit: 'hour'
+	  };
 
 	  DeployAvgElapsedTimeOverTime.prototype.initialize = function(attributes) {
 	    var index;
@@ -60485,7 +60672,7 @@
 	    labels = _.pluck(buckets, 'key');
 	    labels = _.map(labels, (function(_this) {
 	      return function(label) {
-	        return moment(moment.utc(label).toDate()).format('hA');
+	        return moment(moment.utc(label).toDate()).format(_this.chartDateFormat());
 	      };
 	    })(this));
 	    data = _.map(buckets, (function(_this) {
@@ -60517,11 +60704,22 @@
 	  };
 
 	  DeployAvgElapsedTimeOverTime.prototype.query = function() {
-	    var query, yesterday;
-	    yesterday = moment().subtract(1, 'day');
+	    var byUnit, inLast, query, ref, time, timeUnit, yesterday;
+	    ref = this.toJSON(), inLast = ref.inLast, byUnit = ref.byUnit;
+	    time = parseInt(_.first(inLast.match(/\d+/)));
+	    timeUnit = _.first(inLast.match(/[a-zA-Z]+/));
+	    yesterday = moment().subtract(time, timeUnit);
 	    query = _.cloneDeep(FLOW_DEPLOY_AVG_ELAPSED_TIME_OVER_TIME_QUERY);
 	    query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf();
+	    query.aggs.finished.aggs.startTime_over_time.date_histogram.interval = byUnit;
 	    return query;
+	  };
+
+	  DeployAvgElapsedTimeOverTime.prototype.chartDateFormat = function() {
+	    if (this.get('byUnit') === 'hour') {
+	      return 'hA';
+	    }
+	    return 'ddd';
 	  };
 
 	  return DeployAvgElapsedTimeOverTime;
@@ -60532,7 +60730,7 @@
 
 
 /***/ },
-/* 295 */
+/* 298 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -60564,10 +60762,10 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 296 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, FLOW_DEPLOY_SUCCESS_OVER_TIME, FlowDeployOverTime, _, moment,
@@ -60575,18 +60773,19 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	FLOW_DEPLOY_SUCCESS_OVER_TIME = __webpack_require__(297);
+	FLOW_DEPLOY_SUCCESS_OVER_TIME = __webpack_require__(300);
 
 	FlowDeployOverTime = (function(superClass) {
 	  extend(FlowDeployOverTime, superClass);
 
 	  function FlowDeployOverTime() {
+	    this.chartDateFormat = bind(this.chartDateFormat, this);
 	    this.query = bind(this.query, this);
 	    this.fetch = bind(this.fetch, this);
 	    this.formatResults = bind(this.formatResults, this);
@@ -60595,6 +60794,11 @@
 	    this.initialize = bind(this.initialize, this);
 	    return FlowDeployOverTime.__super__.constructor.apply(this, arguments);
 	  }
+
+	  FlowDeployOverTime.prototype.defaults = {
+	    inLast: '1d',
+	    byUnit: 'hour'
+	  };
 
 	  FlowDeployOverTime.prototype.initialize = function(attributes) {
 	    var index;
@@ -60650,7 +60854,7 @@
 	    chartData.labels = _.pluck(results, 'key');
 	    chartData.labels = _.map(chartData.labels, (function(_this) {
 	      return function(label) {
-	        return moment(moment.utc(label).toDate()).format('hA');
+	        return moment(moment.utc(label).toDate()).format(_this.chartDateFormat());
 	      };
 	    })(this));
 	    points = [];
@@ -60683,11 +60887,22 @@
 	  };
 
 	  FlowDeployOverTime.prototype.query = function() {
-	    var query;
+	    var byUnit, inLast, query, ref, time, timeUnit;
+	    ref = this.toJSON(), inLast = ref.inLast, byUnit = ref.byUnit;
+	    time = parseInt(_.first(inLast.match(/\d+/)));
+	    timeUnit = _.first(inLast.match(/[a-zA-Z]+/));
 	    query = _.cloneDeep(FLOW_DEPLOY_SUCCESS_OVER_TIME);
-	    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(1, 'day').valueOf();
+	    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(time, timeUnit).valueOf();
 	    query.aggs.group_by_date.filter.range.beginTime.lte = moment().subtract(5, 'minutes').valueOf();
+	    query.aggs.group_by_date.aggs.beginTime_over_time.date_histogram.interval = byUnit;
 	    return query;
+	  };
+
+	  FlowDeployOverTime.prototype.chartDateFormat = function() {
+	    if (this.get('byUnit') === 'hour') {
+	      return 'hA';
+	    }
+	    return 'ddd';
 	  };
 
 	  return FlowDeployOverTime;
@@ -60698,7 +60913,7 @@
 
 
 /***/ },
-/* 297 */
+/* 300 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -60716,7 +60931,6 @@
 						"date_histogram": {
 							"field": "beginTime",
 							"interval": "hour",
-							"format": "h aa",
 							"min_doc_count": 0
 						},
 						"aggs": {
@@ -60730,17 +60944,17 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 298 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AvgElapsedTimeGauge, PropTypes, React, moment;
 
 	React = __webpack_require__(1);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
 	PropTypes = React.PropTypes;
 
@@ -60780,14 +60994,14 @@
 
 
 /***/ },
-/* 299 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AvgElapsedTimeGauge, React, moment;
 
 	React = __webpack_require__(1);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
 	AvgElapsedTimeGauge = React.createClass({
 	  displayName: 'AvgElapsedTimeGauge',
@@ -60802,18 +61016,18 @@
 
 
 /***/ },
-/* 300 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Line, OverTimeGauge, React, _, moment;
 
 	React = __webpack_require__(1);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	Line = __webpack_require__(301).Line;
+	Line = __webpack_require__(304).Line;
 
 	OverTimeGauge = React.createClass({
 	  displayName: 'OverTimeGauge',
@@ -60842,31 +61056,31 @@
 
 
 /***/ },
-/* 301 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  Bar: __webpack_require__(302),
-	  Doughnut: __webpack_require__(306),
-	  Line: __webpack_require__(307),
-	  Pie: __webpack_require__(308),
-	  PolarArea: __webpack_require__(309),
-	  Radar: __webpack_require__(310),
-	  createClass: __webpack_require__(303).createClass
+	  Bar: __webpack_require__(305),
+	  Doughnut: __webpack_require__(309),
+	  Line: __webpack_require__(310),
+	  Pie: __webpack_require__(311),
+	  PolarArea: __webpack_require__(312),
+	  Radar: __webpack_require__(313),
+	  createClass: __webpack_require__(306).createClass
 	};
 
 
 /***/ },
-/* 302 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(303);
+	var vars = __webpack_require__(306);
 
 	module.exports = vars.createClass('Bar', ['getBarsAtEvent']);
 
 
 /***/ },
-/* 303 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
@@ -60918,7 +61132,7 @@
 	    };
 
 	    classData.initializeChart = function(nextProps) {
-	      var Chart = __webpack_require__(304);
+	      var Chart = __webpack_require__(307);
 	      var el = this.getDOMNode();
 	      var ctx = el.getContext("2d");
 	      var chart = new Chart(ctx)[chartType](nextProps.data, nextProps.options || {});
@@ -60976,7 +61190,7 @@
 
 
 /***/ },
-/* 304 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -61283,7 +61497,7 @@
 				//Method for warning of errors
 				if (window.console && typeof window.console.warn == "function") console.warn(str);
 			},
-			amd = helpers.amd = ("function" == 'function' && __webpack_require__(305)),
+			amd = helpers.amd = ("function" == 'function' && __webpack_require__(308)),
 			//-- Math methods
 			isNumber = helpers.isNumber = function(n){
 				return !isNaN(parseFloat(n)) && isFinite(n);
@@ -64458,7 +64672,7 @@
 	}).call(this);
 
 /***/ },
-/* 305 */
+/* 308 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -64466,71 +64680,71 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 306 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var vars = __webpack_require__(303);
-
-	module.exports = vars.createClass('Doughnut', ['getSegmentsAtEvent']);
-
-
-/***/ },
-/* 307 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var vars = __webpack_require__(303);
-
-	module.exports = vars.createClass('Line', ['getPointsAtEvent']);
-
-
-/***/ },
-/* 308 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var vars = __webpack_require__(303);
-
-	module.exports = vars.createClass('Pie', ['getSegmentsAtEvent']);
-
-
-/***/ },
 /* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(303);
+	var vars = __webpack_require__(306);
 
-	module.exports = vars.createClass('PolarArea', ['getSegmentsAtEvent']);
+	module.exports = vars.createClass('Doughnut', ['getSegmentsAtEvent']);
 
 
 /***/ },
 /* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(303);
+	var vars = __webpack_require__(306);
 
-	module.exports = vars.createClass('Radar', ['getPointsAtEvent']);
+	module.exports = vars.createClass('Line', ['getPointsAtEvent']);
 
 
 /***/ },
 /* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var vars = __webpack_require__(306);
+
+	module.exports = vars.createClass('Pie', ['getSegmentsAtEvent']);
+
+
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var vars = __webpack_require__(306);
+
+	module.exports = vars.createClass('PolarArea', ['getSegmentsAtEvent']);
+
+
+/***/ },
+/* 313 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var vars = __webpack_require__(306);
+
+	module.exports = vars.createClass('Radar', ['getPointsAtEvent']);
+
+
+/***/ },
+/* 314 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var AvgElapsedTimeGauge, GatebluAddDeviceAvgElapsedTime, GatebluAddDeviceAvgElapsedTimeOverTime, GatebluAddDeviceStatus, GatebluAddDeviceSuccessOverTime, GatebluDashboard, OverTimeGauge, React, StatusGauge;
 
 	React = __webpack_require__(1);
 
-	GatebluAddDeviceStatus = __webpack_require__(312);
+	GatebluAddDeviceStatus = __webpack_require__(315);
 
-	GatebluAddDeviceSuccessOverTime = __webpack_require__(314);
+	GatebluAddDeviceSuccessOverTime = __webpack_require__(317);
 
-	GatebluAddDeviceAvgElapsedTime = __webpack_require__(316);
+	GatebluAddDeviceAvgElapsedTime = __webpack_require__(319);
 
-	GatebluAddDeviceAvgElapsedTimeOverTime = __webpack_require__(318);
+	GatebluAddDeviceAvgElapsedTimeOverTime = __webpack_require__(321);
 
-	OverTimeGauge = __webpack_require__(300);
+	OverTimeGauge = __webpack_require__(303);
 
-	StatusGauge = __webpack_require__(298);
+	StatusGauge = __webpack_require__(301);
 
-	AvgElapsedTimeGauge = __webpack_require__(299);
+	AvgElapsedTimeGauge = __webpack_require__(302);
 
 	GatebluDashboard = React.createClass({
 	  displayName: 'GatebluDashboard',
@@ -64559,9 +64773,11 @@
 	    this.gatebluAddDeviceAvgElapsedTime = new GatebluAddDeviceAvgElapsedTime({
 	      index: "gateblu_device_add"
 	    });
-	    this.gatebluAddDeviceAvgElapsedTimeOverTime = new GatebluAddDeviceAvgElapsedTimeOverTime({
+	    return this.gatebluAddDeviceAvgElapsedTimeOverTime = new GatebluAddDeviceAvgElapsedTimeOverTime({
 	      index: "gateblu_device_add"
 	    });
+	  },
+	  componentDidMount: function() {
 	    this.gatebluAddDeviceStatus.on('change', (function(_this) {
 	      return function() {
 	        return _this.setState(_this.gatebluAddDeviceStatus.toJSON());
@@ -64579,15 +64795,13 @@
 	        return _this.setState(_this.gatebluAddDeviceAvgElapsedTime.toJSON());
 	      };
 	    })(this));
-	    return this.gatebluAddDeviceAvgElapsedTimeOverTime.on('change', (function(_this) {
+	    this.gatebluAddDeviceAvgElapsedTimeOverTime.on('change', (function(_this) {
 	      return function() {
 	        return _this.setState({
 	          elapsedTimeChartData: _this.gatebluAddDeviceAvgElapsedTimeOverTime.toJSON()
 	        });
 	      };
 	    })(this));
-	  },
-	  componentDidMount: function() {
 	    this.periodicallyFetchForModel(this.gatebluAddDeviceStatus);
 	    this.periodicallyFetchForModel(this.gatebluAddDeviceSuccessOverTime);
 	    this.periodicallyFetchForModel(this.gatebluAddDeviceAvgElapsedTime);
@@ -64625,7 +64839,7 @@
 
 
 /***/ },
-/* 312 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, GATEBLU_ADD_DEVICE_STATUS_QUERY, GatebluAddDeviceStatus, _, moment,
@@ -64633,13 +64847,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	GATEBLU_ADD_DEVICE_STATUS_QUERY = __webpack_require__(313);
+	GATEBLU_ADD_DEVICE_STATUS_QUERY = __webpack_require__(316);
 
 	GatebluAddDeviceStatus = (function(superClass) {
 	  extend(GatebluAddDeviceStatus, superClass);
@@ -64721,7 +64935,7 @@
 
 
 /***/ },
-/* 313 */
+/* 316 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -64750,10 +64964,10 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 314 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, GATEBLU_ADD_DEVICE_SUCCESS_OVER_TIME, GatebluAddDeviceSuccessOverTime, _, moment,
@@ -64761,13 +64975,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	GATEBLU_ADD_DEVICE_SUCCESS_OVER_TIME = __webpack_require__(315);
+	GATEBLU_ADD_DEVICE_SUCCESS_OVER_TIME = __webpack_require__(318);
 
 	GatebluAddDeviceSuccessOverTime = (function(superClass) {
 	  extend(GatebluAddDeviceSuccessOverTime, superClass);
@@ -64882,7 +65096,7 @@
 
 
 /***/ },
-/* 315 */
+/* 318 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -64914,10 +65128,10 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 316 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, GATEBLU_ADD_DEVICE_AVG_ELAPSED_TIME_QUERY, GatebluAddDeviceAvgElapsedTime, _, moment,
@@ -64925,13 +65139,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	GATEBLU_ADD_DEVICE_AVG_ELAPSED_TIME_QUERY = __webpack_require__(317);
+	GATEBLU_ADD_DEVICE_AVG_ELAPSED_TIME_QUERY = __webpack_require__(320);
 
 	GatebluAddDeviceAvgElapsedTime = (function(superClass) {
 	  extend(GatebluAddDeviceAvgElapsedTime, superClass);
@@ -64986,7 +65200,7 @@
 
 
 /***/ },
-/* 317 */
+/* 320 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -65008,10 +65222,10 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 318 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, GATEBLU_ADD_DEVICE_SUCCESS_AVG_ELAPSED_TIME_OVER_TIME_QUERY, GatebluAddDeviceSuccessAvgElapsedTimeOverTime, _, moment,
@@ -65019,13 +65233,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	GATEBLU_ADD_DEVICE_SUCCESS_AVG_ELAPSED_TIME_OVER_TIME_QUERY = __webpack_require__(319);
+	GATEBLU_ADD_DEVICE_SUCCESS_AVG_ELAPSED_TIME_OVER_TIME_QUERY = __webpack_require__(322);
 
 	GatebluAddDeviceSuccessAvgElapsedTimeOverTime = (function(superClass) {
 	  extend(GatebluAddDeviceSuccessAvgElapsedTimeOverTime, superClass);
@@ -65105,7 +65319,7 @@
 
 
 /***/ },
-/* 319 */
+/* 322 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -65137,10 +65351,10 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 320 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var FlowDeployment, FlowDeploymentGanttChartSteps, GanttChart, React, Router, _;
@@ -65149,11 +65363,11 @@
 
 	Router = __webpack_require__(157);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	GanttChart = __webpack_require__(321);
+	GanttChart = __webpack_require__(324);
 
-	FlowDeploymentGanttChartSteps = __webpack_require__(322);
+	FlowDeploymentGanttChartSteps = __webpack_require__(325);
 
 	FlowDeployment = React.createClass({
 	  displayName: 'FlowDeployment',
@@ -65199,14 +65413,14 @@
 
 
 /***/ },
-/* 321 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var GanttChart, PropTypes, React, moment;
 
 	React = __webpack_require__(1);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
 	PropTypes = React.PropTypes;
 
@@ -65313,7 +65527,7 @@
 
 
 /***/ },
-/* 322 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, FlowDeploymentGanttChartStep, FlowDeploymentGanttChartSteps, _, moment,
@@ -65321,13 +65535,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	FlowDeploymentGanttChartStep = __webpack_require__(323);
+	FlowDeploymentGanttChartStep = __webpack_require__(326);
 
 	FlowDeploymentGanttChartSteps = (function(superClass) {
 	  extend(FlowDeploymentGanttChartSteps, superClass);
@@ -65385,7 +65599,7 @@
 
 
 /***/ },
-/* 323 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, FlowDeploymentStep,
@@ -65393,7 +65607,7 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
 	FlowDeploymentStep = (function(superClass) {
 	  extend(FlowDeploymentStep, superClass);
@@ -65419,7 +65633,7 @@
 
 
 /***/ },
-/* 324 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var FlowDeploymentAggs, FlowDeploymentAggsGanttChartSteps, GanttChart, React, Router, _, moment;
@@ -65428,13 +65642,13 @@
 
 	Router = __webpack_require__(157);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	GanttChart = __webpack_require__(321);
+	GanttChart = __webpack_require__(324);
 
-	FlowDeploymentAggsGanttChartSteps = __webpack_require__(325);
+	FlowDeploymentAggsGanttChartSteps = __webpack_require__(328);
 
 	FlowDeploymentAggs = React.createClass({
 	  displayName: 'FlowDeploymentAggs',
@@ -65479,7 +65693,7 @@
 
 
 /***/ },
-/* 325 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, FLOW_DEPLOYMENT_AGGS_QUERY, FlowDeploymentGanttAggsChartSteps, FlowDeploymentGanttChartStep, moment,
@@ -65487,13 +65701,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	FlowDeploymentGanttChartStep = __webpack_require__(323);
+	FlowDeploymentGanttChartStep = __webpack_require__(326);
 
-	FLOW_DEPLOYMENT_AGGS_QUERY = __webpack_require__(326);
+	FLOW_DEPLOYMENT_AGGS_QUERY = __webpack_require__(329);
 
 	FlowDeploymentGanttAggsChartSteps = (function(superClass) {
 	  extend(FlowDeploymentGanttAggsChartSteps, superClass);
@@ -65550,7 +65764,7 @@
 
 	  FlowDeploymentGanttAggsChartSteps.prototype.query = function() {
 	    var query, yesterday;
-	    yesterday = moment().subtract(1, 'day');
+	    yesterday = moment().subtract(24, 'hours');
 	    query = _.cloneDeep(FLOW_DEPLOYMENT_AGGS_QUERY);
 	    query.aggs.last_24_hours.filter.range.beginTime.gte = yesterday.valueOf();
 	    return query;
@@ -65574,7 +65788,7 @@
 
 
 /***/ },
-/* 326 */
+/* 329 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -65631,21 +65845,21 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ },
-/* 327 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var DeviceInstallsTable, GatebluDeviceInstalls, GatebluDeviceInstallsDashboard, React, _;
 
 	React = __webpack_require__(1);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	DeviceInstallsTable = __webpack_require__(328);
+	DeviceInstallsTable = __webpack_require__(331);
 
-	GatebluDeviceInstalls = __webpack_require__(331);
+	GatebluDeviceInstalls = __webpack_require__(334);
 
 	GatebluDeviceInstallsDashboard = React.createClass({
 	  displayName: 'GatebluDeviceInstallsDashboard',
@@ -65689,18 +65903,18 @@
 
 
 /***/ },
-/* 328 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var DeviceInstallsTable, LoadingIndicator, Percentagify, React, _;
 
 	React = __webpack_require__(1);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	LoadingIndicator = __webpack_require__(329);
+	LoadingIndicator = __webpack_require__(332);
 
-	Percentagify = __webpack_require__(330);
+	Percentagify = __webpack_require__(333);
 
 	DeviceInstallsTable = React.createClass({
 	  displayName: 'DeviceInstallsTable',
@@ -65753,7 +65967,7 @@
 
 
 /***/ },
-/* 329 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var LoadingIndicator, React;
@@ -65773,7 +65987,7 @@
 
 
 /***/ },
-/* 330 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Percentagify, React;
@@ -65805,7 +66019,7 @@
 
 
 /***/ },
-/* 331 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Backbone, GATEBLU_DEVICE_INSTALLS_QUERY, GatebluDeviceInstalls, _, moment,
@@ -65813,13 +66027,13 @@
 	  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
 	  hasProp = {}.hasOwnProperty;
 
-	Backbone = __webpack_require__(199);
+	Backbone = __webpack_require__(202);
 
-	_ = __webpack_require__(202);
+	_ = __webpack_require__(205);
 
-	moment = __webpack_require__(204);
+	moment = __webpack_require__(207);
 
-	GATEBLU_DEVICE_INSTALLS_QUERY = __webpack_require__(332);
+	GATEBLU_DEVICE_INSTALLS_QUERY = __webpack_require__(335);
 
 	GatebluDeviceInstalls = (function(superClass) {
 	  extend(GatebluDeviceInstalls, superClass);
@@ -65899,7 +66113,7 @@
 
 
 /***/ },
-/* 332 */
+/* 335 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -65925,7 +66139,7 @@
 				}
 			}
 		}
-	}
+	};
 
 /***/ }
 /******/ ]);
