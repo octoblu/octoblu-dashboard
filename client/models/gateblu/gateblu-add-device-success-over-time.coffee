@@ -59,7 +59,7 @@ class GatebluAddDeviceSuccessOverTime extends Backbone.Model
   query: =>
     query = _.cloneDeep GATEBLU_ADD_DEVICE_SUCCESS_OVER_TIME
     query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(1, 'day').valueOf()
-    query.aggs.group_by_date.filter.range.beginTime.lte = moment().subtract(5, 'minutes').valueOf()
+    query.aggs.group_by_date.filter.range.beginTime.lte = moment().valueOf()
     return query
 
 module.exports = GatebluAddDeviceSuccessOverTime
