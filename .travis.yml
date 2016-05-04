@@ -1,0 +1,31 @@
+language: node_js
+sudo: false
+node_js:
+- '5'
+env:
+  global:
+  - AWS_ACCESS_KEY_ID=AKIAJH2D5IPIRHYJT5IA
+  - secure: PVJG0svP1WG0HQ2AdQ+YUI9CenbDYahhwtyz6/0/n8lAjoAdJMht0ql5+iOHGtekuwToejkHUwOJLgjNtvllISTNIzuG+5Nny7HFYRWH2iU8WZvPb4xTyLp5uX4J8FxXQMyfMw4C5ibvTMEMGwPCaGGhCugXkYaavRL74P4d5+xFUAEq+GdnqrbSYSLH7EnVwbrhF+sao4E/bVKyVyaFm97U8wGL+7+1WfrGkPrFpJXsl5t4jPMlZkMRo66kADr4xaKQqt0B6BLU5s1BNyXKowZ6VT/KjZKdjVFY8xLNeiFkDxEWjC0QyeUtdajpPZHZ7NCvu3xbTRVqG3cvfCEBtXWxuW6B668z2Jk8yowNji8i67GRLJ1fyxzRetAivuq7TP8hbs8fGRvX7hSs91g+6tx0SfEZhFvsn+TS5qtuf44n55Nz+Ez2We+0khyyEohzNZGzF3Px7IQe5RjmubgnggAgucW+0vsRH9QZbfEWUtOEsPO90bnV/5+F3MivHGgewJokXGg2iYcoo1yevIYbTNaak8itMrRKMYQH8p/cDZ3I2SUIwujJ5a2zyCZ6X5sReNMOSp3ktfOcXFLZasxfMdh+BQvhwUkXgVbOw19WIGDB1/OtM5NG8GQThXgZa7gxzbfSgH3SZuI5gRt1nTnmw+W8UJDFfLJX9EPBBh218Rg=
+branches:
+  only:
+  - "/^v[0-9]/"
+before_deploy:
+- npm run build
+- cp index.html dist
+- cp public/dist/* dist
+- for file in `find dist -type f`; do gzip --best $file && mv $file.gz $file; done
+after_deploy:
+- "./deploy/invalidate-cloudfront.sh $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $TRAVIS_BRANCH"
+deploy:
+- provider: s3
+  access_key_id: AKIAJH2D5IPIRHYJT5IA
+  secret_access_key:
+    secure: PVJG0svP1WG0HQ2AdQ+YUI9CenbDYahhwtyz6/0/n8lAjoAdJMht0ql5+iOHGtekuwToejkHUwOJLgjNtvllISTNIzuG+5Nny7HFYRWH2iU8WZvPb4xTyLp5uX4J8FxXQMyfMw4C5ibvTMEMGwPCaGGhCugXkYaavRL74P4d5+xFUAEq+GdnqrbSYSLH7EnVwbrhF+sao4E/bVKyVyaFm97U8wGL+7+1WfrGkPrFpJXsl5t4jPMlZkMRo66kADr4xaKQqt0B6BLU5s1BNyXKowZ6VT/KjZKdjVFY8xLNeiFkDxEWjC0QyeUtdajpPZHZ7NCvu3xbTRVqG3cvfCEBtXWxuW6B668z2Jk8yowNji8i67GRLJ1fyxzRetAivuq7TP8hbs8fGRvX7hSs91g+6tx0SfEZhFvsn+TS5qtuf44n55Nz+Ez2We+0khyyEohzNZGzF3Px7IQe5RjmubgnggAgucW+0vsRH9QZbfEWUtOEsPO90bnV/5+F3MivHGgewJokXGg2iYcoo1yevIYbTNaak8itMrRKMYQH8p/cDZ3I2SUIwujJ5a2zyCZ6X5sReNMOSp3ktfOcXFLZasxfMdh+BQvhwUkXgVbOw19WIGDB1/OtM5NG8GQThXgZa7gxzbfSgH3SZuI5gRt1nTnmw+W8UJDFfLJX9EPBBh218Rg=
+  bucket: watson.octoblu.com
+  local_dir: dist
+  skip_cleanup: true
+  endpoint: watson.octoblu.com.s3-website-us-west-2.amazonaws.com
+  detect_encoding: true
+  region: us-west-2
+  on:
+    tags: true
