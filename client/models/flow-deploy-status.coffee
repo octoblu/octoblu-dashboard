@@ -9,7 +9,7 @@ class FlowDeployStatus extends Backbone.Model
 
   initialize: (attributes={}) =>
     index = attributes.index
-    @url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/#{index}_history/_search"
+    @url = "http://searchonly:hfpxaq4e7k6gimwcwl@6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/#{index}_history/_search"
 
   parse: (response) =>
     flowStart = _.findWhere response.aggregations.filter_by_timestamp.group_by_workflow.buckets, key: 'flow-start'

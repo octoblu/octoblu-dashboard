@@ -9,7 +9,7 @@ class DeployAvgElapsedTime extends Backbone.Model
 
   initialize: (attributes={}) =>
     index = attributes.index
-    @url = "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/#{index}_history/_search"
+    @url = "http://searchonly:hfpxaq4e7k6gimwcwl@6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/#{index}_history/_search"
 
   parse: (response) =>
     avgElapsedTime: response.aggregations.finished.avgElapsedTime.value

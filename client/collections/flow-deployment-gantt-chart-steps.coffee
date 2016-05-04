@@ -10,7 +10,7 @@ class FlowDeploymentGanttChartSteps extends Backbone.Collection
     @uuid = options.uuid
 
   url: =>
-    "http://searchonly:q1c5j3slso793flgu0@0b0a9ec76284a09f16e189d7017ad116.us-east-1.aws.found.io:9200/flow_deploy_history/event/#{@uuid}"
+    "http://searchonly:hfpxaq4e7k6gimwcwl@6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/flow_deploy_history/event/#{@uuid}"
 
   parse: (body) =>
     [
