@@ -47,8 +47,8 @@ class GatebluAddDeviceStatus extends Backbone.Model
     yesterday = moment().subtract(1, 'day')
     five_minutes_ago = moment().subtract(5, 'minutes')
     query = _.cloneDeep GATEBLU_ADD_DEVICE_STATUS_QUERY
-    query.aggs.filter_by_timestamp.filter.range.beginTime.gte = yesterday.valueOf()
-    query.aggs.filter_by_timestamp.filter.range.beginTime.lte = five_minutes_ago.valueOf()
+    query.aggs.filter_by_timestamp.filter.range.beginTime.gte = yesterday.unix()
+    query.aggs.filter_by_timestamp.filter.range.beginTime.lte = five_minutes_ago.unix()
     query
 
 module.exports = GatebluAddDeviceStatus

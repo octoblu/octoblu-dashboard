@@ -44,7 +44,7 @@ class DeployAvgElapsedTimeOverTime extends Backbone.Model
 
     yesterday = moment().subtract(time, timeUnit)
     query = _.cloneDeep FLOW_DEPLOY_AVG_ELAPSED_TIME_OVER_TIME_QUERY
-    query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf()
+    query.aggs.finished.filter.range.beginTime.gte = yesterday.unix()
     query.aggs.finished.aggs.startTime_over_time.date_histogram.interval = byUnit
     query
 

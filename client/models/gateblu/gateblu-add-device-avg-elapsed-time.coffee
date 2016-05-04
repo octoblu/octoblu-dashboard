@@ -22,7 +22,7 @@ class GatebluAddDeviceAvgElapsedTime extends Backbone.Model
   query: =>
     yesterday = moment().subtract(1, 'day')
     query = _.cloneDeep GATEBLU_ADD_DEVICE_AVG_ELAPSED_TIME_QUERY
-    query.aggs.finished.filter.range.beginTime.gte = yesterday.valueOf()
+    query.aggs.finished.filter.range.beginTime.gte = yesterday.unix()
     query
 
 module.exports = GatebluAddDeviceAvgElapsedTime

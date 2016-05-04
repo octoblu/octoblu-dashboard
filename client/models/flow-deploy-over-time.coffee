@@ -66,8 +66,8 @@ class FlowDeployOverTime extends Backbone.Model
     timeUnit = _.first inLast.match /[a-zA-Z]+/
 
     query = _.cloneDeep FLOW_DEPLOY_SUCCESS_OVER_TIME
-    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(time, timeUnit).valueOf()
-    query.aggs.group_by_date.filter.range.beginTime.lte = moment().valueOf()
+    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(time, timeUnit).unix()
+    query.aggs.group_by_date.filter.range.beginTime.lte = moment().unix()
     query.aggs.group_by_date.aggs.beginTime_over_time.date_histogram.interval = byUnit
     return query
 
