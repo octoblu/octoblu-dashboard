@@ -18,8 +18,8 @@ class FlowDeployOverTime extends Backbone.Model
     return @formatResults result
 
   parseBucket: (bucket) =>
-    successBuckets = _.filter bucket.group_by_success.buckets, key: 'T'
-    failureBuckets = _.filter bucket.group_by_success.buckets, key: 'F'
+    successBuckets = _.filter bucket.group_by_success.buckets, key_as_string: 'true'
+    failureBuckets = _.filter bucket.group_by_success.buckets, key_as_string: 'false'
 
     addCount = (count, bucket) =>
       return count += bucket.doc_count
@@ -33,7 +33,7 @@ class FlowDeployOverTime extends Backbone.Model
     data =
       key: bucket.key
       successPercentage: successPercentage
-      failureCount: _.findWhere bucket.group_by_success.buckets, key: 'F'
+      failureCount: _.findWhere bucket.group_by_success.buckets, key_as_string: 'false'
     return data
 
   formatResults: (results=[]) =>
