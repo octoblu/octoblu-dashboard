@@ -7,7 +7,7 @@ class GatebluAddDeviceStatus extends Backbone.Model
 
   initialize: (attributes={}) =>
     index = attributes.index
-    @url = "http://searchonly:hfpxaq4e7k6gimwcwl@6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/#{index}_history/_search"
+    @url = "http://readonly:hfpxaq4e7k6gimwcwl@6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/#{index}_history/_search"
 
 
   parse: (response) =>
