@@ -12,11 +12,12 @@ class FlowDeployStatus extends Backbone.Model
     @url = "http://6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/#{index}_history/_search"
 
   parse: (response) =>
+    console.log response
     flowStart = _.findWhere response.aggregations.filter_by_timestamp.group_by_workflow.buckets, key: 'flow-start'
     flowStart ?= {}
 
-    successes = _.find(flowStart.group_by_success?.buckets, key: 'T')?.doc_count ? 0
-    failures  = _.find(flowStart.group_by_success?.buckets, key: 'F')?.doc_count ? 0
+    successes = _.find(flowStart.group_by_success?.buckets, key_as_string: 'true')?.doc_count ? 0
+    failures  = _.find(flowStart.group_by_success?.buckets, key_as_string: 'false')?.doc_count ? 0
     total     = successes + failures
 
     if total > 0
@@ -44,7 +45,7 @@ class FlowDeployStatus extends Backbone.Model
     )
 
   query: =>
-    inLast = @get 'inLast'
+    {inLast} = @toJSON()
     query = _.cloneDeep FLOW_DEPLOY_STATUS_QUERY
     query.aggs.filter_by_timestamp.filter.range.beginTime.gte = "now-#{inLast}"
     query.aggs.filter_by_timestamp.filter.range.beginTime.lte = "now-5m"
