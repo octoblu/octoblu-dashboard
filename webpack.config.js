@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   entry: "./client/router.cjsx",
   output: {
-    path: path.join(__dirname, "public", "dist"),
+    path: path.join(__dirname, "public"),
     filename: 'bundle.js'
   },
   resolveLoader: {

@@ -8,7 +8,7 @@ class FlowDeploymentGanttAggsChartSteps extends Backbone.Collection
   model: FlowDeploymentGanttChartStep
 
   url: =>
-    "http://readonly:hfpxaq4e7k6gimwcwl@6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/flow_deploy_history/_search?search_type=count"
+    "http://6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/flow_deploy_history/_search?search_type=count"
 
   parse: (body) =>
     aggs = body.aggregations.last_24_hours

@@ -27,4 +27,6 @@ build/Release
 node_modules
 
 public/dist
+public/app.css
+public/bundle.js
 deploy

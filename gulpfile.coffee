@@ -12,7 +12,7 @@ gulp.task 'less', ->
   gulp
     .src './client/less/app.less'
     .pipe(less())
-    .pipe(gulp.dest('./public/dist'))
+    .pipe(gulp.dest('./public'))
 
 gulp.task 'server', ->
   gulp

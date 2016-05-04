@@ -10,7 +10,7 @@ class FlowDeployOverTime extends Backbone.Model
 
   initialize: (attributes={}) =>
     index = attributes.index
-    @url = "http://readonly:hfpxaq4e7k6gimwcwl@6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/#{index}_history/_search"
+    @url = "http://6afa8b1002a9aae2191763621313e6ea.us-west-1.aws.found.io:9200/#{index}_history/_search"
 
   parse: (response) =>
     buckets = response.aggregations.group_by_date.beginTime_over_time.buckets
@@ -62,12 +62,10 @@ class FlowDeployOverTime extends Backbone.Model
 
   query: =>
     {inLast, byUnit} = @toJSON()
-    time = parseInt _.first inLast.match /\d+/
-    timeUnit = _.first inLast.match /[a-zA-Z]+/
 
     query = _.cloneDeep FLOW_DEPLOY_SUCCESS_OVER_TIME
-    query.aggs.group_by_date.filter.range.beginTime.gte = moment().subtract(time, timeUnit).unix()
-    query.aggs.group_by_date.filter.range.beginTime.lte = moment().unix()
+    query.aggs.group_by_date.filter.range.beginTime.gte = "now-#{inLast}"
+    query.aggs.group_by_date.filter.range.beginTime.lte = "now"
     query.aggs.group_by_date.aggs.beginTime_over_time.date_histogram.interval = byUnit
     return query
 
