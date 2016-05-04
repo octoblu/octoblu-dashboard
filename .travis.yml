@@ -5,13 +5,13 @@ node_js:
 env:
   global:
   - AWS_ACCESS_KEY_ID=AKIAJH2D5IPIRHYJT5IA
-  - secure: PVJG0svP1WG0HQ2AdQ+YUI9CenbDYahhwtyz6/0/n8lAjoAdJMht0ql5+iOHGtekuwToejkHUwOJLgjNtvllISTNIzuG+5Nny7HFYRWH2iU8WZvPb4xTyLp5uX4J8FxXQMyfMw4C5ibvTMEMGwPCaGGhCugXkYaavRL74P4d5+xFUAEq+GdnqrbSYSLH7EnVwbrhF+sao4E/bVKyVyaFm97U8wGL+7+1WfrGkPrFpJXsl5t4jPMlZkMRo66kADr4xaKQqt0B6BLU5s1BNyXKowZ6VT/KjZKdjVFY8xLNeiFkDxEWjC0QyeUtdajpPZHZ7NCvu3xbTRVqG3cvfCEBtXWxuW6B668z2Jk8yowNji8i67GRLJ1fyxzRetAivuq7TP8hbs8fGRvX7hSs91g+6tx0SfEZhFvsn+TS5qtuf44n55Nz+Ez2We+0khyyEohzNZGzF3Px7IQe5RjmubgnggAgucW+0vsRH9QZbfEWUtOEsPO90bnV/5+F3MivHGgewJokXGg2iYcoo1yevIYbTNaak8itMrRKMYQH8p/cDZ3I2SUIwujJ5a2zyCZ6X5sReNMOSp3ktfOcXFLZasxfMdh+BQvhwUkXgVbOw19WIGDB1/OtM5NG8GQThXgZa7gxzbfSgH3SZuI5gRt1nTnmw+W8UJDFfLJX9EPBBh218Rg=
+  - secure: b/juYA4ahYgr/OODpEvM43bwN2NrahrZUr+k5l2cDtzbzDqc6gA+znodT/8HSmXUXF8cYZr7Li1buC+Q8cmQilsVAUCmPc00SrlncI0mbForLoKSQWL0AzN4fPzNbMYPz5zcwIdHzmKuwFtQdKtfSvh6qFqUvfsBGBrbxnc50z1gx8p4CAnc3/oYg2OCfJYfysPiAeIr3/sybLALSId8lDgeJBvm9fTHkCNVPaUl/LJfwivAjy7nfwmVJB3gl76hDSDF9nzAm2thWgKnD9mxhRHwkB7mbJZjD+hvya3Ga1qHLUoo6IO6GuIpZFC9/MgG2dIw3XQ3cCsvwayxxkJu81UvFOvl8YsDQy4A0w8emfbQLB8EbAj8wZ7sBJntFXFWjAbPbHHNNsTnvUIcKZ3eWUIl6QTikfuuYMuGvmy47NlhUjU069AjGLlS+PyFML7HpMiWlWVQt+LwNmxw4vyVEJocq6Ey+5kUMnQoUTirrNIUGdIJ69n76QOs20cN3UywvKFCDxg3uQUMz47xR6RA9E92vc1txxblhLca1rQn+CptPV73nQ8e/ROHfS0gaoDwYlzq62pKd3hpSu/xEV2o/9Zh8f+n/pCg7rvu8LewEpO+MeHc6dQSwfn8DuCKRG1tOVswFGaorHPo6zgbSMrzV4n/oQ6viril26HOrXQqdvA=
 branches:
   only:
   - "/^v[0-9]/"
 before_deploy:
 - npm run build
-- cp index.html dist
+- cp public/index.html dist
 - cp public/dist/* dist
 - for file in `find dist -type f`; do gzip --best $file && mv $file.gz $file; done
 after_deploy:
