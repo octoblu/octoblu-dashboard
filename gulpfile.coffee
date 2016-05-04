@@ -44,7 +44,7 @@ gulp.task 'deploy-now', ->
     return console.error error if error?
     console.log 'Successfully deployed to gh-pages!'
 
-gulp.task 'build', ['webpack', 'less']
+gulp.task 'build', ['less', 'webpack']
 
 gulp.task 'default', ['build', 'watch', 'server']
 
