@@ -11,6 +11,7 @@ branches:
   - "/^v[0-9]/"
 before_deploy:
 - npm run build
+- mkdir -p dist
 - cp public/index.html dist
 - cp public/dist/* dist
 - for file in `find dist -type f`; do gzip --best $file && mv $file.gz $file; done
